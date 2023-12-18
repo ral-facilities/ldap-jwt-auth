@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  ldap-jwt-auth-run:
+    container_name: ldap_jwt_auth_container
+    build: .
+    volumes:
+      - ./ldap_jwt_auth:/ldap-jwt-auth-run/ldap_jwt_auth
+    ports:
+      - 8000:8000
+    restart: on-failure
