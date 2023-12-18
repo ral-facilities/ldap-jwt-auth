@@ -1,3 +1,6 @@
+"""
+Main module contains the API entrypoint.
+"""
 import logging
 
 from fastapi import FastAPI
@@ -16,4 +19,7 @@ logger.info("Logging now setup")
 
 @app.get("/")
 def read_root():
+    """
+    Root endpoint for the API.
+    """
     return {"title": API_TITLE}
