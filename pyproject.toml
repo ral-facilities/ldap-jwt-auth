@@ -1,0 +1,31 @@
+[project]
+name = "ldap-jwt-auth"
+description = "Python microservice providing user authentication against LDAP server and returning a JSON Web Token"
+readme = "README.md"
+requires-python = ">=3.10"
+version = "0.0.1"
+
+dependencies = [
+    "fastapi[all]==0.105.0",
+    "uvicorn==0.23.2"
+]
+
+[project.urls]
+"Repository" = "https://github.com/ral-facilities/ldap-jwt-auth"
+
+[project.optional-dependencies]
+code-analysis = [
+    "pylint==3.0.3"
+]
+
+formatting = [
+    "black==23.12.0"
+]
+
+dev = [
+    "ldap-jwt-auth[code-analysis]",
+    "ldap-jwt-auth[formatting]"
+]
+
+[tool.setuptools]
+packages = ["ldap_jwt_auth"]
