@@ -13,5 +13,13 @@ dependencies = [
 [project.urls]
 "Repository" = "https://github.com/ral-facilities/ldap-jwt-auth"
 
+formatting = [
+    "black==23.12.0"
+]
+
+dev = [
+    "ldap-jwt-auth[formatting]"
+]
+
 [tool.setuptools]
 packages = ["ldap_jwt_auth"]
