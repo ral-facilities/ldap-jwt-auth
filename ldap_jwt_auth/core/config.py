@@ -1,8 +1,10 @@
 """
 Module for the overall configuration for the application.
 """
+from pathlib import Path
+
 from pydantic import BaseModel
-from pydantic_settings import BaseSettings
+from pydantic_settings import SettingsConfigDict, BaseSettings
 
 
 class APIConfig(BaseModel):
@@ -48,6 +50,10 @@ class Config(BaseSettings):
     api: APIConfig
     authentication: AuthenticationConfig
     ldap_server: LDAPServerConfig
+
+    model_config = SettingsConfigDict(
+        env_file=Path(__file__).parent.parent / ".env", env_file_encoding="utf-8", env_nested_delimiter="__"
+    )
 
 
 config = Config()
