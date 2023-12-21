@@ -3,6 +3,12 @@ Module for custom exception classes.
 """
 
 
+class InvalidJWTError(Exception):
+    """
+    Exception raised when invalid JWT token is provided.
+    """
+
+
 class LDAPServerError(Exception):
     """
     Exception raised when there is problem with the LDAP server.
