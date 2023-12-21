@@ -9,6 +9,12 @@ class InvalidJWTError(Exception):
     """
 
 
+class JWTRefreshError(Exception):
+    """
+    Exception raised when JWT access token cannot be refreshed.
+    """
+
+
 class LDAPServerError(Exception):
     """
     Exception raised when there is problem with the LDAP server.
