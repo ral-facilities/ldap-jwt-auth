@@ -31,6 +31,17 @@ class JWTHandler:
         }
         return self._pack_jwt(payload)
 
+    def get_refresh_token(self) -> str:
+        """
+        Generates a payload and returns a signed JWT refresh token.
+        :return: The signed JWT refresh token.
+        """
+        logger.info("Getting a refresh token")
+        payload = {
+            "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days)
+        }
+        return self._pack_jwt(payload)
+
     def _pack_jwt(self, payload: dict) -> str:
         """
         Packs the provided payload into a JWT token and signs it.
