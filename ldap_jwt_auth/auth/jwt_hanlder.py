@@ -2,6 +2,7 @@
 Module for providing a class for handling JWTs.
 """
 import logging
+from datetime import datetime, timezone, timedelta
 
 import jwt
 from cryptography.hazmat.primitives import serialization
@@ -16,6 +17,19 @@ class JWTHandler:
     """
     Class for handling JWTs.
     """
+
+    def get_access_token(self, username: str) -> str:
+        """
+        Generates a payload and returns a signed JWT access token.
+        :param username: The username of the user.
+        :return: The signed JWT access token
+        """
+        logger.info("Getting an access token")
+        payload = {
+            "username": username,
+            "exp": datetime.now(timezone.utc) + timedelta(minutes=config.authentication.access_token_validity_minutes),
+        }
+        return self._pack_jwt(payload)
 
     def _pack_jwt(self, payload: dict) -> str:
         """
