@@ -9,6 +9,7 @@ dependencies = [
     "cryptography==41.0.7",
     "fastapi[all]==0.105.0",
     "PyJWT==2.8.0",
+    "python-ldap==3.4.4",
     "uvicorn==0.23.2"
 ]
 
