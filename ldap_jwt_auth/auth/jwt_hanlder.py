@@ -10,6 +10,7 @@ from cryptography.hazmat.primitives import serialization
 
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
+from ldap_jwt_auth.core.exceptions import InvalidJWTError
 
 logger = logging.getLogger()
 
@@ -42,6 +43,22 @@ class JWTHandler:
             "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days)
         }
         return self._pack_jwt(payload)
+
+    def verify_token(self, token: str) -> Dict[str, Any]:
+        """
+        Verifies that the provided JWT token is valid. It does this by checking that it was signed by the corresponding
+        private key and has not expired.
+        :param token: The JWT token to be verified.
+        :raises InvalidJWTError: If the JWT token is invalid.
+        :return: The payload of the verified JWT token.
+        """
+        logger.info("Verifying JWT token is valid")
+        try:
+            return self._get_jwt_payload(token)
+        except Exception as exc:
+            message = "Invalid JWT token"
+            logger.exception(message)
+            raise InvalidJWTError(message) from exc
 
     def _get_jwt_payload(self, token: str, jwt_decode_options: dict | None = None) -> Dict[str, Any]:
         """
