@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives import serialization
 
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
-from ldap_jwt_auth.core.exceptions import InvalidJWTError
+from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError
 
 logger = logging.getLogger()
 
@@ -43,6 +43,27 @@ class JWTHandler:
             "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days)
         }
         return self._pack_jwt(payload)
+
+    def refresh_access_token(self, access_token: str, refresh_token: str):
+        """
+        Refreshes the JWT access token by updating its expiry time, provided that the JWT refresh token is valid.
+        :param access_token: The JWT access token to refresh.
+        :param refresh_token: The JWT refresh token.
+        :raises JWTRefreshError: If the JWT access token cannot be refreshed.
+        :return: JWT access token with an updated expiry time.
+        """
+        logger.info("Refreshing access token")
+        self.verify_token(refresh_token)
+        try:
+            payload = self._get_jwt_payload(access_token, {"verify_exp": False})
+            payload["exp"] = datetime.now(timezone.utc) + timedelta(
+                minutes=config.authentication.access_token_validity_minutes
+            )
+            return self._pack_jwt(payload)
+        except Exception as exc:
+            message = "Unable to refresh access token"
+            logger.exception(message)
+            raise JWTRefreshError(message) from exc
 
     def verify_token(self, token: str) -> Dict[str, Any]:
         """
