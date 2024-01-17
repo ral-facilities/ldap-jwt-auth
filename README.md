@@ -82,3 +82,8 @@ Ensure that you have an LDAP server to connect to.
    ```
    The microservice should now be running locally at http://localhost:8000. The Swagger UI could be accessed
    at http://localhost:8000/docs.
+
+7. To run the unit tests, run :
+   ```bash
+   pytest test/unit/
+   ```
