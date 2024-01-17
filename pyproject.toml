@@ -10,7 +10,7 @@ dependencies = [
     "fastapi[all]==0.105.0",
     "PyJWT==2.8.0",
     "python-ldap==3.4.4",
-    "uvicorn==0.23.2"
+    "uvicorn==0.25.0"
 ]
 
 [project.urls]
@@ -18,16 +18,23 @@ dependencies = [
 
 [project.optional-dependencies]
 code-analysis = [
-    "pylint==3.0.3"
+    "pylint==3.0.3",
+    "ldap-jwt-auth[test]"
 ]
 
 formatting = [
     "black==23.12.0"
 ]
 
+test = [
+    "pytest==7.4.3",
+    "pytest-cov==4.1.0"
+]
+
 dev = [
     "ldap-jwt-auth[code-analysis]",
-    "ldap-jwt-auth[formatting]"
+    "ldap-jwt-auth[formatting]",
+    "ldap-jwt-auth[test]"
 ]
 
 [tool.setuptools]

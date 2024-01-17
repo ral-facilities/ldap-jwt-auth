@@ -1,3 +1,4 @@
+# pylint: disable=no-member
 """
 Module for providing a class for managing authentication.
 """

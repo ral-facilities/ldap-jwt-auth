@@ -2,7 +2,7 @@
 Model for defining the API schema models.
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class UserCredentials(BaseModel):
@@ -10,5 +10,5 @@ class UserCredentials(BaseModel):
     Model for the user credentials.
     """
 
-    username: str
-    password: str
+    username: str = Field(min_length=1)
+    password: str = Field(min_length=1)

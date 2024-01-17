@@ -6,7 +6,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 
-from ldap_jwt_auth.auth.jwt_hanlder import JWTHandler
+from ldap_jwt_auth.auth.jwt_handler import JWTHandler
 from ldap_jwt_auth.core.exceptions import InvalidJWTError
 
 logger = logging.getLogger()

@@ -2,12 +2,13 @@
 Module for providing an API router which defines login route(s).
 """
 import logging
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 
 from ldap_jwt_auth.auth.authentication import Authentication
-from ldap_jwt_auth.auth.jwt_hanlder import JWTHandler
+from ldap_jwt_auth.auth.jwt_handler import JWTHandler
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import InvalidCredentialsError, LDAPServerError
 from ldap_jwt_auth.core.models import UserCredentials
@@ -20,10 +21,12 @@ router = APIRouter(prefix="/login", tags=["authentication"])
 @router.post(
     path="/",
     summary="Login with a username and password",
-    response_description="A JWT access token including a refresh token as HTTP only cookie",
+    response_description="A JWT access token including a refresh token as an HTTP-only cookie",
 )
 def login(
-    user_credentials: UserCredentials, authentication: Authentication = Depends(), jwt_handler: JWTHandler = Depends()
+    user_credentials: Annotated[UserCredentials, Body(description="The credentials of the user")],
+    authentication: Annotated[Authentication, Depends(Authentication)],
+    jwt_handler: Annotated[JWTHandler, Depends(JWTHandler)],
 ) -> JSONResponse:
     # pylint: disable=missing-function-docstring
     try:
