@@ -52,6 +52,3 @@ def login(
     except LDAPServerError as exc:
         message = "Something went wrong"
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
-    except Exception as exc:
-        logger.exception(exc)
-        raise exc
