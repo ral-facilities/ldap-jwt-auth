@@ -34,4 +34,6 @@ def refresh_access_token(
         access_token = jwt_handler.refresh_access_token(token, refresh_token)
         return JSONResponse(content=access_token)
     except (InvalidJWTError, JWTRefreshError) as exc:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unable to refresh access token") from exc
+        message = "Unable to refresh access token"
+        logger.exception(message)
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=message) from exc
