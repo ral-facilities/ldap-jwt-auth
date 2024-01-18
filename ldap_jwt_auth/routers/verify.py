@@ -28,4 +28,6 @@ def verify_token(
         jwt_handler.verify_token(token)
         return Response(status_code=status.HTTP_200_OK)
     except InvalidJWTError as exc:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid JWT token provided") from exc
+        message = "Invalid JWT token provided"
+        logger.exception(message)
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=message) from exc
