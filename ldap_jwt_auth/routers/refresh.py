@@ -9,7 +9,7 @@ from fastapi import APIRouter, Cookie, Depends, HTTPException, Query, status
 from fastapi.responses import JSONResponse
 
 from ldap_jwt_auth.auth.jwt_handler import JWTHandler
-from ldap_jwt_auth.core.exceptions import JWTRefreshError
+from ldap_jwt_auth.core.exceptions import JWTRefreshError, InvalidJWTError
 
 logger = logging.getLogger()
 
@@ -33,5 +33,5 @@ def refresh_access_token(
     try:
         access_token = jwt_handler.refresh_access_token(access_token, refresh_token)
         return JSONResponse(content=access_token)
-    except JWTRefreshError as exc:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
+    except (InvalidJWTError, JWTRefreshError) as exc:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unable to refresh access token") from exc
