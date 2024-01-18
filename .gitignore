@@ -1,5 +1,5 @@
 ldap_jwt_auth/logging.ini
-keys/
+/keys/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
