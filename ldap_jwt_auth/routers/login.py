@@ -47,9 +47,11 @@ def login(
         return response
     except InvalidCredentialsError as exc:
         message = "Invalid credentials provided"
+        logger.exception(message)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=message) from exc
     except LDAPServerError as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong") from exc
+        message = "Something went wrong"
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
     except Exception as exc:
         logger.exception(exc)
         raise exc

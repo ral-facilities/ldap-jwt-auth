@@ -22,12 +22,16 @@ class Authentication:
         """
         Authenticate a user against an LDAP server based on the provided user credentials.
         :param user_credentials: The credentials of the user.
-        :raises InvalidCredentialsError: If the user credentials are invalid.
+        :raises InvalidCredentialsError: If the user credentials are empty or invalid.
         :raises LDAPServerError: If there is a problem with the LDAP server.
         """
         username = user_credentials.username
+        password = user_credentials.password
         logger.info("Authenticating a user")
         logger.debug("Username provided is '%s'", username)
+
+        if not username or not password:
+            raise InvalidCredentialsError("Empty username or password")
 
         try:
             connection = ldap.initialize(config.ldap_server.url)
