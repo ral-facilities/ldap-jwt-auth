@@ -23,7 +23,7 @@ router = APIRouter(prefix="/refresh", tags=["authentication"])
 )
 def refresh_access_token(
     jwt_handler: Annotated[JWTHandler, Depends(JWTHandler)],
-    access_token: Annotated[str, Query(description="The JWT access token to refresh")],
+    token: Annotated[str, Query(description="The JWT access token to refresh")],
     refresh_token: Annotated[str | None, Cookie(description="The JWT refresh token from an HTTP-only cookie")] = None,
 ) -> JSONResponse:
     # pylint: disable=missing-function-docstring
@@ -31,7 +31,7 @@ def refresh_access_token(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No JWT refresh token found")
 
     try:
-        access_token = jwt_handler.refresh_access_token(access_token, refresh_token)
+        access_token = jwt_handler.refresh_access_token(token, refresh_token)
         return JSONResponse(content=access_token)
     except (InvalidJWTError, JWTRefreshError) as exc:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unable to refresh access token") from exc
