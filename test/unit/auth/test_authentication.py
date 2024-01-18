@@ -35,8 +35,20 @@ def test_authenticate(ldap_initialize_mock):
     ldap_obj_mock.unbind.assert_called_once()
 
 
+def test_authenticate_with_empty_credentials():
+    """
+    Test LDAP authentication with empty credentials.
+    """
+    authentication = Authentication()
+    user_credentials = UserCredentials(username="", password="")
+
+    with pytest.raises(InvalidCredentialsError) as exc:
+        authentication.authenticate(user_credentials)
+    assert str(exc.value) == "Empty username or password"
+
+
 @patch("ldap_jwt_auth.auth.authentication.ldap.initialize")
-def test_authenticate_invalid_credentials(ldap_initialize_mock):
+def test_authenticate_with_invalid_credentials(ldap_initialize_mock):
     """
     Test LDAP authentication with invalid credentials.
     """
