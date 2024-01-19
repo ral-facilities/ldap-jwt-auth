@@ -11,7 +11,7 @@ from ldap.ldapobject import LDAPObject
 from ldap_jwt_auth.auth.authentication import Authentication
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import InvalidCredentialsError, LDAPServerError
-from ldap_jwt_auth.core.models import UserCredentials
+from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
 
 @patch("ldap_jwt_auth.auth.authentication.ldap.initialize")
@@ -24,7 +24,7 @@ def test_authenticate(ldap_initialize_mock):
     ldap_initialize_mock.return_value = ldap_obj_mock
 
     authentication = Authentication()
-    user_credentials = UserCredentials(username="username", password="password")
+    user_credentials = UserCredentialsPostRequestSchema(username="username", password="password")
     authentication.authenticate(user_credentials)
 
     ldap_initialize_mock.assert_called_once_with(config.ldap_server.url)
@@ -40,7 +40,7 @@ def test_authenticate_with_empty_credentials():
     Test LDAP authentication with empty credentials.
     """
     authentication = Authentication()
-    user_credentials = UserCredentials(username="", password="")
+    user_credentials = UserCredentialsPostRequestSchema(username="", password="")
 
     with pytest.raises(InvalidCredentialsError) as exc:
         authentication.authenticate(user_credentials)
@@ -57,7 +57,7 @@ def test_authenticate_with_invalid_credentials(ldap_initialize_mock):
     ldap_initialize_mock.return_value = ldap_obj_mock
 
     authentication = Authentication()
-    user_credentials = UserCredentials(username="invalid_username", password="invalid_password")
+    user_credentials = UserCredentialsPostRequestSchema(username="invalid_username", password="invalid_password")
 
     with pytest.raises(InvalidCredentialsError) as exc:
         authentication.authenticate(user_credentials)
@@ -80,7 +80,7 @@ def test_authenticate_ldap_server_error(ldap_initialize_mock):
     ldap_initialize_mock.return_value = ldap_obj_mock
 
     authentication = Authentication()
-    user_credentials = UserCredentials(username="username", password="password")
+    user_credentials = UserCredentialsPostRequestSchema(username="username", password="password")
 
     with pytest.raises(LDAPServerError) as exc:
         authentication.authenticate(user_credentials)

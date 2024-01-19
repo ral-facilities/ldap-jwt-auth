@@ -11,7 +11,7 @@ from ldap_jwt_auth.auth.authentication import Authentication
 from ldap_jwt_auth.auth.jwt_handler import JWTHandler
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import InvalidCredentialsError, LDAPServerError
-from ldap_jwt_auth.core.models import UserCredentials
+from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
 logger = logging.getLogger()
 
@@ -24,7 +24,7 @@ router = APIRouter(prefix="/login", tags=["authentication"])
     response_description="A JWT access token including a refresh token as an HTTP-only cookie",
 )
 def login(
-    user_credentials: Annotated[UserCredentials, Body(description="The credentials of the user")],
+    user_credentials: Annotated[UserCredentialsPostRequestSchema, Body(description="The credentials of the user")],
     authentication: Annotated[Authentication, Depends(Authentication)],
     jwt_handler: Annotated[JWTHandler, Depends(JWTHandler)],
 ) -> JSONResponse:
