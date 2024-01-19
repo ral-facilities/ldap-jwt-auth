@@ -5,7 +5,7 @@ using a JWT refresh token.
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Cookie, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 
 from ldap_jwt_auth.auth.jwt_handler import JWTHandler
@@ -23,7 +23,7 @@ router = APIRouter(prefix="/refresh", tags=["authentication"])
 )
 def refresh_access_token(
     jwt_handler: Annotated[JWTHandler, Depends(JWTHandler)],
-    token: Annotated[str, Query(description="The JWT access token to refresh")],
+    token: Annotated[str, Body(description="The JWT access token to refresh")],
     refresh_token: Annotated[str | None, Cookie(description="The JWT refresh token from an HTTP-only cookie")] = None,
 ) -> JSONResponse:
     # pylint: disable=missing-function-docstring
