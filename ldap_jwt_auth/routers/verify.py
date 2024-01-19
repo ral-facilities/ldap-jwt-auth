@@ -21,7 +21,7 @@ router = APIRouter(prefix="/verify", tags=["authentication"])
 )
 def verify_token(
     jwt_handler: Annotated[JWTHandler, Depends(JWTHandler)],
-    token: Annotated[str, Body(description="The JWT token to verify")],
+    token: Annotated[str, Body(description="The JWT token to verify", embed=True)],
 ) -> Response:
     # pylint: disable=missing-function-docstring
     try:
