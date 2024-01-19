@@ -17,7 +17,7 @@ router = APIRouter(prefix="/refresh", tags=["authentication"])
 
 
 @router.post(
-    path="/",
+    path="",
     summary="Generate an updated JWT access token using the JWT refresh token",
     response_description="A JWT access token",
 )
