@@ -19,7 +19,7 @@ router = APIRouter(prefix="/login", tags=["authentication"])
 
 
 @router.post(
-    path="/",
+    path="",
     summary="Login with a username and password",
     response_description="A JWT access token including a refresh token as an HTTP-only cookie",
 )
