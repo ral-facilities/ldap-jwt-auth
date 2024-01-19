@@ -23,7 +23,7 @@ router = APIRouter(prefix="/refresh", tags=["authentication"])
 )
 def refresh_access_token(
     jwt_handler: Annotated[JWTHandler, Depends(JWTHandler)],
-    token: Annotated[str, Body(description="The JWT access token to refresh")],
+    token: Annotated[str, Body(description="The JWT access token to refresh", embed=True)],
     refresh_token: Annotated[str | None, Cookie(description="The JWT refresh token from an HTTP-only cookie")] = None,
 ) -> JSONResponse:
     # pylint: disable=missing-function-docstring
