@@ -10,7 +10,7 @@ dependencies = [
     "fastapi[all]==0.105.0",
     "PyJWT==2.8.0",
     "python-ldap==3.4.4",
-    "uvicorn==0.25.0"
+    "uvicorn==0.26.0"
 ]
 
 [project.urls]
