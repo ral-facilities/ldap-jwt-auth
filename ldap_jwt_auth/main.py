@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.logger_setup import setup_logger
-from ldap_jwt_auth.routers import login
+from ldap_jwt_auth.routers import login, verify
 
 app = FastAPI(title=config.api.title, description=config.api.description)
 
@@ -63,6 +63,7 @@ app.add_middleware(
 )
 
 app.include_router(login.router)
+app.include_router(verify.router)
 
 
 @app.get("/")

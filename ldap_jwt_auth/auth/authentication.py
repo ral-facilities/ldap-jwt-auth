@@ -8,7 +8,7 @@ import ldap
 
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import InvalidCredentialsError, LDAPServerError
-from ldap_jwt_auth.core.models import UserCredentials
+from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
 logger = logging.getLogger()
 
@@ -18,7 +18,7 @@ class Authentication:
     Class for managing authentication against an LDAP server.
     """
 
-    def authenticate(self, user_credentials: UserCredentials) -> None:
+    def authenticate(self, user_credentials: UserCredentialsPostRequestSchema) -> None:
         """
         Authenticate a user against an LDAP server based on the provided user credentials.
         :param user_credentials: The credentials of the user.
