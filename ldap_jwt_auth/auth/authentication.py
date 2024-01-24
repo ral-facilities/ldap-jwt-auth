@@ -7,7 +7,7 @@ import logging
 import ldap
 
 from ldap_jwt_auth.core.config import config
-from ldap_jwt_auth.core.exceptions import InvalidCredentialsError, LDAPServerError
+from ldap_jwt_auth.core.exceptions import InvalidCredentialsError, LDAPServerError, ActiveUsernamesFileNotFoundError
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
 logger = logging.getLogger()
@@ -52,3 +52,18 @@ class Authentication:
             message = "Problem with LDAP server"
             logger.exception(message)
             raise LDAPServerError(message) from exc
+
+    def _get_active_usernames(self) -> list:
+        """
+        Load the active usernames as a list from a `txt` file. It removes any leading and trailing whitespaces and does
+        not load empty lines/strings.
+        :return: The list of active usernames.
+        :raises ActiveUsernamesFileNotFoundError: If the file containing the active usernames cannot be found.
+        """
+        try:
+            with open(config.authentication.active_usernames_path, "r", encoding="utf-8") as f:
+                return [line.strip() for line in f.readlines() if line.strip()]
+        except FileNotFoundError as exc:
+            raise ActiveUsernamesFileNotFoundError(
+                f"Cannot find file containing active usernames with path: {config.authentication.active_usernames_path}"
+            ) from exc
