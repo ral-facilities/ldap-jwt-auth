@@ -7,7 +7,12 @@ import logging
 import ldap
 
 from ldap_jwt_auth.core.config import config
-from ldap_jwt_auth.core.exceptions import InvalidCredentialsError, LDAPServerError, ActiveUsernamesFileNotFoundError
+from ldap_jwt_auth.core.exceptions import (
+    InvalidCredentialsError,
+    LDAPServerError,
+    ActiveUsernamesFileNotFoundError,
+    UserNotActiveError,
+)
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
 logger = logging.getLogger()
@@ -33,6 +38,9 @@ class Authentication:
         if not username or not password:
             raise InvalidCredentialsError("Empty username or password")
 
+        if not self.is_user_active(username):
+            raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
+
         try:
             connection = ldap.initialize(config.ldap_server.url)
             ldap.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
@@ -52,6 +60,17 @@ class Authentication:
             message = "Problem with LDAP server"
             logger.exception(message)
             raise LDAPServerError(message) from exc
+
+    def is_user_active(self, username: str) -> bool:
+        """
+        Check if the provided username is part of the active usernames.
+        :param username: The username to check.
+        :return: `True` if the user is active, `False` otherwise.
+        """
+        active_usernames = self._get_active_usernames()
+        logger.debug(len(active_usernames))
+        logger.debug(active_usernames)
+        return username in active_usernames
 
     def _get_active_usernames(self) -> list:
         """

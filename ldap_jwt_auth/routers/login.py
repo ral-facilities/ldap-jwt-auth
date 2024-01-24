@@ -10,7 +10,12 @@ from fastapi.responses import JSONResponse
 from ldap_jwt_auth.auth.authentication import Authentication
 from ldap_jwt_auth.auth.jwt_handler import JWTHandler
 from ldap_jwt_auth.core.config import config
-from ldap_jwt_auth.core.exceptions import InvalidCredentialsError, LDAPServerError
+from ldap_jwt_auth.core.exceptions import (
+    InvalidCredentialsError,
+    LDAPServerError,
+    UserNotActiveError,
+    ActiveUsernamesFileNotFoundError,
+)
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
 logger = logging.getLogger()
@@ -45,10 +50,15 @@ def login(
             path="/refresh",
         )
         return response
-    except InvalidCredentialsError as exc:
+    except (InvalidCredentialsError, UserNotActiveError) as exc:
         message = "Invalid credentials provided"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=message) from exc
     except LDAPServerError as exc:
         message = "Something went wrong"
+        logger.exception(message)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
+    except ActiveUsernamesFileNotFoundError as exc:
+        message = "Something went wrong"
+        logger.exception(message)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc

@@ -31,3 +31,9 @@ class LDAPServerError(Exception):
     """
     Exception raised when there is problem with the LDAP server.
     """
+
+
+class UserNotActiveError(Exception):
+    """
+    Exception raised when user is not active.
+    """
