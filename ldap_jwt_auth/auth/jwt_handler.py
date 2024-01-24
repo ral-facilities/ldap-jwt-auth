@@ -8,9 +8,10 @@ from typing import Any, Dict
 import jwt
 from cryptography.hazmat.primitives import serialization
 
+from ldap_jwt_auth.auth.authentication import Authentication
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
-from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError
+from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UserNotActiveError
 
 logger = logging.getLogger()
 
@@ -54,8 +55,15 @@ class JWTHandler:
         """
         logger.info("Refreshing access token")
         self.verify_token(refresh_token)
+
         try:
             payload = self._get_jwt_payload(access_token, {"verify_exp": False})
+
+            authentication = Authentication()
+            username = payload["username"]
+            if not authentication.is_user_active(username):
+                raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
+
             payload["exp"] = datetime.now(timezone.utc) + timedelta(
                 minutes=config.authentication.access_token_validity_minutes
             )
