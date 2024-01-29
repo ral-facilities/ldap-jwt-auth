@@ -6,7 +6,7 @@ requires-python = ">=3.10"
 version = "0.0.1"
 
 dependencies = [
-    "cryptography==41.0.7",
+    "cryptography==42.0.1",
     "fastapi[all]==0.105.0",
     "PyJWT==2.8.0",
     "python-ldap==3.4.4",
