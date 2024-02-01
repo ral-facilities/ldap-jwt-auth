@@ -1,6 +1,7 @@
 """
 Module for the constants of the application.
 """
+
 import sys
 
 from ldap_jwt_auth.core.config import config

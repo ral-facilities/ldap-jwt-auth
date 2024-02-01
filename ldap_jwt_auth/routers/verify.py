@@ -1,6 +1,7 @@
 """
 Module for providing an API router which defines a route for managing verification of JWT tokens.
 """
+
 import logging
 from typing import Annotated
 
