@@ -1,6 +1,7 @@
 """
 Module for providing pytest testing configuration.
 """
+
 from pathlib import Path
 
 import ldap_jwt_auth.core.config as conf

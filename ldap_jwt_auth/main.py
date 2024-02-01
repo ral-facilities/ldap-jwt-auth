@@ -1,6 +1,7 @@
 """
 Main module contains the API entrypoint.
 """
+
 import logging
 
 from fastapi import FastAPI, Request, status
