@@ -3,6 +3,18 @@ Module for custom exception classes.
 """
 
 
+class ActiveUsernamesFileNotFoundError(Exception):
+    """
+    Exception raised when the file containing the active usernames cannot be found.
+    """
+
+
+class InvalidCredentialsError(Exception):
+    """
+    Exception raised when invalid credentials are provided.
+    """
+
+
 class InvalidJWTError(Exception):
     """
     Exception raised when invalid JWT token is provided.
@@ -21,7 +33,7 @@ class LDAPServerError(Exception):
     """
 
 
-class InvalidCredentialsError(Exception):
+class UserNotActiveError(Exception):
     """
-    Exception raised when invalid credentials are provided.
+    Exception raised when user is not active.
     """
