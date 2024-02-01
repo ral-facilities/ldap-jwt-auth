@@ -4,7 +4,6 @@ WORKDIR /ldap-jwt-auth-run
 
 COPY pyproject.toml ./
 COPY ldap_jwt_auth/ ldap_jwt_auth/
-COPY keys/ keys/
 
 RUN --mount=type=cache,target=/root/.cache \
     set -eux; \
