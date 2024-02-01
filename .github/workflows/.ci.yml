@@ -58,11 +58,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install .[test]
 
-      - name: Create environment file
-        run: cp ldap_jwt_auth/.env.example ldap_jwt_auth/.env
-
       - name: Create logging configuration file
         run: cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini
 
       - name: Run unit tests
-        run: pytest test/unit/ --cov
+        run: pytest -c test/pytest.ini test/unit/ --cov
