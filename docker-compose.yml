@@ -6,6 +6,7 @@ services:
     build: .
     volumes:
       - ./ldap_jwt_auth:/ldap-jwt-auth-run/ldap_jwt_auth
+      - ./keys:/ldap-jwt-auth-run/keys
     ports:
       - 8000:8000
     restart: on-failure

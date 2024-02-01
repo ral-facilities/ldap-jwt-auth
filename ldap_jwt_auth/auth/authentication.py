@@ -26,9 +26,13 @@ class Authentication:
     def authenticate(self, user_credentials: UserCredentialsPostRequestSchema) -> None:
         """
         Authenticate a user against an LDAP server based on the provided user credentials.
+
+        Before attempting to authenticate against LDAP, it checks that the credentials are not empty and that the
+        username is part of the active usernames.
         :param user_credentials: The credentials of the user.
         :raises InvalidCredentialsError: If the user credentials are empty or invalid.
         :raises LDAPServerError: If there is a problem with the LDAP server.
+        :raises UserNotActiveError: If the username is not part of the the active usernames.
         """
         username = user_credentials.username
         password = user_credentials.password
@@ -67,9 +71,8 @@ class Authentication:
         :param username: The username to check.
         :return: `True` if the user is active, `False` otherwise.
         """
+        logger.info("Checking if user is active")
         active_usernames = self._get_active_usernames()
-        logger.debug(len(active_usernames))
-        logger.debug(active_usernames)
         return username in active_usernames
 
     def _get_active_usernames(self) -> list:
@@ -80,8 +83,8 @@ class Authentication:
         :raises ActiveUsernamesFileNotFoundError: If the file containing the active usernames cannot be found.
         """
         try:
-            with open(config.authentication.active_usernames_path, "r", encoding="utf-8") as f:
-                return [line.strip() for line in f.readlines() if line.strip()]
+            with open(config.authentication.active_usernames_path, "r", encoding="utf-8") as file:
+                return [line.strip() for line in file.readlines() if line.strip()]
         except FileNotFoundError as exc:
             raise ActiveUsernamesFileNotFoundError(
                 f"Cannot find file containing active usernames with path: {config.authentication.active_usernames_path}"
