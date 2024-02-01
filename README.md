@@ -18,22 +18,21 @@ to run the application in a container. Please do not use the `Dockerfile` in pro
 
 Ensure that Docker is installed and running on your machine before proceeding.
 
-#### Using Docker Compose File
-1. Create a `.env` file alongside the `.env.example` file. Use the example file as a reference and modify the values
-   accordingly.
+1. Create a `.env` file alongside the `.env.example` file. Use the example file as a reference and modify the values accordingly.
 
-2. Create a `logging.ini` file alongside the `logging.example.ini` file. Use the example file as a reference and modify
-   it accordingly.
+2. Create a `logging.ini` file alongside the `logging.example.ini` file. Use the example file as a reference and modify it accordingly.
 
-3. Create a `keys` directory in the root of the project directory, navigate to it, and generate OpenSSH encoded private
-   and public key pair:
+3. Create a `keys` directory in the root of the project directory, navigate to it, and generate OpenSSH encoded private and public key pair:
    ```bash
    mkdir keys
    cd keys/
    ssh-keygen -b 2048 -t rsa -f jwt-key -q -N ""
    ```
 
-4. Build and start the Docker container:
+4. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames (each one on a seperate line) that are active/can access the system.
+
+#### Using Docker Compose File
+1. Build and start the Docker container:
    ```bash
    docker-compose up
    ```
@@ -76,14 +75,25 @@ Ensure that you have an LDAP server to connect to.
 5. Create a `logging.ini` file alongside the `logging.example.ini` file. Use the example file as a reference and modify
    it accordingly.
 
-6. Start the microservice using Uvicorn:
+
+6. Create a `keys` directory in the root of the project directory, navigate to it, and generate OpenSSH encoded private and public key pair:
+   ```bash
+   mkdir keys
+   cd keys/
+   ssh-keygen -b 2048 -t rsa -f jwt-key -q -N ""
+   ```
+
+7. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames (each one on a seperate line) that are active/can access the system.
+
+
+8. Start the microservice using Uvicorn:
    ```bash
    uvicorn ldap_jwt_auth.main:app --log-config ldap_jwt_auth/logging.ini --reload
    ```
    The microservice should now be running locally at http://localhost:8000. The Swagger UI could be accessed
    at http://localhost:8000/docs.
 
-7. To run the unit tests, run :
+9. To run the unit tests, run:
    ```bash
    pytest test/unit/
    ```
