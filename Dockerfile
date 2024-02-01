@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/root/.cache \
     set -eux; \
     \
     apk add --no-cache build-base openldap-dev; \
-    python3 -m pip install .;
+    python3 -m pip install .[dev];
 
 CMD ["uvicorn", "ldap_jwt_auth.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 EXPOSE 8000
