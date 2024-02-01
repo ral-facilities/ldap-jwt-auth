@@ -32,7 +32,7 @@ class Authentication:
         :param user_credentials: The credentials of the user.
         :raises InvalidCredentialsError: If the user credentials are empty or invalid.
         :raises LDAPServerError: If there is a problem with the LDAP server.
-        :raises UserNotActiveError: If the username is not part of the the active usernames.
+        :raises UserNotActiveError: If the username is not part of the active usernames.
         """
         username = user_credentials.username
         password = user_credentials.password
