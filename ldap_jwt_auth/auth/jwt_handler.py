@@ -1,6 +1,7 @@
 """
 Module for providing a class for handling JWTs.
 """
+
 import logging
 from datetime import datetime, timezone, timedelta
 from typing import Any, Dict

@@ -1,6 +1,7 @@
 """
 Module for the overall configuration for the application.
 """
+
 from pathlib import Path
 
 from pydantic import BaseModel

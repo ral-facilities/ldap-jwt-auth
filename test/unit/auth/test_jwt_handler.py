@@ -1,6 +1,7 @@
 """
 Unit tests for the `JWTHandler` class.
 """
+
 from datetime import datetime, timezone
 from unittest.mock import patch
 

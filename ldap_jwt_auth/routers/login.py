@@ -1,6 +1,7 @@
 """
 Module for providing an API router which defines login route(s).
 """
+
 import logging
 from typing import Annotated
 

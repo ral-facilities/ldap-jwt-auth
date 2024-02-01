@@ -6,8 +6,8 @@ requires-python = ">=3.10"
 version = "0.0.1"
 
 dependencies = [
-    "cryptography==41.0.7",
-    "fastapi[all]==0.105.0",
+    "cryptography==42.0.2",
+    "fastapi[all]==0.109.0",
     "PyJWT==2.8.0",
     "python-ldap==3.4.4",
     "uvicorn==0.25.0"
@@ -23,11 +23,11 @@ code-analysis = [
 ]
 
 formatting = [
-    "black==23.12.0"
+    "black==24.1.1"
 ]
 
 test = [
-    "pytest==7.4.3",
+    "pytest==8.0.0",
     "pytest-cov==4.1.0",
     "pytest-env==1.1.3"
 ]
