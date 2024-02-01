@@ -48,9 +48,12 @@ class JWTHandler:
     def refresh_access_token(self, access_token: str, refresh_token: str):
         """
         Refreshes the JWT access token by updating its expiry time, provided that the JWT refresh token is valid.
+
+        Before attempting to refresh the token, it checks that the username is still part of the active usernames.
         :param access_token: The JWT access token to refresh.
         :param refresh_token: The JWT refresh token.
         :raises JWTRefreshError: If the JWT access token cannot be refreshed.
+        :raises UserNotActiveError: If the username is no longer part of the active usernames.
         :return: JWT access token with an updated expiry time.
         """
         logger.info("Refreshing access token")
