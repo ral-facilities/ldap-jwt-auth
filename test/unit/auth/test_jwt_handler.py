@@ -87,12 +87,14 @@ def test_get_refresh_token(datetime_mock):
     assert refresh_token == EXPECTED_REFRESH_TOKEN
 
 
+@patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
 @patch("ldap_jwt_auth.auth.jwt_handler.datetime")
-def test_refresh_access_token(datetime_mock):
+def test_refresh_access_token(datetime_mock, is_user_active_mock):
     """
     Test refreshing an expired access token with a valid refresh token.
     """
     datetime_mock.now.return_value = mock_datetime_now()
+    is_user_active_mock.return_value = True
 
     jwt_handler = JWTHandler()
     access_token = jwt_handler.refresh_access_token(EXPIRED_ACCESS_TOKEN, VALID_REFRESH_TOKEN)
@@ -100,12 +102,29 @@ def test_refresh_access_token(datetime_mock):
     assert access_token == EXPECTED_ACCESS_TOKEN
 
 
+@patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
+def test_refresh_access_token_with_not_active_username(is_user_active_mock):
+    """
+    Test refreshing an access token when username is not active.
+    :param is_user_active_mock:
+    :return:
+    """
+    is_user_active_mock.return_value = False
+
+    jwt_handler = JWTHandler()
+    with pytest.raises(JWTRefreshError) as exc:
+        jwt_handler.refresh_access_token(EXPIRED_ACCESS_TOKEN, VALID_REFRESH_TOKEN)
+    assert str(exc.value) == "Unable to refresh access token"
+
+
+@patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
 @patch("ldap_jwt_auth.auth.jwt_handler.datetime")
-def test_refresh_access_token_with_valid_access_token(datetime_mock):
+def test_refresh_access_token_with_valid_access_token(datetime_mock, is_user_active_mock):
     """
     Test refreshing a valid access token with a valid refresh token.
     """
     datetime_mock.now.return_value = mock_datetime_now()
+    is_user_active_mock.return_value = True
 
     jwt_handler = JWTHandler()
     access_token = jwt_handler.refresh_access_token(VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN)

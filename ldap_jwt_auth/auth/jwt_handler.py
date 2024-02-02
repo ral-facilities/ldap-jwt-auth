@@ -9,9 +9,10 @@ from typing import Any, Dict
 import jwt
 from cryptography.hazmat.primitives import serialization
 
+from ldap_jwt_auth.auth.authentication import Authentication
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
-from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError
+from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UserNotActiveError
 
 logger = logging.getLogger()
 
@@ -48,15 +49,25 @@ class JWTHandler:
     def refresh_access_token(self, access_token: str, refresh_token: str):
         """
         Refreshes the JWT access token by updating its expiry time, provided that the JWT refresh token is valid.
+
+        Before attempting to refresh the token, it checks that the username is still part of the active usernames.
         :param access_token: The JWT access token to refresh.
         :param refresh_token: The JWT refresh token.
         :raises JWTRefreshError: If the JWT access token cannot be refreshed.
+        :raises UserNotActiveError: If the username is no longer part of the active usernames.
         :return: JWT access token with an updated expiry time.
         """
         logger.info("Refreshing access token")
         self.verify_token(refresh_token)
+
         try:
             payload = self._get_jwt_payload(access_token, {"verify_exp": False})
+
+            authentication = Authentication()
+            username = payload["username"]
+            if not authentication.is_user_active(username):
+                raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
+
             payload["exp"] = datetime.now(timezone.utc) + timedelta(
                 minutes=config.authentication.access_token_validity_minutes
             )

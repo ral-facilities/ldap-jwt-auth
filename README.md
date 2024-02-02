@@ -75,7 +75,6 @@ Ensure that you have an LDAP server to connect to.
 5. Create a `logging.ini` file alongside the `logging.example.ini` file. Use the example file as a reference and modify
    it accordingly.
 
-
 6. Create a `keys` directory in the root of the project directory, navigate to it, and generate OpenSSH encoded private and public key pair:
    ```bash
    mkdir keys
@@ -84,7 +83,6 @@ Ensure that you have an LDAP server to connect to.
    ```
 
 7. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames (each one on a seperate line) that are active/can access the system.
-
 
 8. Start the microservice using Uvicorn:
    ```bash
@@ -95,5 +93,5 @@ Ensure that you have an LDAP server to connect to.
 
 9. To run the unit tests, run:
    ```bash
-   pytest test/unit/
+   pytest -c test/pytest.ini test/unit/
    ```
