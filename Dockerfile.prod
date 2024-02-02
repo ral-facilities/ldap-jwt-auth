@@ -1,0 +1,43 @@
+FROM python:3.10-alpine3.19
+
+WORKDIR /ldap-jwt-auth-run
+
+COPY README.md pyproject.toml ./
+# Copy ldap_jwt_auth source files
+COPY ldap_jwt_auth/ ldap_jwt_auth/
+COPY logs/ logs/
+
+RUN set -eux; \
+    \
+    # Install python-ldap system dependencies \
+    apk add --no-cache build-base openldap-dev python3-dev; \
+    \
+    # Install pip dependencies \
+    python -m pip install --no-cache-dir .; \
+    \
+    # Create loging.ini from its .example file \
+    cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini; \
+    \
+    # Create a non-root user to run as \
+    addgroup -S ldap-jwt-auth; \
+    adduser -S -D -G ldap-jwt-auth -H -h /ldap-jwt-auth-run ldap-jwt-auth; \
+    \
+    # Change ownership of logs/ - app will need to write log files to it \
+    chown -R ldap-jwt-auth:ldap-jwt-auth logs/
+
+USER ldap-jwt-auth
+
+ENV API__TITLE="LDAP-JWT Authentication Service API"
+ENV API__DESCRIPTION="This is the API for the LDAP-JWT Authentication Service"
+ENV API__ROOT_PATH=""
+ENV AUTHENTICATION__PRIVATE_KEY_PATH="./keys/jwt-key"
+ENV AUTHENTICATION__PUBLIC_KEY_PATH="./keys/jwt-key.pub"
+ENV AUTHENTICATION__JWT_ALGORITHM="RS256"
+ENV AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=5
+ENV AUTHENTICATION__REFRESH_TOKEN_VALIDITY_DAYS=7
+ENV AUTHENTICATION__ACTIVE_USERNAMES_PATH="./active_usernames.txt"
+ENV LDAP_SERVER__URL="ldap://ldap.example.com:389"
+ENV LDAP_SERVER__REALM="LDAP.EXAMPLE.COM"
+
+CMD ["uvicorn", "ldap_jwt_auth.main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8000
