@@ -7,7 +7,7 @@ version = "0.0.1"
 
 dependencies = [
     "cryptography==42.0.2",
-    "fastapi[all]==0.109.0",
+    "fastapi[all]==0.109.2",
     "PyJWT==2.8.0",
     "python-ldap==3.4.4",
     "uvicorn==0.25.0"
