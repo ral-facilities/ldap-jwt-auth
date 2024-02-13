@@ -139,8 +139,7 @@ Ensure that Python is installed on your machine before proceeding.
    and public key pair:
    ```bash
    mkdir keys
-   cd keys/
-   ssh-keygen -b 2048 -t rsa -f jwt-key -q -N "" -C ""
+   ssh-keygen -b 2048 -t rsa -f keys/jwt-key -q -N "" -C ""
    ```
 
 7. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
