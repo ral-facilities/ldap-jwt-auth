@@ -59,16 +59,16 @@ production)!
 
 1. Build an image using the `Dockerfile` from the root of the project directory:
    ```bash
-   docker build -f Dockerfile -t ldap_jwt_auth_image .
+   docker build -f Dockerfile -t ldap_jwt_auth_api_image .
    ```
 
 2. Start the container using the image built and map it to port `8000` locally:
    ```bash
-   docker run -p 8000:8000 --name ldap_jwt_auth_container -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_image
+   docker run -p 8000:8000 --name ldap_jwt_auth_api_container -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
    ```
    or with values for the environment variables:
    ```bash
-   docker run -p 8000:8000 --name ldap_jwt_auth_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_image
+   docker run -p 8000:8000 --name ldap_jwt_auth_api_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
    ```
    The microservice should now be running inside Docker at http://localhost:8000 and its Swagger UI could be accessed
    at http://localhost:8000/docs.
@@ -93,16 +93,16 @@ Use the `Dockerfile.prod` to run just the application itself in a container. Thi
 
 3. Build an image using the `Dockerfile.prod` from the root of the project directory:
    ```bash
-   docker build -f Dockerfile.prod -t ldap_jwt_auth_image .
+   docker build -f Dockerfile.prod -t ldap_jwt_auth_api_image .
    ```
 
 4. Start the container using the image built and map it to port `8000` locally:
    ```bash
-   docker run -p 8000:8000 --name ldap_jwt_auth_container -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_image
+   docker run -p 8000:8000 --name ldap_jwt_auth_api_container -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
    ```
    or with values for the environment variables:
    ```bash
-   docker run -p 8000:8000 --name ldap_jwt_auth_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_image
+   docker run -p 8000:8000 --name ldap_jwt_auth_api_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
    ```
    The microservice should now be running inside Docker at http://localhost:8000 and its Swagger UI could be accessed
    at http://localhost:8000/docs.
