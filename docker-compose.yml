@@ -7,6 +7,8 @@ services:
     volumes:
       - ./ldap_jwt_auth:/ldap-jwt-auth-run/ldap_jwt_auth
       - ./keys:/ldap-jwt-auth-run/keys
+      - ./logs:/ldap-jwt-auth-run/logs
+      - ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt
     ports:
       - 8000:8000
     restart: on-failure

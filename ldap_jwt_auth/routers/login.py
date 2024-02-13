@@ -47,8 +47,8 @@ def login(
             max_age=config.authentication.refresh_token_validity_days * 24 * 60 * 60,
             secure=True,
             httponly=True,
-            samesite="Lax",
-            path="/refresh",
+            samesite="lax",
+            path=f"{config.api.root_path}/refresh",
         )
         return response
     except (InvalidCredentialsError, UserNotActiveError) as exc:

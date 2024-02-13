@@ -1,0 +1,31 @@
+FROM python:3.10-alpine3.19
+
+WORKDIR /ldap-jwt-auth-run
+
+COPY README.md pyproject.toml ./
+# Copy ldap_jwt_auth source files
+COPY ldap_jwt_auth/ ldap_jwt_auth/
+COPY logs/ logs/
+
+RUN set -eux; \
+    \
+    # Install python-ldap system dependencies \
+    apk add --no-cache build-base openldap-dev python3-dev; \
+    \
+    # Install pip dependencies \
+    python -m pip install --no-cache-dir .; \
+    \
+    # Create loging.ini from its .example file \
+    cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini; \
+    \
+    # Create a non-root user to run as \
+    addgroup -g 500 -S ldap-jwt-auth; \
+    adduser -S -D -G ldap-jwt-auth -H -u 500 -h /ldap-jwt-auth-run ldap-jwt-auth; \
+    \
+    # Change ownership of logs/ - app will need to write log files to it \
+    chown -R ldap-jwt-auth:ldap-jwt-auth logs/;
+
+USER ldap-jwt-auth
+
+CMD ["uvicorn", "ldap_jwt_auth.main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8000

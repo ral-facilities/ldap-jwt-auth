@@ -1,9 +1,10 @@
-FROM python:3.10-alpine3.17
+FROM python:3.10-alpine3.19
 
 WORKDIR /ldap-jwt-auth-run
 
 COPY pyproject.toml ./
 COPY ldap_jwt_auth/ ldap_jwt_auth/
+COPY logs/ logs/
 
 RUN --mount=type=cache,target=/root/.cache \
     set -eux; \

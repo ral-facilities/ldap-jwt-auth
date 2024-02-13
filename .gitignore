@@ -1,5 +1,5 @@
 ldap_jwt_auth/logging.ini
-ldap_jwt_auth/active_usernames.txt
+/active_usernames.txt
 /keys/
 
 # Byte-compiled / optimized / DLL files

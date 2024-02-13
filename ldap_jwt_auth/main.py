@@ -14,7 +14,7 @@ from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.logger_setup import setup_logger
 from ldap_jwt_auth.routers import login, refresh, verify
 
-app = FastAPI(title=config.api.title, description=config.api.description)
+app = FastAPI(title=config.api.title, description=config.api.description, root_path=config.api.root_path)
 
 setup_logger()
 logger = logging.getLogger()
