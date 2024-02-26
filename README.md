@@ -8,8 +8,8 @@ This microservice requires an LDAP server to run against.
 
 ### Prerequisites
 - Docker and Docker Compose installed (if you want to run the microservice inside Docker)
+- Python 3.12 installed on your machine (if you are not using Docker)
 - LDAP server to connect to
-- Python 3.10 (or above) (if you are not using Docker)
 - Private and public key pair (must be OpenSSH encoded) for encrypting and decrypting the JWTs
 - A list of active usernames, defining who can use this service 
 - This repository cloned
