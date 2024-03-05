@@ -52,15 +52,12 @@ async def custom_validation_exception_handler(request: Request, exc: RequestVali
     return await request_validation_exception_handler(request, exc)
 
 
-# Fixes CORS issues but should be updated before deploying to prod
-ALLOWED_ORIGINS = ["*"]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=config.api.allowed_cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=config.api.allowed_cors_methods,
+    allow_headers=config.api.allowed_cors_headers,
 )
 
 app.include_router(login.router)
