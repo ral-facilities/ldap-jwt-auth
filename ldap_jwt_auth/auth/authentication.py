@@ -46,12 +46,28 @@ class Authentication:
             raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
 
         try:
-            connection = ldap.initialize(config.ldap_server.url)
-            ldap.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
-            ldap.set_option(ldap.OPT_X_TLS_DEMAND, True)
-            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+            # Disable LDAP operations debugging
             ldap.set_option(ldap.OPT_DEBUG_LEVEL, 0)
-            connection.start_tls_s()
+
+            connection = ldap.initialize(config.ldap_server.url)
+            # Set version of LDAP in use
+            connection.protocol_version = ldap.VERSION3
+            if config.ldap_server.certificate_validation is True:
+                # Force certificate validation
+                connection.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_DEMAND)
+                # Set file containing all trusted CA certificates
+                connection.set_option(ldap.OPT_X_TLS_CACERTFILE, config.ldap_server.ca_certificate_file_path)
+            else:
+                # Do not validate certificate
+                connection.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+
+            # Force creation of new SSL context (must be last TLS option)
+            connection.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
+
+            if not config.ldap_server.url.startswith("ldaps://"):
+                # Upgrade connection to a secure TLS session
+                connection.start_tls_s()
+
             connection.simple_bind_s(f"{username}@{config.ldap_server.realm}", user_credentials.password)
             logger.info("Authentication successful")
             connection.unbind()

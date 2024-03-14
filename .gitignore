@@ -1,6 +1,9 @@
 ldap_jwt_auth/logging.ini
 /active_usernames.txt
-/keys/
+keys/*
+!keys/.keep
+ldap_server_certs/*
+!ldap_server_certs/.keep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
