@@ -10,6 +10,8 @@ This microservice requires an LDAP server to run against.
 - Docker and Docker Compose installed (if you want to run the microservice inside Docker)
 - Python 3.12 installed on your machine (if you are not using Docker)
 - LDAP server to connect to
+- CA certificate PEM file containing all the trusted CA certificates (if LDAP certificate validation is enabled which is
+  strongly recommended to be in production)
 - Private and public key pair (must be OpenSSH encoded) for encrypting and decrypting the JWTs
 - A list of active usernames, defining who can use this service 
 - This repository cloned
@@ -36,7 +38,13 @@ Ensure that Docker is installed and running on your machine before proceeding.
    ssh-keygen -b 2048 -t rsa -f keys/jwt-key -q -N "" -C ""
    ```
 
-4. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
+4. (If LDAP certificate validation is enabled) Create a `ldap_server_certs` directory in the root of the project
+   directory and copy the `cacert.pem` file that contains all the trusted CA certificates.
+   ```bash
+   mkdir ldap_server_certs
+   ```
+
+5. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
    can use this system. The usernames are the Federal IDs and each one should be stored on a separate line.
    ```bash
    cp active_usernames.example.txt active_usernames.txt
@@ -64,11 +72,11 @@ production)!
 
 2. Start the container using the image built and map it to port `8000` locally:
    ```bash
-   docker run -p 8000:8000 --name ldap_jwt_auth_api_container -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
+   docker run -p 8000:8000 --name ldap_jwt_auth_api_container -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./ldap_server_certs/cacert.pem:/ldap-jwt-auth-run/ldap_server_certs/cacert.pem -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
    ```
    or with values for the environment variables:
    ```bash
-   docker run -p 8000:8000 --name ldap_jwt_auth_api_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
+   docker run -p 8000:8000 --name ldap_jwt_auth_api_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./ldap_server_certs/cacert.pem:/ldap-jwt-auth-run/ldap_server_certs/cacert.pem -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
    ```
    The microservice should now be running inside Docker at http://localhost:8000 and its Swagger UI could be accessed
    at http://localhost:8000/docs.
@@ -98,11 +106,11 @@ Use the `Dockerfile.prod` to run just the application itself in a container. Thi
 
 4. Start the container using the image built and map it to port `8000` locally:
    ```bash
-   docker run -p 8000:8000 --name ldap_jwt_auth_api_container -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
+   docker run -p 8000:8000 --name ldap_jwt_auth_api_container -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./ldap_server_certs/cacert.pem:/ldap-jwt-auth-run/ldap_server_certs/cacert.pem -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
    ```
    or with values for the environment variables:
    ```bash
-   docker run -p 8000:8000 --name ldap_jwt_auth_api_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
+   docker run -p 8000:8000 --name ldap_jwt_auth_api_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v -v ./ldap_server_certs/cacert.pem:/ldap-jwt-auth-run/ldap_server_certs/cacert.pem ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
    ```
    The microservice should now be running inside Docker at http://localhost:8000 and its Swagger UI could be accessed
    at http://localhost:8000/docs.
@@ -142,20 +150,26 @@ Ensure that Python is installed on your machine before proceeding.
    ssh-keygen -b 2048 -t rsa -f keys/jwt-key -q -N "" -C ""
    ```
 
-7. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
+7. (If LDAP certificate validation is enabled) Create a `ldap_server_certs` directory in the root of the project
+   directory and copy the `cacert.pem` file that contains all the trusted CA certificates.
+   ```bash
+   mkdir ldap_server_certs
+   ```
+
+8. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
    can use this system. The usernames are the Federal IDs and each one should be stored on a separate line.
    ```bash
    cp active_usernames.example.txt active_usernames.txt
    ```
 
-8. Start the microservice using Uvicorn:
+9. Start the microservice using Uvicorn:
    ```bash
    uvicorn ldap_jwt_auth.main:app --log-config ldap_jwt_auth/logging.ini --reload
    ```
    The microservice should now be running locally at http://localhost:8000. The Swagger UI could be accessed
    at http://localhost:8000/docs.
 
-9. To run the unit tests, run:
+10. To run the unit tests, run:
    ```bash
    pytest -c test/pytest.ini test/unit/
    ```
