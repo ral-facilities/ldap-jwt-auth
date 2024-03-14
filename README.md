@@ -31,18 +31,14 @@ Ensure that Docker is installed and running on your machine before proceeding.
    cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini
    ```
 
-3. Create a `keys` directory in the root of the project directory, navigate to it, and generate OpenSSH encoded private
-   and public key pair:
+3. Navigate to the `keys` directory in the root of the project directory, and generate OpenSSH encoded private and
+   public key pair:
    ```bash
-   mkdir keys
    ssh-keygen -b 2048 -t rsa -f keys/jwt-key -q -N "" -C ""
    ```
 
-4. (If LDAP certificate validation is enabled) Create a `ldap_server_certs` directory in the root of the project
-   directory and copy the `cacert.pem` file that contains all the trusted CA certificates.
-   ```bash
-   mkdir ldap_server_certs
-   ```
+4. (If LDAP certificate validation is enabled) Copy the `cacert.pem` file that contains all the trusted CA certificates
+   to the `ldap_server_certs` directory in the root of the project.
 
 5. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
    can use this system. The usernames are the Federal IDs and each one should be stored on a separate line.
@@ -110,7 +106,7 @@ Use the `Dockerfile.prod` to run just the application itself in a container. Thi
    ```
    or with values for the environment variables:
    ```bash
-   docker run -p 8000:8000 --name ldap_jwt_auth_api_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v -v ./ldap_server_certs/cacert.pem:/ldap-jwt-auth-run/ldap_server_certs/cacert.pem ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
+   docker run -p 8000:8000 --name ldap_jwt_auth_api_container --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 -v ./keys/jwt-key:/ldap-jwt-auth-run/keys/jwt-key -v ./keys/jwt-key.pub:/ldap-jwt-auth-run/keys/jwt-key.pub -v ./ldap_server_certs/cacert.pem:/ldap-jwt-auth-run/ldap_server_certs/cacert.pem -v ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt -v ./logs:/ldap-jwt-auth-run/logs ldap_jwt_auth_api_image
    ```
    The microservice should now be running inside Docker at http://localhost:8000 and its Swagger UI could be accessed
    at http://localhost:8000/docs.
@@ -143,18 +139,14 @@ Ensure that Python is installed on your machine before proceeding.
    cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini
    ```
 
-6. Create a `keys` directory in the root of the project directory, navigate to it, and generate OpenSSH encoded private
-   and public key pair:
+6. Navigate to the `keys` directory in the root of the project directory, and generate OpenSSH encoded private and
+   public key pair:
    ```bash
-   mkdir keys
    ssh-keygen -b 2048 -t rsa -f keys/jwt-key -q -N "" -C ""
    ```
 
-7. (If LDAP certificate validation is enabled) Create a `ldap_server_certs` directory in the root of the project
-   directory and copy the `cacert.pem` file that contains all the trusted CA certificates.
-   ```bash
-   mkdir ldap_server_certs
-   ```
+7. (If LDAP certificate validation is enabled) Copy the `cacert.pem` file that contains all the trusted CA certificates
+   to the `ldap_server_certs` directory in the root of the project.
 
 8. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
    can use this system. The usernames are the Federal IDs and each one should be stored on a separate line.
