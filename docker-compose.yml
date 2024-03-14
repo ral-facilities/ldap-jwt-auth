@@ -7,6 +7,7 @@ services:
     volumes:
       - ./ldap_jwt_auth:/ldap-jwt-auth-run/ldap_jwt_auth
       - ./keys:/ldap-jwt-auth-run/keys
+      - ./ldap_server_certs/cacert.pem:/ldap-jwt-auth-run/ldap_server_certs/cacert.pem
       - ./logs:/ldap-jwt-auth-run/logs
       - ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt
     ports:
