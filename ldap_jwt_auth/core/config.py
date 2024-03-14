@@ -3,9 +3,10 @@ Module for the overall configuration for the application.
 """
 
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
+from pydantic_core.core_schema import ValidationInfo
 from pydantic_settings import SettingsConfigDict, BaseSettings
 
 
@@ -42,6 +43,29 @@ class LDAPServerConfig(BaseModel):
 
     url: str
     realm: str
+    certificate_validation: bool
+    ca_certificate_file_path: Optional[str] = Field(default=None, validate_default=True)
+
+    @field_validator("ca_certificate_file_path")
+    @classmethod
+    def validate_optional_fields(cls, field_value: str, info: ValidationInfo) -> Optional[str]:
+        """
+        Validator for the `ca_certificate_file_path` field to make it mandatory if the value of the
+        `certificate_validation` field is `True`
+
+        It checks if the `certificate_validation` field has been set to `True` and raises a `TypeError` if this is the
+        case.
+
+        :param field_value: The value of the field.
+        :param info: Validation info from pydantic.
+        :raises ValueError: If no value is provided for the field when `certificate_validation` is set to `True`.
+        :return: The value of the field.
+        """
+        if (
+            "certificate_validation" in info.data and info.data["certificate_validation"] is True
+        ) and field_value is None:
+            raise ValueError("Field required")
+        return field_value
 
 
 class Config(BaseSettings):
