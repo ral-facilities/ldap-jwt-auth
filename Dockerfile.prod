@@ -5,7 +5,6 @@ WORKDIR /ldap-jwt-auth-run
 COPY README.md pyproject.toml ./
 # Copy ldap_jwt_auth source files
 COPY ldap_jwt_auth/ ldap_jwt_auth/
-COPY logs/ logs/
 
 RUN set -eux; \
     \
@@ -20,10 +19,7 @@ RUN set -eux; \
     \
     # Create a non-root user to run as \
     addgroup -g 500 -S ldap-jwt-auth; \
-    adduser -S -D -G ldap-jwt-auth -H -u 500 -h /ldap-jwt-auth-run ldap-jwt-auth; \
-    \
-    # Change ownership of logs/ - app will need to write log files to it \
-    chown -R ldap-jwt-auth:ldap-jwt-auth logs/;
+    adduser -S -D -G ldap-jwt-auth -H -u 500 -h /ldap-jwt-auth-run ldap-jwt-auth;
 
 USER ldap-jwt-auth
 
