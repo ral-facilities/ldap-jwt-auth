@@ -27,5 +27,5 @@ RUN set -eux; \
 
 USER ldap-jwt-auth
 
-CMD ["uvicorn", "ldap_jwt_auth.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "ldap_jwt_auth.main:app", "--app-dir", "/ldap-jwt-auth-run", "--host", "0.0.0.0", "--port", "8000"]
 EXPOSE 8000
