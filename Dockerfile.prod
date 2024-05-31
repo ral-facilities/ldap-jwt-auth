@@ -1,4 +1,4 @@
-FROM python:3.12.2-alpine3.19@sha256:25a82f6f8b720a6a257d58e478a0a5517448006e010c85273f4d9c706819478c
+FROM python:3.12.3-alpine3.20@sha256:53cab1eabac71d6160eeabe09fd3144de789f75de62b9833e49f67534edc547e
 
 WORKDIR /ldap-jwt-auth-run
 
