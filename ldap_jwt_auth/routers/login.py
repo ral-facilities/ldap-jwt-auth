@@ -37,7 +37,7 @@ def login(
     # pylint: disable=missing-function-docstring
     try:
         authentication.authenticate(user_credentials)
-        access_token = jwt_handler.get_access_token(user_credentials.username)
+        access_token = jwt_handler.get_access_token(user_credentials.username.get_secret_value())
         refresh_token = jwt_handler.get_refresh_token()
 
         response = JSONResponse(content=access_token)

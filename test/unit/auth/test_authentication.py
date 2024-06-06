@@ -32,10 +32,11 @@ def test_authenticate(ldap_initialize_mock):
     user_credentials = UserCredentialsPostRequestSchema(username="username", password="password")
     authentication.authenticate(user_credentials)
 
-    ldap_initialize_mock.assert_called_once_with(config.ldap_server.url)
+    ldap_initialize_mock.assert_called_once_with(config.ldap_server.url.get_secret_value())
     ldap_obj_mock.start_tls_s.assert_called_once()
     ldap_obj_mock.simple_bind_s.assert_called_once_with(
-        f"{user_credentials.username}@{config.ldap_server.realm}", user_credentials.password
+        f"{user_credentials.username.get_secret_value()}@{config.ldap_server.realm.get_secret_value()}",
+        user_credentials.password.get_secret_value(),
     )
     ldap_obj_mock.unbind.assert_called_once()
 
@@ -67,10 +68,11 @@ def test_authenticate_with_invalid_credentials(ldap_initialize_mock):
     with pytest.raises(InvalidCredentialsError) as exc:
         authentication.authenticate(user_credentials)
     assert str(exc.value) == "Invalid username or password"
-    ldap_initialize_mock.assert_called_once_with(config.ldap_server.url)
+    ldap_initialize_mock.assert_called_once_with(config.ldap_server.url.get_secret_value())
     ldap_obj_mock.start_tls_s.assert_called_once()
     ldap_obj_mock.simple_bind_s.assert_called_once_with(
-        f"{user_credentials.username}@{config.ldap_server.realm}", user_credentials.password
+        f"{user_credentials.username.get_secret_value()}@{config.ldap_server.realm.get_secret_value()}",
+        user_credentials.password.get_secret_value(),
     )
     ldap_obj_mock.unbind.assert_called_once()
 
@@ -103,7 +105,7 @@ def test_authenticate_ldap_server_error(ldap_initialize_mock):
     with pytest.raises(LDAPServerError) as exc:
         authentication.authenticate(user_credentials)
     assert str(exc.value) == "Problem with LDAP server"
-    ldap_initialize_mock.assert_called_once_with(config.ldap_server.url)
+    ldap_initialize_mock.assert_called_once_with(config.ldap_server.url.get_secret_value())
     ldap_obj_mock.start_tls_s.assert_called_once()
     ldap_obj_mock.unbind.assert_not_called()
 
