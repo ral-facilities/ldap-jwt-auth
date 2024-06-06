@@ -5,7 +5,7 @@ Module for the overall configuration for the application.
 from pathlib import Path
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, SecretStr, field_validator
 from pydantic_core.core_schema import ValidationInfo
 from pydantic_settings import SettingsConfigDict, BaseSettings
 
@@ -41,8 +41,8 @@ class LDAPServerConfig(BaseModel):
     Configuration model for the LDAP server.
     """
 
-    url: str
-    realm: str
+    url: SecretStr
+    realm: SecretStr
     certificate_validation: bool
     ca_certificate_file_path: Optional[str] = Field(default=None, validate_default=True)
 
