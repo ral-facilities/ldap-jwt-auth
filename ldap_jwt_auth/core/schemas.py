@@ -2,7 +2,7 @@
 Model for defining the API schema models.
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, SecretStr
 
 
 class UserCredentialsPostRequestSchema(BaseModel):
@@ -10,5 +10,7 @@ class UserCredentialsPostRequestSchema(BaseModel):
     Model for the user credentials.
     """
 
-    username: str
-    password: str
+    username: SecretStr
+    password: SecretStr
+
+    model_config = ConfigDict(hide_input_in_errors=True)

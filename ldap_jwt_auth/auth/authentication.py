@@ -34,8 +34,8 @@ class Authentication:
         :raises LDAPServerError: If there is a problem with the LDAP server.
         :raises UserNotActiveError: If the username is not part of the active usernames.
         """
-        username = user_credentials.username
-        password = user_credentials.password
+        username = user_credentials.username.get_secret_value()
+        password = user_credentials.password.get_secret_value()
         logger.info("Authenticating a user")
         logger.debug("Username provided is '%s'", username)
 
@@ -49,7 +49,7 @@ class Authentication:
             # Disable LDAP operations debugging
             ldap.set_option(ldap.OPT_DEBUG_LEVEL, 0)
 
-            connection = ldap.initialize(config.ldap_server.url)
+            connection = ldap.initialize(config.ldap_server.url.get_secret_value())
             # Set version of LDAP in use
             connection.protocol_version = ldap.VERSION3
             if config.ldap_server.certificate_validation is True:
@@ -64,11 +64,11 @@ class Authentication:
             # Force creation of new SSL context (must be last TLS option)
             connection.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
 
-            if not config.ldap_server.url.startswith("ldaps://"):
+            if not config.ldap_server.url.get_secret_value().startswith("ldaps://"):
                 # Upgrade connection to a secure TLS session
                 connection.start_tls_s()
 
-            connection.simple_bind_s(f"{username}@{config.ldap_server.realm}", user_credentials.password)
+            connection.simple_bind_s(f"{username}@{config.ldap_server.realm.get_secret_value()}", password)
             logger.info("Authentication successful")
             connection.unbind()
         except ldap.INVALID_CREDENTIALS as exc:
