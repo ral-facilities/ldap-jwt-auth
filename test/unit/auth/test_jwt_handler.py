@@ -8,20 +8,20 @@ from unittest.mock import patch
 import pytest
 
 from ldap_jwt_auth.auth.jwt_handler import JWTHandler
-from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError
+from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UsernameMismatchError, UserNotActiveError
 
 VALID_ACCESS_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoyNTM0MDE2OTU5OTl9.nqT4Ct4VpdcDCv1Yd8M5"
+    "I2LWWfN9or2N6C3jnNbxyq90z8jysZfkEQ5ZIPMDV2KgI4E7E44qYzLpqirAw2EKp03vZyE28G0XkEYAA1KlDlgDw5C3AdN_dfaR1xD3HjgQVII2zW"
+    "5P5Wp8DfGV174KI8g-InzvOAMSl9e5Ci1S6ewqkUDhrUnvsAKZzqdYM-oewrySnTiRfP-eQOaR0MBBKjURaJeh9mWDiQFdfqh_4vwauI7FiCj2R0Z0"
+    "IySTTR6_R-Jw2h1EUxrHVioqK9vlY6fi96jp9BmSET17n0j06wunkz8MJg8i479VjqtQL0e_if6cm3zOHRZJ7iTXicHmSg"
+)
+
+VALID_REFRESH_TOKEN = (
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoyNTM0MDIzMDA3OTl9.bagU2Wix8wKzydVU_L3Z"
     "ZuuMAxGxV4OTuZq_kS2Fuwm839_8UZOkICnPTkkpvsm1je0AWJaIXLGgwEa5zUjpG6lTrMMmzR9Zi63F0NXpJqQqoOZpTBMYBaggsXqFkdsv-yAKUZ"
     "8MfjCEyk3UZ4PXZmEcUZcLhKcXZr4kYJPjio2e5WOGpdjK6q7s-iHGs9DQFT_IoCnw9CkyOKwYdgpB35hIGHkNjiwVSHpyKbFQvzJmIv5XCTSRYqq0"
     "1fldh-QYuZqZeuaFidKbLRH610o2-1IfPMUr-yPtj5PZ-AaX-XTLkuMqdVMCk0_jeW9Os2BPtyUDkpcu1fvW3_S6_dK3nQ"
-)
-
-VALID_REFRESH_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjI1MzQwMjMwMDc5OX0.h4Hv_sq4-ika1rpuRx7k3pp0cF_BZ65WVSbIHS7oh9SjPpGHt"
-    "GhVHU1IJXzFtyA9TH-68JpAZ24Dm6bXbH6VJKoc7RCbmJXm44ufN32ga7jDqXH340oKvi_wdhEHaCf2HXjzsHHD7_D6XIcxU71v2W5_j8Vuwpr3SdX"
-    "6ea_yLIaCDWynN6FomPtUepQAOg3c7DdKohbJD8WhKIDV8UKuLtFdRBfN4HEK5nNs0JroROPhcYM9L_JIQZpdI0c83fDFuXQC-cAygzrSnGJ6O4DyS"
-    "cNL3VBNSmNTBtqYOs1szvkpvF9rICPgbEEJnbS6g5kmGld3eioeuDJIxeQglSbxog"
 )
 
 EXPIRED_ACCESS_TOKEN = (
@@ -32,10 +32,10 @@ EXPIRED_ACCESS_TOKEN = (
 )
 
 EXPIRED_REFRESH_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOi02MjEzNTU5NjgwMH0.Er0A8dvdZi7o1FK3b-Te2IkUjDJZjI0aANsP7bbAbeITPRnR0"
-    "YEhavmuLT1zaoALQjUzfSgtH0s3I-YbUr2ssqG1DnKh83uts3J2_EXIXQZBeuZisCW1nN1LC2nsR6o4HQEsbMsINjJviHeMWS8nRC06XXpN1WFPaGB"
-    "xXkLFeDWb3SXiirZ79m7lUBwQvVzpfeA337e_AejG45mtadgfW3xpDCw-6sVVIA-cuzruxnjRKAzJrw_goA9X4MukRXbnzou2mgkxFKs_-6hdTFDI-"
-    "B47wYqalP6KC5nqzjrCpvjmukgM-DN0uAhm2TUzUmE5EXtRLEYMRqsSmog4hYq1Nw"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjotNjIxMzQ5OTIwMDB9.Xu6Tnh_NVQjHAXiRyhAz"
+    "L8yIVeon3nO6lQfX2Ct928dBDbUI5jG2ZrA0EyoeMPRuJIqv0gVg3L561A547mx2aVkzJmemqIIYgaUd4uOZWU5dyLp0Y9Tx2oMaSQBiK_HDoWo4dw"
+    "1XVcvZXhw08J3CCvrCIGwwcQKuTg0u43G9_shPr_1Ntdg5Z7hLiYMlKVilYtWBV0JsPq28qQ4m7m-Fe9l27l033YjtmxvgmGlDw2PA6DIHnxxSxpB3"
+    "aXPzty4sReU6uWwx5-XpjnHtctCe99lefsqHCA8LNlW915PyRsCQOylQo0IM-aNp2WvITdUj4ZNIgZ4KigR28BRj1NMpSA"
 )
 
 EXPECTED_ACCESS_TOKEN = (
@@ -46,10 +46,10 @@ EXPECTED_ACCESS_TOKEN = (
 )
 
 EXPECTED_REFRESH_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDYwOTA0MDB9.IHua0NcHiLOz7vamvcR4lxt-t51_UgzIQzho5vYK2UdHjG-bA5Sk"
-    "9YhHQy480UK4FiIKohpb8G70OwmsSCjzxvbo41MZKdz3z0z_4-L0_LSGLGGmxbvPaHy6_SI8qI1f7KOAD6T3OU1zIFTcyoREEN2uNRyjMnGcQzh72d"
-    "NkRAFEF3um4S2WVL0mwQ6ZltAjCiA2R8o5Eu3Aq67lkbq00ml69rfecT1JXiAfjrnW0J64COJDbQ9kVCNM1YrpqLBmROHMOOw9o7Qz1h78LbtKarVk"
-    "VGaPIxhdZsWKjZwDD-6h15NZuKTAmcPUaucx6Dd4uCjJHld1BNsfKfX_81G03g"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNzA2MDkwNDAwfQ.OPl4pB7_fIGYB80782b0iG"
+    "nFToF5HoYAUjVSfU521KHyeDvXTSrbwVod8_-8Js9aiQlXyA-sTwtfbic6jc6tLiB0vOJ3l12152QqMok8_h7tY2nJ1UjLoPWI-QQ9m2JkOHu8TWRM"
+    "DmbtcJ4X2_7h7AcJyW08ORMWQNJq9PjIEb8HXJlkyd3SMiak2HxYjFik1wbjq3Q3RGN8IQdCTiPu_bB6Rot5vH5_q4JQ9CKCgEt7Mc6ZntED14I1rc"
+    "okx3dwI2GFhpGPJfW87PZqCsJC1fgSPHQoEs1o_prRmEIOzFT2x343mCjHJwwxYXyMh5xq0A-_6_b74bLbO2HEa68EEw"
 )
 
 
@@ -82,7 +82,7 @@ def test_get_refresh_token(datetime_mock):
     datetime_mock.now.return_value = mock_datetime_now()
 
     jwt_handler = JWTHandler()
-    refresh_token = jwt_handler.get_refresh_token()
+    refresh_token = jwt_handler.get_refresh_token("username")
 
     assert refresh_token == EXPECTED_REFRESH_TOKEN
 
@@ -103,11 +103,30 @@ def test_refresh_access_token(datetime_mock, is_user_active_mock):
 
 
 @patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
+def test_refresh_access_token_with_non_matching_usernames(is_user_active_mock):
+    """
+    Test refreshing an access token when the usernames in the access and refresh tokens do not match.
+    """
+    is_user_active_mock.return_value = True
+    access_token = (
+        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxMjMiLCJleHAiOi02MjEzNTU5NjgwMH0.hMFgx83bidY-r2SVl"
+        "p2fnKwzD-SaCbzfD054A_lRsEOyYYtSB52kBvnkp_oagYelXhEczfGGsfWzV_JkgalM-449KI99qImlab45ANyhriHoaDhMvs9ve_0TwPfD34z"
+        "U3Y2PkcrgZ7lbYDqMArVOBDsAiO12ejYA7CAMjUBKgoXPIzMqup1Ah8Mzg0F5Gu2iUpoDfCyIt86KjAEiYk-CDm6w73b28BOaWaxk87tXUYXE6"
+        "4KIWNkh99iXgYEDYvfSmvWdu6TCHtVmNzJ_Tb1egVHb-hO-3G62mnyHJ2x6p_k7Wq44JuGyC0SrRHWp-jZsubLvi_ikBDm6qgZ8mKcJxA"
+    )
+
+    jwt_handler = JWTHandler()
+    with pytest.raises(JWTRefreshError) as exc:
+        jwt_handler.refresh_access_token(access_token, VALID_REFRESH_TOKEN)
+    assert str(exc.value) == "Unable to refresh access token"
+    assert isinstance(exc.value.__cause__, UsernameMismatchError)
+    assert str(exc.value.__cause__) == "The usernames in the access and refresh tokens do not match"
+
+
+@patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
 def test_refresh_access_token_with_not_active_username(is_user_active_mock):
     """
     Test refreshing an access token when username is not active.
-    :param is_user_active_mock:
-    :return:
     """
     is_user_active_mock.return_value = False
 
@@ -115,6 +134,8 @@ def test_refresh_access_token_with_not_active_username(is_user_active_mock):
     with pytest.raises(JWTRefreshError) as exc:
         jwt_handler.refresh_access_token(EXPIRED_ACCESS_TOKEN, VALID_REFRESH_TOKEN)
     assert str(exc.value) == "Unable to refresh access token"
+    assert isinstance(exc.value.__cause__, UserNotActiveError)
+    assert str(exc.value.__cause__) == "The provided username 'username' is not part of the active usernames"
 
 
 @patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
@@ -161,7 +182,7 @@ def test_verify_token_with_access_token():
     jwt_handler = JWTHandler()
     payload = jwt_handler.verify_token(VALID_ACCESS_TOKEN)
 
-    assert payload == {"username": "username", "exp": 253402300799}
+    assert payload == {"username": "username", "exp": 253401695999}
 
 
 def test_verify_token_with_refresh_token():
@@ -171,7 +192,7 @@ def test_verify_token_with_refresh_token():
     jwt_handler = JWTHandler()
     payload = jwt_handler.verify_token(VALID_REFRESH_TOKEN)
 
-    assert payload == {"exp": 253402300799}
+    assert payload == {"username": "username", "exp": 253402300799}
 
 
 def test_verify_token_with_expired_access_token():
