@@ -12,7 +12,7 @@ from cryptography.hazmat.primitives import serialization
 from ldap_jwt_auth.auth.authentication import Authentication
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
-from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UserNotActiveError
+from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UserNotActiveError, UsernameMismatchError
 
 logger = logging.getLogger()
 
@@ -52,28 +52,34 @@ class JWTHandler:
         """
         Refreshes the JWT access token by updating its expiry time, provided that the JWT refresh token is valid.
 
-        Before attempting to refresh the token, it checks that the username is still part of the active usernames.
+        Before attempting to refresh the token, it checks that the usernames in the access and refresh tokens match, and
+        that the username is still part of the active usernames.
         :param access_token: The JWT access token to refresh.
         :param refresh_token: The JWT refresh token.
         :raises JWTRefreshError: If the JWT access token cannot be refreshed.
+        :raises UsernameMismatchError: If the usernames in the access and refresh tokens do not match
         :raises UserNotActiveError: If the username is no longer part of the active usernames.
         :return: JWT access token with an updated expiry time.
         """
         logger.info("Refreshing access token")
-        self.verify_token(refresh_token)
+        refresh_token_payload = self.verify_token(refresh_token)
 
         try:
-            payload = self._get_jwt_payload(access_token, {"verify_exp": False})
+            access_token_payload = self._get_jwt_payload(access_token, {"verify_exp": False})
 
             authentication = Authentication()
-            username = payload["username"]
+            username = access_token_payload["username"]
+
+            if username != refresh_token_payload["username"]:
+                raise UsernameMismatchError("The usernames in the access and refresh tokens do not match")
+
             if not authentication.is_user_active(username):
                 raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
 
-            payload["exp"] = datetime.now(timezone.utc) + timedelta(
+            access_token_payload["exp"] = datetime.now(timezone.utc) + timedelta(
                 minutes=config.authentication.access_token_validity_minutes
             )
-            return self._pack_jwt(payload)
+            return self._pack_jwt(access_token_payload)
         except Exception as exc:
             message = "Unable to refresh access token"
             logger.exception(message)

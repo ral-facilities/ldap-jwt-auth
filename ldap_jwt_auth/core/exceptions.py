@@ -37,3 +37,9 @@ class UserNotActiveError(Exception):
     """
     Exception raised when user is not active.
     """
+
+
+class UsernameMismatchError(Exception):
+    """
+    Exception raised when the usernames in the access and refresh tokens do not match.
+    """
