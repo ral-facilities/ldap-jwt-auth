@@ -38,7 +38,7 @@ def login(
     try:
         authentication.authenticate(user_credentials)
         access_token = jwt_handler.get_access_token(user_credentials.username.get_secret_value())
-        refresh_token = jwt_handler.get_refresh_token()
+        refresh_token = jwt_handler.get_refresh_token(user_credentials.username.get_secret_value())
 
         response = JSONResponse(content=access_token)
         response.set_cookie(
