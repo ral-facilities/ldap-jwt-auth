@@ -1,8 +1,6 @@
 name: Release Build
 on:
   push:
-    branches:
-      - main
     tags: 'v*'
 
 permissions:
@@ -11,7 +9,6 @@ permissions:
 jobs:
   docker:
     # This job builds the Docker image and if successful, it pushes it to Harbor.
-    needs: [linting, unit-tests]
     name: Docker
     runs-on: ubuntu-latest
     steps:
