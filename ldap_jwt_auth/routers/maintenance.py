@@ -22,10 +22,10 @@ from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceSta
 
 logger = logging.getLogger()
 
-router = APIRouter(prefix="/maintenance", tags=["maintenance"])
+router = APIRouter(tags=["maintenance"])
 
 @router.get(
-    path="",
+    path="/maintenance",
     summary="Get the maintenance state",
     response_description="Returns the maintenance state"
 )
