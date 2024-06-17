@@ -18,7 +18,7 @@ from ldap_jwt_auth.core.exceptions import (
     ActiveUsernamesFileNotFoundError,
 )
 from ldap_jwt_auth.core.maintenance import Maintenance
-from ldap_jwt_auth.core.schemas import MaintenanceState, UserCredentialsPostRequestSchema
+from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState, UserCredentialsPostRequestSchema
 
 logger = logging.getLogger()
 
@@ -34,3 +34,14 @@ def get_maintenance_state(
 ) -> MaintenanceState:
     logger.info('Getting maintenance state')
     return maintenance.get_maintenance()
+
+@router.get(
+    path="/scheduled_maintenance",
+    summary="Get the scheduled maintenance state",
+    response_description="Returns the scheduled maintenance state"
+)
+def get_scheduled_maintenance_state(
+    maintenance: Annotated[Maintenance, Depends(Maintenance)]
+) -> ScheduledMaintenanceState:
+    logger.info('Getting scheduled maintenance state')
+    return maintenance.get_scheduled_maintenance()
