@@ -2,6 +2,7 @@
 Module for handling maintenance requests
 """
 
+import json
 from typing import Optional
 from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
 
@@ -15,10 +16,10 @@ class Maintenance:
         """
         Return a schema for maintenance state of ims
         """
-        with open('ldap_jwt_auth/maintenanceState.txt', 'r') as file:
-            lines = file.readlines()
-            show: bool = lines[1].strip().lower() == 'true'
-            message: str = lines[3].strip()
+        with open('ldap_jwt_auth/maintenance/maintenance.json', 'r') as file:
+            data = json.load(file)
+            show: bool = data.get('show')
+            message: str = data.get('message')
         maintenance: MaintenanceState = MaintenanceState(show=show, message=message)
         return maintenance
     
@@ -26,10 +27,10 @@ class Maintenance:
         """
         Return a schema for scheduled maintenance state
         """
-        with open('ldap_jwt_auth/maintenanceState.txt', 'r') as file:
-            lines = file.readlines()
-            show: bool = lines[1].strip().lower() == 'true'
-            message: str = lines[3].strip()
-            severity: Optional[str] = lines[5].strip()
+        with open('ldap_jwt_auth/maintenance/scheduled_maintenance.json', 'r') as file:
+            data = json.load(file)
+            show: bool = data.get('show')
+            message: str = data.get('message')
+            severity: Optional[str] = data.get('severity')
         maintenance: MaintenanceState = ScheduledMaintenanceState(show=show, message=message, severity=severity)
         return maintenance

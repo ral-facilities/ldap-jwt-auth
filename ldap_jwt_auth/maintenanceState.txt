@@ -1,6 +1,0 @@
-# Show state
-True
-# Message
-This is a test Message
-# Severity (success, warning, error, information)
-success
