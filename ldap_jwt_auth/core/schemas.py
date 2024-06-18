@@ -16,6 +16,7 @@ class UserCredentialsPostRequestSchema(BaseModel):
 
     model_config = ConfigDict(hide_input_in_errors=True)
 
+
 class MaintenanceState(BaseModel):
     """
     Model for maintenancce response
@@ -24,8 +25,10 @@ class MaintenanceState(BaseModel):
     show: bool
     message: str
 
+
 class ScheduledMaintenanceState(MaintenanceState):
     """
     Model for scheduled maintenance state
     """
+
     severity: Optional[str]
