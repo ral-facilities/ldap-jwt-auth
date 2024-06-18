@@ -43,3 +43,9 @@ class UsernameMismatchError(Exception):
     """
     Exception raised when the usernames in the access and refresh tokens do not match.
     """
+
+class InvalidFileFormat(Exception):
+    """
+    Exception raised when the maintenance state files do not have the correct format 
+    or value types.
+    """

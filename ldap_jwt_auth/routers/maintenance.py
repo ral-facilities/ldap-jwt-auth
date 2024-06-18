@@ -13,6 +13,7 @@ from ldap_jwt_auth.auth.jwt_handler import JWTHandler
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
+    InvalidFileFormat,
     LDAPServerError,
     UserNotActiveError,
     ActiveUsernamesFileNotFoundError,
@@ -33,7 +34,14 @@ def get_maintenance_state(
     maintenance: Annotated[Maintenance, Depends(Maintenance)]
 ) -> MaintenanceState:
     logger.info('Getting maintenance state')
-    return maintenance.get_maintenance()
+
+    try:
+        return maintenance.get_maintenance()
+    
+    except InvalidFileFormat as exc:
+        message = "Maintenance file format is incorrect"
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message)
+    
 
 @router.get(
     path="/scheduled_maintenance",
@@ -44,4 +52,9 @@ def get_scheduled_maintenance_state(
     maintenance: Annotated[Maintenance, Depends(Maintenance)]
 ) -> ScheduledMaintenanceState:
     logger.info('Getting scheduled maintenance state')
-    return maintenance.get_scheduled_maintenance()
+    try:
+        return maintenance.get_scheduled_maintenance()
+    
+    except InvalidFileFormat as exc:
+        message = "Scheduled Maintenance file format is incorrect"
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message)
