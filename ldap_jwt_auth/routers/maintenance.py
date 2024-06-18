@@ -37,7 +37,7 @@ def get_maintenance_state(maintenance: Annotated[Maintenance, Depends(Maintenanc
 
     except InvalidFileFormat as exc:
         message = "Maintenance file format is incorrect"
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
 
 
 @router.get(
@@ -54,4 +54,4 @@ def get_scheduled_maintenance_state(
 
     except InvalidFileFormat as exc:
         message = "Scheduled Maintenance file format is incorrect"
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc

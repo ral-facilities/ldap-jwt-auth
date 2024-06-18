@@ -32,7 +32,7 @@ def test_get_maintenance_state_invalid_file():
     """
     Test returning maintenance state schema when file is invalid
     """
-    mock_maintenance_data = {"show": "True", "message": "This is a test message"}
+    mock_maintenance_data = {"show": "test", "message": False}
     mock_maintenance_file = json.dumps(mock_maintenance_data)
 
     with (
@@ -80,4 +80,4 @@ def test_get_scheduled_maintenance_state_invalid_file():
 
         with pytest.raises(InvalidFileFormat) as exc:
             maintenance.get_scheduled_maintenance()
-        assert str(exc.value) == "Scheduled Maintenance file format is incorrect"
+        assert str(exc) == "Scheduled Maintenance file format is incorrect"
