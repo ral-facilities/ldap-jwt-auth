@@ -80,4 +80,4 @@ def test_get_scheduled_maintenance_state_invalid_file():
 
         with pytest.raises(InvalidFileFormat) as exc:
             maintenance.get_scheduled_maintenance()
-        assert str(exc) == "Scheduled Maintenance file format is incorrect"
+        assert str(exc.value) == "Scheduled Maintenance file format is incorrect"

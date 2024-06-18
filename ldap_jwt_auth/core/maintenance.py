@@ -28,7 +28,7 @@ class Maintenance:
             maintenance: MaintenanceState = MaintenanceState(show=show, message=message)
             return maintenance
         except:
-            raise InvalidFileFormat
+            raise InvalidFileFormat("Maintenance file format is incorrect")
 
     def get_scheduled_maintenance(self) -> ScheduledMaintenanceState:
         """
@@ -46,4 +46,4 @@ class Maintenance:
             maintenance: MaintenanceState = ScheduledMaintenanceState(show=show, message=message, severity=severity)
             return maintenance
         except:
-            raise InvalidFileFormat
+            raise InvalidFileFormat("Scheduled Maintenance file format is incorrect")
