@@ -5,21 +5,12 @@ Module for providing an API router which defines maintenance route(s)
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, HTTPException, status
-from fastapi.responses import JSONResponse
-
-from ldap_jwt_auth.auth.authentication import Authentication
-from ldap_jwt_auth.auth.jwt_handler import JWTHandler
-from ldap_jwt_auth.core.config import config
+from fastapi import APIRouter, Depends, HTTPException, status
 from ldap_jwt_auth.core.exceptions import (
-    InvalidCredentialsError,
     InvalidFileFormat,
-    LDAPServerError,
-    UserNotActiveError,
-    ActiveUsernamesFileNotFoundError,
 )
 from ldap_jwt_auth.core.maintenance import Maintenance
-from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState, UserCredentialsPostRequestSchema
+from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
 
 logger = logging.getLogger()
 
@@ -30,6 +21,7 @@ router = APIRouter(tags=["maintenance"])
     path="/maintenance", summary="Get the maintenance state", response_description="Returns the maintenance state"
 )
 def get_maintenance_state(maintenance: Annotated[Maintenance, Depends(Maintenance)]) -> MaintenanceState:
+    # pylint: disable=missing-function-docstring
     logger.info("Getting maintenance state")
 
     try:
@@ -48,6 +40,7 @@ def get_maintenance_state(maintenance: Annotated[Maintenance, Depends(Maintenanc
 def get_scheduled_maintenance_state(
     maintenance: Annotated[Maintenance, Depends(Maintenance)]
 ) -> ScheduledMaintenanceState:
+    # pylint: disable=missing-function-docstring
     logger.info("Getting scheduled maintenance state")
     try:
         return maintenance.get_scheduled_maintenance()

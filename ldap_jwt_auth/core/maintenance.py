@@ -21,14 +21,14 @@ class Maintenance:
         :raises InvalidFileFormat: If the maintenance state file is incorrectly formatted
         """
         try:
-            with open("ldap_jwt_auth/maintenance/maintenance.json", "r") as file:
+            with open("ldap_jwt_auth/maintenance/maintenance.json", "r", encoding='utf-8') as file:
                 data = json.load(file)
                 show: bool = data.get("show")
                 message: str = data.get("message")
             maintenance: MaintenanceState = MaintenanceState(show=show, message=message)
             return maintenance
-        except:
-            raise InvalidFileFormat("Maintenance file format is incorrect")
+        except Exception as exc:
+            raise InvalidFileFormat("Maintenance file format is incorrect") from exc
 
     def get_scheduled_maintenance(self) -> ScheduledMaintenanceState:
         """
@@ -38,12 +38,12 @@ class Maintenance:
         :raises InvalidFileFormat: If the scheduled maintenance state file is incorrectly formatted
         """
         try:
-            with open("ldap_jwt_auth/maintenance/scheduled_maintenance.json", "r") as file:
+            with open("ldap_jwt_auth/maintenance/scheduled_maintenance.json", "r", encoding='utf-8') as file:
                 data = json.load(file)
                 show: bool = data.get("show")
                 message: str = data.get("message")
                 severity: Optional[str] = data.get("severity")
             maintenance: MaintenanceState = ScheduledMaintenanceState(show=show, message=message, severity=severity)
             return maintenance
-        except:
-            raise InvalidFileFormat("Scheduled Maintenance file format is incorrect")
+        except Exception as exc:
+            raise InvalidFileFormat("Scheduled Maintenance file format is incorrect") from exc
