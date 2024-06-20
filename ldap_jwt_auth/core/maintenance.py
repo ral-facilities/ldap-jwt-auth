@@ -4,9 +4,10 @@ Module for handling maintenance requests
 
 import json
 from typing import Optional
-from ldap_jwt_auth.core.exceptions import InvalidFileFormat
-from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
 
+from pydantic import ValidationError
+from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileFormat, MissingMaintenanceFile
+from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
 
 class Maintenance:
     """
@@ -21,14 +22,15 @@ class Maintenance:
         :raises InvalidFileFormat: If the maintenance state file is incorrectly formatted
         """
         try:
-            with open("ldap_jwt_auth/maintenance/maintenance.json", "r", encoding='utf-8') as file:
+            with open("maintenance/maintenance.json", "r", encoding='utf-8') as file:
                 data = json.load(file)
-                show: bool = data.get("show")
-                message: str = data.get("message")
-            maintenance: MaintenanceState = MaintenanceState(show=show, message=message)
+            maintenance: MaintenanceState = MaintenanceState(**data)
             return maintenance
-        except Exception as exc:
-            raise InvalidFileFormat("Maintenance file format is incorrect") from exc
+        except IOError as exc:
+            print(exc)
+            raise MissingMaintenanceFile("Unable to find maintenance file") from exc
+        except ValidationError as exc:
+            raise InvalidMaintenanceFileFormat("Maintenance file format is incorrect") from exc
 
     def get_scheduled_maintenance(self) -> ScheduledMaintenanceState:
         """
@@ -38,12 +40,11 @@ class Maintenance:
         :raises InvalidFileFormat: If the scheduled maintenance state file is incorrectly formatted
         """
         try:
-            with open("ldap_jwt_auth/maintenance/scheduled_maintenance.json", "r", encoding='utf-8') as file:
+            with open("maintenance/scheduled_maintenance.json", "r", encoding='utf-8') as file:
                 data = json.load(file)
-                show: bool = data.get("show")
-                message: str = data.get("message")
-                severity: Optional[str] = data.get("severity")
-            maintenance: MaintenanceState = ScheduledMaintenanceState(show=show, message=message, severity=severity)
+            maintenance: MaintenanceState = ScheduledMaintenanceState(**data)
             return maintenance
-        except Exception as exc:
-            raise InvalidFileFormat("Scheduled Maintenance file format is incorrect") from exc
+        except IOError as exc:
+            raise MissingMaintenanceFile("Unable to find scheduled maintenance file") from exc
+        except ValidationError as exc:
+            raise InvalidMaintenanceFileFormat("Scheduled maintenance file format is incorrect") from exc

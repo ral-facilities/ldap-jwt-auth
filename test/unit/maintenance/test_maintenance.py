@@ -4,8 +4,8 @@ Unit tests for the `Maintenance` class.
 
 import json
 
-import pytest
-from ldap_jwt_auth.core.exceptions import InvalidFileFormat
+import pytest 
+from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileFormat, MissingMaintenanceFile
 from ldap_jwt_auth.core.maintenance import Maintenance
 from unittest.mock import mock_open, patch
 
@@ -41,9 +41,18 @@ def test_get_maintenance_state_invalid_file():
     ):
         maintenance = Maintenance()
 
-        with pytest.raises(InvalidFileFormat) as exc:
+        with pytest.raises(InvalidMaintenanceFileFormat) as exc:
             maintenance.get_maintenance()
         assert str(exc.value) == "Maintenance file format is incorrect"
+
+def test_get_maintenance_state_missing_file():
+    with patch("builtins.open", mock_open()) as mocked_open:
+        mocked_open.side_effect = IOError
+        maintenance = Maintenance()
+
+        with pytest.raises(MissingMaintenanceFile) as exc:
+            maintenance.get_maintenance()
+        assert str(exc.value) == "Unable to find maintenance file"
 
 
 def test_get_scheduled_maintenance_state():
@@ -78,6 +87,15 @@ def test_get_scheduled_maintenance_state_invalid_file():
     ):
         maintenance = Maintenance()
 
-        with pytest.raises(InvalidFileFormat) as exc:
+        with pytest.raises(InvalidMaintenanceFileFormat) as exc:
             maintenance.get_scheduled_maintenance()
-        assert str(exc.value) == "Scheduled Maintenance file format is incorrect"
+        assert str(exc.value) == "Scheduled maintenance file format is incorrect"
+
+def test_get_scheduled_maintenance_state_missing_file():
+    with patch("builtins.open", mock_open()) as mocked_open:
+        mocked_open.side_effect = IOError
+        maintenance = Maintenance()
+
+        with pytest.raises(MissingMaintenanceFile) as exc:
+            maintenance.get_scheduled_maintenance()
+        assert str(exc.value) == "Unable to find scheduled maintenance file"

@@ -6,9 +6,7 @@ import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from ldap_jwt_auth.core.exceptions import (
-    InvalidFileFormat,
-)
+from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileFormat, MissingMaintenanceFile
 from ldap_jwt_auth.core.maintenance import Maintenance
 from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
 
@@ -27,7 +25,10 @@ def get_maintenance_state(maintenance: Annotated[Maintenance, Depends(Maintenanc
     try:
         return maintenance.get_maintenance()
 
-    except InvalidFileFormat as exc:
+    except MissingMaintenanceFile as exc:
+        message = "Unable to find maintenance file"
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
+    except InvalidMaintenanceFileFormat as exc:
         message = "Maintenance file format is incorrect"
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
 
@@ -45,6 +46,11 @@ def get_scheduled_maintenance_state(
     try:
         return maintenance.get_scheduled_maintenance()
 
-    except InvalidFileFormat as exc:
-        message = "Scheduled Maintenance file format is incorrect"
+    except MissingMaintenanceFile as exc:
+        message = "Unable to find scheduled maintenance file"
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
+    except InvalidMaintenanceFileFormat as exc:
+        message = "Scheduled maintenance file format is incorrect"
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
+
+
