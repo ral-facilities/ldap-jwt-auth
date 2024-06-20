@@ -52,5 +52,3 @@ def get_scheduled_maintenance_state(
     except InvalidMaintenanceFileFormat as exc:
         message = "Scheduled maintenance file format is incorrect"
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
-
-

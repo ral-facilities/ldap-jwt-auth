@@ -3,7 +3,6 @@ Module for handling maintenance requests
 """
 
 import json
-from typing import Optional
 
 from pydantic import ValidationError
 from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileFormat, MissingMaintenanceFile
