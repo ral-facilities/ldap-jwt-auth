@@ -26,7 +26,7 @@ class Maintenance:
             with open(config.maintenance.maintenance_path, "r", encoding='utf-8') as file:
                 data = json.load(file)
             return MaintenanceState(**data)
-        except IOError as exc:
+        except (OSError, json.JSONDecodeError, TypeError) as exc:
             raise MissingMaintenanceFileError("Unable to find maintenance file") from exc
         except ValidationError as exc:
             raise InvalidMaintenanceFileError("Maintenance file format is incorrect") from exc
@@ -43,7 +43,7 @@ class Maintenance:
             with open(config.maintenance.scheduled_maintenance_path, "r", encoding='utf-8') as file:
                 data = json.load(file)
             return ScheduledMaintenanceState(**data)
-        except IOError as exc:
+        except (OSError, json.JSONDecodeError, TypeError) as exc:
             raise MissingMaintenanceFileError("Unable to find scheduled maintenance file") from exc
         except ValidationError as exc:
             raise InvalidMaintenanceFileError("Scheduled maintenance file format is incorrect") from exc
