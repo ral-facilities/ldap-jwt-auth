@@ -210,6 +210,22 @@ Listed below are the environment variables supported by the application.
 | `LDAP_SERVER__URL`                              | The URL to the LDAP server to connect to.                                                                                 | Yes       |                                                           |
 | `LDAP_SERVER__REALM`                            | The realm for the LDAP server.                                                                                            | Yes       |                                                           |
 
+### How to add or remove user from system
+
+The `active_usernames.txt` file at the root of the project directory contains the Federal IDs of the users with access to the system. This means that you can add or
+remove a user from the system by adding or removing their Federal ID in the `active_usernames.txt` file.
+
+**PLEASE NOTE** Changes made to the `active_usernames.txt` file using vim do not get synced because it changes the inode
+index number of the file. A workaround is to create a new file using the `active_usernames.txt` file, apply your changes
+in the new file, and then overwrite the `active_usernames.txt` file with the content of the new file, see below.
+
+```bash
+cp active_usernames.txt new_active_usernames.txt
+vim new_active_usernames.txt
+cat new_active_usernames.txt > active_usernames.txt
+rm new_active_usernames.txt
+```
+
 ### How to update maintenance or scheduled maintenance state
 
 The `maintenance` folder at the root of the project directory contains two json files which return the appropiate state of the system. This means that you can edit the values in the files in accordance with the desired state of the system.
@@ -217,6 +233,8 @@ The `maintenance` folder at the root of the project directory contains two json 
 **_PLEASE NOTE_** Changes made to `maintenance.json` and `scheduled_maintenance.json` file using vim do not get synced because it changes the inode
 index number of the file. A workaround is to create a new file using the `maintenance.json` or `scheduled_maintenance.json` file, apply your changes
 in the new file, and then overwrite the `maintenance.json` / `scheduled_maintenance.json` file with the content of the new file, see below an example for `maintenance.json` file.
+
+**_The `severity` in `scheduled_maintenance.json` should be one of the following values: `'success' | 'warning' | 'error' | 'information'`_**
 
 ```bash
 cp maintenance/maintenance.json new_maintenance.json
