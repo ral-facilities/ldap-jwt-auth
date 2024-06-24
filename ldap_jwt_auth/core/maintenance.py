@@ -5,6 +5,7 @@ Module for handling maintenance mode
 import json
 
 from pydantic import ValidationError
+from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MissingMaintenanceFileError
 from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
 
@@ -22,7 +23,7 @@ class Maintenance:
         :raises MissingMaintenanceFileError: If the maintenance state file can not be found or read
         """
         try:
-            with open("maintenance/maintenance.json", "r", encoding='utf-8') as file:
+            with open(config.maintenance.maintenance_path, "r", encoding='utf-8') as file:
                 data = json.load(file)
             return MaintenanceState(**data)
         except IOError as exc:
@@ -39,7 +40,7 @@ class Maintenance:
         :raises MissingMaintenanceFileError: If the scheduled maintenance state file can not be found or read
         """
         try:
-            with open("maintenance/scheduled_maintenance.json", "r", encoding='utf-8') as file:
+            with open(config.maintenance.scheduled_maintenance_path, "r", encoding='utf-8') as file:
                 data = json.load(file)
             return ScheduledMaintenanceState(**data)
         except IOError as exc:
