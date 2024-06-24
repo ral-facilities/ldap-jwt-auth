@@ -30,5 +30,4 @@ class ScheduledMaintenanceState(MaintenanceState):
     """
     Model for scheduled maintenance state
     """
-
-    severity: Optional[str]
+    

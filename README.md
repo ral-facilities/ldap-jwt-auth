@@ -236,8 +236,6 @@ The `maintenance` folder at the root of the project directory contains two json 
 index number of the file. A workaround is to create a new file using the `maintenance.json` or `scheduled_maintenance.json` file, apply your changes
 in the new file, and then overwrite the `maintenance.json` / `scheduled_maintenance.json` file with the content of the new file, see below an example for `maintenance.json` file.
 
-**_The `severity` in `scheduled_maintenance.json` should be one of the following values: `'success' | 'warning' | 'error' | 'information'`_**
-
 ```bash
 cp maintenance/maintenance.json new_maintenance.json
 vim new_maintenance.json

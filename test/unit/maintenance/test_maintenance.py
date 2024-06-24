@@ -59,7 +59,7 @@ def test_get_scheduled_maintenance_state():
     """
     Test returning scheduled maintenance state schema
     """
-    mock_scheduled_maintenance_data = {"show": True, "message": "This is a test message", "severity": "important"}
+    mock_scheduled_maintenance_data = {"show": True, "message": "This is a test message"}
     mock_scheduled_maintenance_file = json.dumps(mock_scheduled_maintenance_data)
 
     with (
@@ -71,14 +71,13 @@ def test_get_scheduled_maintenance_state():
 
     assert response.show is True
     assert response.message == "This is a test message"
-    assert response.severity == "important"
 
 
 def test_get_scheduled_maintenance_state_invalid_file():
     """
     Test returning scheduled maintenance state schema when file is invalid
     """
-    mock_scheduled_maintenance_data = {"show": "True", "message": "This is a test message", "severity": True}
+    mock_scheduled_maintenance_data = {"show": "True", "message": "This is a test message"}
     mock_scheduled_maintenance_file = json.dumps(mock_scheduled_maintenance_data)
 
     with (
