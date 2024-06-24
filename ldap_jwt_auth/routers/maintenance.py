@@ -6,7 +6,7 @@ import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileFormat, MissingMaintenanceFile
+from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MissingMaintenanceFileError
 from ldap_jwt_auth.core.maintenance import Maintenance
 from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
 
@@ -23,12 +23,12 @@ def get_maintenance_state(maintenance: Annotated[Maintenance, Depends(Maintenanc
     logger.info("Getting maintenance state")
 
     try:
-        return maintenance.get_maintenance()
+        return maintenance.get_maintenance_state()
 
-    except MissingMaintenanceFile as exc:
+    except MissingMaintenanceFileError as exc:
         message = "Unable to find maintenance file"
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
-    except InvalidMaintenanceFileFormat as exc:
+    except InvalidMaintenanceFileError as exc:
         message = "Maintenance file format is incorrect"
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
 
@@ -44,11 +44,11 @@ def get_scheduled_maintenance_state(
     # pylint: disable=missing-function-docstring
     logger.info("Getting scheduled maintenance state")
     try:
-        return maintenance.get_scheduled_maintenance()
+        return maintenance.get_scheduled_maintenance_state()
 
-    except MissingMaintenanceFile as exc:
+    except MissingMaintenanceFileError as exc:
         message = "Unable to find scheduled maintenance file"
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
-    except InvalidMaintenanceFileFormat as exc:
+    except InvalidMaintenanceFileError as exc:
         message = "Scheduled maintenance file format is incorrect"
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc

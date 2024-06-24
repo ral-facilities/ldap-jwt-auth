@@ -45,14 +45,13 @@ class UsernameMismatchError(Exception):
     """
 
 
-class InvalidMaintenanceFileFormat(Exception):
+class InvalidMaintenanceFileError(Exception):
     """
-    Exception raised when the maintenance state files do not have the correct format
-    or value types.
+    Exception raised when the maintenance state files do not have the correct format or value types.
     """
 
-class MissingMaintenanceFile(Exception):
+
+class MissingMaintenanceFileError(Exception):
     """
-    Exception raised when the maintenance state file is missing or it's data cannot
-    be read.
+    Exception raised when the maintenance state file is missing or its data cannot be read.
     """

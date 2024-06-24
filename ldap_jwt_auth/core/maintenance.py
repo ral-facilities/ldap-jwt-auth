@@ -1,49 +1,48 @@
 """
-Module for handling maintenance requests
+Module for handling maintenance mode
 """
 
 import json
 
 from pydantic import ValidationError
-from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileFormat, MissingMaintenanceFile
+from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MissingMaintenanceFileError
 from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
 
 class Maintenance:
     """
-    Class for managing maintenance requests.
+    Class for managing maintenance and scheduled maintenance states.
     """
 
-    def get_maintenance(self) -> MaintenanceState:
+    def get_maintenance_state(self) -> MaintenanceState:
         """
-        Return a schema for maintenance state of ims
+        Return the maintenance state of the system
 
         :return: Maintenance state schema
         :raises InvalidFileFormat: If the maintenance state file is incorrectly formatted
+        :raises MissingMaintenanceFileError: If the maintenance state file can not be found or read
         """
         try:
             with open("maintenance/maintenance.json", "r", encoding='utf-8') as file:
                 data = json.load(file)
-            maintenance: MaintenanceState = MaintenanceState(**data)
-            return maintenance
+            return MaintenanceState(**data)
         except IOError as exc:
-            print(exc)
-            raise MissingMaintenanceFile("Unable to find maintenance file") from exc
+            raise MissingMaintenanceFileError("Unable to find maintenance file") from exc
         except ValidationError as exc:
-            raise InvalidMaintenanceFileFormat("Maintenance file format is incorrect") from exc
+            raise InvalidMaintenanceFileError("Maintenance file format is incorrect") from exc
 
-    def get_scheduled_maintenance(self) -> ScheduledMaintenanceState:
+    def get_scheduled_maintenance_state(self) -> ScheduledMaintenanceState:
         """
-        Return a schema for scheduled maintenance state
+        Return the scheduled maintenance state of the system
 
         :return: Scheduled maintenance state schema
         :raises InvalidFileFormat: If the scheduled maintenance state file is incorrectly formatted
+        :raises MissingMaintenanceFileError: If the scheduled maintenance state file can not be found or read
         """
         try:
             with open("maintenance/scheduled_maintenance.json", "r", encoding='utf-8') as file:
                 data = json.load(file)
-            maintenance: MaintenanceState = ScheduledMaintenanceState(**data)
-            return maintenance
+            return ScheduledMaintenanceState(**data)
         except IOError as exc:
-            raise MissingMaintenanceFile("Unable to find scheduled maintenance file") from exc
+            raise MissingMaintenanceFileError("Unable to find scheduled maintenance file") from exc
         except ValidationError as exc:
-            raise InvalidMaintenanceFileFormat("Scheduled maintenance file format is incorrect") from exc
+            raise InvalidMaintenanceFileError("Scheduled maintenance file format is incorrect") from exc

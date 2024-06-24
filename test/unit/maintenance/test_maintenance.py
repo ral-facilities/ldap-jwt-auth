@@ -5,7 +5,7 @@ Unit tests for the `Maintenance` class.
 import json
 
 import pytest 
-from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileFormat, MissingMaintenanceFile
+from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MissingMaintenanceFileError
 from ldap_jwt_auth.core.maintenance import Maintenance
 from unittest.mock import mock_open, patch
 
@@ -22,7 +22,7 @@ def test_get_maintenance_state():
         patch("json.load", return_value=mock_maintenance_data),
     ):
         maintenance = Maintenance()
-        response = maintenance.get_maintenance()
+        response = maintenance.get_maintenance_state()
 
     assert response.show == True
     assert response.message == "This is a test message"
@@ -41,8 +41,8 @@ def test_get_maintenance_state_invalid_file():
     ):
         maintenance = Maintenance()
 
-        with pytest.raises(InvalidMaintenanceFileFormat) as exc:
-            maintenance.get_maintenance()
+        with pytest.raises(InvalidMaintenanceFileError) as exc:
+            maintenance.get_maintenance_state()
         assert str(exc.value) == "Maintenance file format is incorrect"
 
 def test_get_maintenance_state_missing_file():
@@ -50,8 +50,8 @@ def test_get_maintenance_state_missing_file():
         mocked_open.side_effect = IOError
         maintenance = Maintenance()
 
-        with pytest.raises(MissingMaintenanceFile) as exc:
-            maintenance.get_maintenance()
+        with pytest.raises(MissingMaintenanceFileError) as exc:
+            maintenance.get_maintenance_state()
         assert str(exc.value) == "Unable to find maintenance file"
 
 
@@ -67,7 +67,7 @@ def test_get_scheduled_maintenance_state():
         patch("json.load", return_value=mock_scheduled_maintenance_data),
     ):
         maintenance = Maintenance()
-        response = maintenance.get_scheduled_maintenance()
+        response = maintenance.get_scheduled_maintenance_state()
 
     assert response.show is True
     assert response.message == "This is a test message"
@@ -87,8 +87,8 @@ def test_get_scheduled_maintenance_state_invalid_file():
     ):
         maintenance = Maintenance()
 
-        with pytest.raises(InvalidMaintenanceFileFormat) as exc:
-            maintenance.get_scheduled_maintenance()
+        with pytest.raises(InvalidMaintenanceFileError) as exc:
+            maintenance.get_scheduled_maintenance_state()
         assert str(exc.value) == "Scheduled maintenance file format is incorrect"
 
 def test_get_scheduled_maintenance_state_missing_file():
@@ -96,6 +96,6 @@ def test_get_scheduled_maintenance_state_missing_file():
         mocked_open.side_effect = IOError
         maintenance = Maintenance()
 
-        with pytest.raises(MissingMaintenanceFile) as exc:
-            maintenance.get_scheduled_maintenance()
+        with pytest.raises(MissingMaintenanceFileError) as exc:
+            maintenance.get_scheduled_maintenance_state()
         assert str(exc.value) == "Unable to find scheduled maintenance file"
