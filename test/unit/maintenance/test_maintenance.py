@@ -77,7 +77,7 @@ def test_get_scheduled_maintenance_state_invalid_file():
     """
     Test returning scheduled maintenance state schema when file is invalid
     """
-    mock_scheduled_maintenance_data = {"show": "True", "message": "This is a test message"}
+    mock_scheduled_maintenance_data = {"show": None, "message": "This is a test message"}
     mock_scheduled_maintenance_file = json.dumps(mock_scheduled_maintenance_data)
 
     with (
