@@ -18,7 +18,7 @@ class UserCredentialsPostRequestSchema(BaseModel):
 
 class MaintenanceState(BaseModel):
     """
-    Model for maintenancce response
+    Model for maintenance response
     """
 
     show: bool
