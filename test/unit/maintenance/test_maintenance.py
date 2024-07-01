@@ -43,7 +43,7 @@ def test_get_maintenance_state_invalid_file():
 
         with pytest.raises(InvalidMaintenanceFileError) as exc:
             maintenance.get_maintenance_state()
-        assert str(exc.value) == "Maintenance file format is incorrect"
+        assert str(exc.value) == "An error occurred while validating the data in the maintenance file"
 
 def test_get_maintenance_state_missing_file():
     with patch("builtins.open", mock_open()) as mocked_open:
@@ -52,7 +52,7 @@ def test_get_maintenance_state_missing_file():
 
         with pytest.raises(MaintenanceFileReadError) as exc:
             maintenance.get_maintenance_state()
-        assert str(exc.value) == "Unable to find maintenance file"
+        assert str(exc.value) == "An error occurred while trying to find and read the maintenance file"
 
 
 def test_get_scheduled_maintenance_state():
@@ -88,7 +88,7 @@ def test_get_scheduled_maintenance_state_invalid_file():
 
         with pytest.raises(InvalidMaintenanceFileError) as exc:
             maintenance.get_scheduled_maintenance_state()
-        assert str(exc.value) == "Scheduled maintenance file format is incorrect"
+        assert str(exc.value) == "An error occurred while validating the data in the scheduled maintenance file"
 
 def test_get_scheduled_maintenance_state_missing_file():
     with patch("builtins.open", mock_open()) as mocked_open:
@@ -97,4 +97,4 @@ def test_get_scheduled_maintenance_state_missing_file():
 
         with pytest.raises(MaintenanceFileReadError) as exc:
             maintenance.get_scheduled_maintenance_state()
-        assert str(exc.value) == "Unable to find scheduled maintenance file"
+        assert str(exc.value) == "An error occurred while trying to find and read the scheduled maintenance file"
