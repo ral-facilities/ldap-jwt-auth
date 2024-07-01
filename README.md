@@ -194,7 +194,7 @@ values loaded from the `.env` file.
 Listed below are the environment variables supported by the application.
 
 | Environment Variable                            | Description                                                                                                               | Mandatory | Default Value                                             |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------- | --------------------------------------------------------- |
+|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|-----------|-----------------------------------------------------------|
 | `API__TITLE`                                    | The title of the API which is added to the generated OpenAPI.                                                             | No        | `LDAP-JWT Authentication Service API`                     |
 | `API__DESCRIPTION`                              | The description of the API which is added to the generated OpenAPI.                                                       | No        | `This is the API for the LDAP-JWT Authentication Service` |
 | `API__ROOT_PATH`                                | (If using a proxy) The path prefix handled by a proxy that is not seen by the app.                                        | No        | ` `                                                       |
@@ -206,20 +206,22 @@ Listed below are the environment variables supported by the application.
 | `AUTHENTICATION__JWT_ALGORITHM`                 | The algorithm to use to decode the JWT access and refresh tokens.                                                         | Yes       |                                                           |
 | `AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES` | Minutes after which the JWT access token expires.                                                                         | Yes       |                                                           |
 | `AUTHENTICATION__REFRESH_TOKEN_VALIDITY_DAYS`   | Days after which the JWT refresh token expires.                                                                           | Yes       |                                                           |
-| `AUTHENTICATION__ACTIVE_USERNAMES_PATH`         | The path to the `txt` file containing the active usernames and defining who can use this service.                         | Yes       |
+| `AUTHENTICATION__ACTIVE_USERNAMES_PATH`         | The path to the `txt` file containing the active usernames and defining who can use this service.                         | Yes       |                                                           |
 | `MAINTENANCE__MAINTENANCE_PATH`                 | The path to the `json` file containing the maintenance state.                                                             | Yes       |                                                           |
-| `MAINTENANCE__SCHEDULED_MAINTENANCE_PATH`       | The path to the `json` file containing the scheduled maintenance state.                                                   | Yes       |
+| `MAINTENANCE__SCHEDULED_MAINTENANCE_PATH`       | The path to the `json` file containing the scheduled maintenance state.                                                   | Yes       |                                                           |
 | `LDAP_SERVER__URL`                              | The URL to the LDAP server to connect to.                                                                                 | Yes       |                                                           |
 | `LDAP_SERVER__REALM`                            | The realm for the LDAP server.                                                                                            | Yes       |                                                           |
 
 ### How to add or remove user from system
 
-The `active_usernames.txt` file at the root of the project directory contains the Federal IDs of the users with access to the system. This means that you can add or
-remove a user from the system by adding or removing their Federal ID in the `active_usernames.txt` file.
+The `active_usernames.txt` file at the root of the project directory contains the Federal IDs of the users with access
+to the system. This means that you can add or remove a user from the system by adding or removing their Federal ID in
+the `active_usernames.txt` file.
 
-**PLEASE NOTE** Changes made to the `active_usernames.txt` file using vim do not get synced because it changes the inode
-index number of the file. A workaround is to create a new file using the `active_usernames.txt` file, apply your changes
-in the new file, and then overwrite the `active_usernames.txt` file with the content of the new file, see below.
+**PLEASE NOTE** Changes made to the `active_usernames.txt` file using vim do not get synced in the Docker container
+because it changes the inode index number of the file. A workaround is to create a new file using
+the `active_usernames.txt` file, apply your changes in the new file, and then overwrite the `active_usernames.txt` file
+with the content of the new file, see below.
 
 ```bash
 cp active_usernames.txt new_active_usernames.txt
@@ -232,9 +234,13 @@ rm new_active_usernames.txt
 
 The `maintenance` folder at the root of the project directory contains two json files which return the appropiate state of the system. This means that you can edit the values in the files in accordance with the desired state of the system.
 
-**_PLEASE NOTE_** Changes made to `maintenance.json` and `scheduled_maintenance.json` file using vim do not get synced because it changes the inode
-index number of the file. A workaround is to create a new file using the `maintenance.json` or `scheduled_maintenance.json` file, apply your changes
-in the new file, and then overwrite the `maintenance.json` / `scheduled_maintenance.json` file with the content of the new file, see below an example for `maintenance.json` file.
+The `maintenance` folder at the root of the project directory contains two json files which return the appropriate state
+of the system. This means that you can edit the values in the files in accordance with the desired state of the system.
+**_PLEASE NOTE_** Changes made to `maintenance.json` and `scheduled_maintenance.json` file using vim do not get synced
+in the Docker container because it changes the inode index number of the file. A workaround is to create a new file
+using the `maintenance.json` or `scheduled_maintenance.json` file, apply your changes in the new file, and then
+overwrite the `maintenance.json` / `scheduled_maintenance.json` file with the content of the new file, see below an
+example for `maintenance.json` file.
 
 ```bash
 cp maintenance/maintenance.json new_maintenance.json

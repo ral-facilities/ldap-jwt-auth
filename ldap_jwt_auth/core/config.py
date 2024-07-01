@@ -22,12 +22,14 @@ class APIConfig(BaseModel):
     allowed_cors_origins: List[str]
     allowed_cors_methods: List[str]
 
+
 class MaintenanceConfig(BaseModel):
     """
     Configuration model for maintenance
     """
     maintenance_path: str
     scheduled_maintenance_path: str
+
 
 class AuthenticationConfig(BaseModel):
     """
