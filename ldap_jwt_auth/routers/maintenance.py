@@ -6,7 +6,7 @@ import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MissingMaintenanceFileError
+from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MaintenanceFileReadError
 from ldap_jwt_auth.core.maintenance import Maintenance
 from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
 
@@ -24,13 +24,8 @@ def get_maintenance_state(maintenance: Annotated[Maintenance, Depends(Maintenanc
 
     try:
         return maintenance.get_maintenance_state()
-
-    except MissingMaintenanceFileError as exc:
-        message = "Unable to find maintenance file"
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
-    except InvalidMaintenanceFileError as exc:
-        message = "Maintenance file format is incorrect"
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
+    except (InvalidMaintenanceFileError, MaintenanceFileReadError) as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong") from exc
 
 
 @router.get(
@@ -45,10 +40,5 @@ def get_scheduled_maintenance_state(
     logger.info("Getting scheduled maintenance state")
     try:
         return maintenance.get_scheduled_maintenance_state()
-
-    except MissingMaintenanceFileError as exc:
-        message = "Unable to find scheduled maintenance file"
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
-    except InvalidMaintenanceFileError as exc:
-        message = "Scheduled maintenance file format is incorrect"
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
+    except (InvalidMaintenanceFileError, MaintenanceFileReadError) as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong") from exc

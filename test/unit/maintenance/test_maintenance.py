@@ -5,7 +5,7 @@ Unit tests for the `Maintenance` class.
 import json
 
 import pytest 
-from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MissingMaintenanceFileError
+from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MaintenanceFileReadError
 from ldap_jwt_auth.core.maintenance import Maintenance
 from unittest.mock import mock_open, patch
 
@@ -50,7 +50,7 @@ def test_get_maintenance_state_missing_file():
         mocked_open.side_effect = IOError
         maintenance = Maintenance()
 
-        with pytest.raises(MissingMaintenanceFileError) as exc:
+        with pytest.raises(MaintenanceFileReadError) as exc:
             maintenance.get_maintenance_state()
         assert str(exc.value) == "Unable to find maintenance file"
 
@@ -95,6 +95,6 @@ def test_get_scheduled_maintenance_state_missing_file():
         mocked_open.side_effect = IOError
         maintenance = Maintenance()
 
-        with pytest.raises(MissingMaintenanceFileError) as exc:
+        with pytest.raises(MaintenanceFileReadError) as exc:
             maintenance.get_scheduled_maintenance_state()
         assert str(exc.value) == "Unable to find scheduled maintenance file"

@@ -51,7 +51,7 @@ class InvalidMaintenanceFileError(Exception):
     """
 
 
-class MissingMaintenanceFileError(Exception):
+class MaintenanceFileReadError(Exception):
     """
-    Exception raised when the maintenance state file is missing or its data cannot be read.
+    Exception raised when the maintenance state file's data cannot be read.
     """
