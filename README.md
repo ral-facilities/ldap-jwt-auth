@@ -232,7 +232,7 @@ rm new_active_usernames.txt
 
 ### How to update maintenance or scheduled maintenance state
 
-The `maintenance` folder at the root of the project directory contains two json files which return the appropiate state of the system. This means that you can edit the values in the files in accordance with the desired state of the system.
+The `maintenance` folder at the root of the project directory contains two json files which return the appropriate state of the system. This means that you can edit the values in the files in accordance with the desired state of the system.
 
 The `maintenance` folder at the root of the project directory contains two json files which return the appropriate state
 of the system. This means that you can edit the values in the files in accordance with the desired state of the system.
