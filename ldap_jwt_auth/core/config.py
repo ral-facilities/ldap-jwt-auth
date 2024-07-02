@@ -27,6 +27,7 @@ class MaintenanceConfig(BaseModel):
     """
     Configuration model for maintenance
     """
+
     maintenance_path: str
     scheduled_maintenance_path: str
 
