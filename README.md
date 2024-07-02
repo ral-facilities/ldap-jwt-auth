@@ -232,10 +232,9 @@ rm new_active_usernames.txt
 
 ### How to update maintenance or scheduled maintenance state
 
-The `maintenance` folder at the root of the project directory contains two json files which return the appropriate state of the system. This means that you can edit the values in the files in accordance with the desired state of the system.
-
 The `maintenance` folder at the root of the project directory contains two json files which return the appropriate state
 of the system. This means that you can edit the values in the files in accordance with the desired state of the system.
+
 **_PLEASE NOTE_** Changes made to `maintenance.json` and `scheduled_maintenance.json` file using vim do not get synced
 in the Docker container because it changes the inode index number of the file. A workaround is to create a new file
 using the `maintenance.json` or `scheduled_maintenance.json` file, apply your changes in the new file, and then
