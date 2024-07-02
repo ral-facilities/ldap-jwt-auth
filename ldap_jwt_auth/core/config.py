@@ -23,6 +23,15 @@ class APIConfig(BaseModel):
     allowed_cors_methods: List[str]
 
 
+class MaintenanceConfig(BaseModel):
+    """
+    Configuration model for maintenance
+    """
+
+    maintenance_path: str
+    scheduled_maintenance_path: str
+
+
 class AuthenticationConfig(BaseModel):
     """
     Configuration model for the authentication.
@@ -82,6 +91,7 @@ class Config(BaseSettings):
     api: APIConfig
     authentication: AuthenticationConfig
     ldap_server: LDAPServerConfig
+    maintenance: MaintenanceConfig
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parent.parent / ".env",

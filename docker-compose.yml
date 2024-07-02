@@ -9,6 +9,8 @@ services:
       - ./keys:/ldap-jwt-auth-run/keys
       - ./ldap_server_certs/cacert.pem:/ldap-jwt-auth-run/ldap_server_certs/cacert.pem
       - ./active_usernames.txt:/ldap-jwt-auth-run/active_usernames.txt
+      - ./maintenance/maintenance.json:/ldap-jwt-auth-run/maintenance/maintenance.json
+      - ./maintenance/scheduled_maintenance.json:/ldap-jwt-auth-run/maintenance/scheduled_maintenance.json
     ports:
       - 8000:8000
     restart: on-failure
