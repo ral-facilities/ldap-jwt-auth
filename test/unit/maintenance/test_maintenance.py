@@ -24,7 +24,7 @@ def test_get_maintenance_state():
         maintenance = Maintenance()
         response = maintenance.get_maintenance_state()
 
-    assert response.show == True
+    assert response.show is True
     assert response.message == "This is a test message"
 
 
