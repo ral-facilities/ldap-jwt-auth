@@ -4,35 +4,41 @@ This is a Python microservice created using FastAPI that provides user authentic
 a JSON Web Token (JWT).
 
 ## How to Run
+
 This microservice requires an LDAP server to run against.
 
 ### Prerequisites
+
 - Docker and Docker Compose installed (if you want to run the microservice inside Docker)
 - Python 3.12 installed on your machine (if you are not using Docker)
 - LDAP server to connect to
 - CA certificate PEM file containing all the trusted CA certificates (if LDAP certificate validation is enabled which is
   strongly recommended to be in production)
 - Private and public key pair (must be OpenSSH encoded) for encrypting and decrypting the JWTs
-- A list of active usernames, defining who can use this service 
+- A list of active usernames, defining who can use this service
 - This repository cloned
 
 ### Docker Setup
+
 Ensure that Docker is installed and running on your machine before proceeding.
 
 1. Create a `.env` file alongside the `.env.example` file. Use the example file as a reference and modify the values
    accordingly.
+
    ```bash
    cp ldap_jwt_auth/.env.example ldap_jwt_auth/.env
    ```
 
 2. Create a `logging.ini` file alongside the `logging.example.ini` file. Use the example file as a reference and modify
    it accordingly:
+
    ```bash
    cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini
    ```
 
 3. Navigate to the `keys` directory in the root of the project directory, and generate OpenSSH encoded private and
    public key pair:
+
    ```bash
    ssh-keygen -b 2048 -t rsa -f keys/jwt-key -q -N "" -C ""
    ```
@@ -47,6 +53,7 @@ Ensure that Docker is installed and running on your machine before proceeding.
    ```
 
 #### Using `docker-compose.yml`
+
 The easiest way to run the application with Docker for local development is using the `docker-compose.yml` file. It is
 configured to start the application in a reload mode using the `Dockerfile`.
 
@@ -58,10 +65,12 @@ configured to start the application in a reload mode using the `Dockerfile`.
    at http://localhost:8000/docs.
 
 #### Using `Dockerfile`
+
 Use the `Dockerfile` to run just the application itself in a container. Use this only for local development (not
 production)!
 
 1. Build an image using the `Dockerfile` from the root of the project directory:
+
    ```bash
    docker build -f Dockerfile -t ldap_jwt_auth_api_image .
    ```
@@ -78,18 +87,21 @@ production)!
    at http://localhost:8000/docs.
 
 #### Using `Dockerfile.prod`
+
 Use the `Dockerfile.prod` to run just the application itself in a container. This can be used for production.
 
 1. Private keys are only readable by the owner. Given that the private key is generated on the host machine and the
    container runs with a different user, it means that the key is not readable by the user in the container because the
    ownership belongs to the user on the host. This can be solved by transferring the ownership to the user in the
    container and setting the permissions.
+
    ```bash
    sudo chown 500:500 keys/jwt-key
    sudo chmod 0400 keys/jwt-key
    ```
 
 2. Build an image using the `Dockerfile.prod` from the root of the project directory:
+
    ```bash
    docker build -f Dockerfile.prod -t ldap_jwt_auth_api_image .
    ```
@@ -106,9 +118,11 @@ Use the `Dockerfile.prod` to run just the application itself in a container. Thi
    at http://localhost:8000/docs.
 
 ### Local Setup
+
 Ensure that Python is installed on your machine before proceeding.
 
 1. Create a Python virtual environment and activate it in the root of the project directory:
+
    ```bash
    python -m venv venv
    source venv/bin/activate
@@ -123,18 +137,21 @@ Ensure that Python is installed on your machine before proceeding.
    ```
 4. Create a `.env` file alongside the `.env.example` file. Use the example file as a reference and modify the values
    accordingly.
+
    ```bash
    cp ldap_jwt_auth/.env.example ldap_jwt_auth/.env
    ```
 
 5. Create a `logging.ini` file alongside the `logging.example.ini` file. Use the example file as a reference and modify
    it accordingly:
+
    ```bash
    cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini
    ```
 
 6. Navigate to the `keys` directory in the root of the project directory, and generate OpenSSH encoded private and
    public key pair:
+
    ```bash
    ssh-keygen -b 2048 -t rsa -f keys/jwt-key -q -N "" -C ""
    ```
@@ -144,25 +161,30 @@ Ensure that Python is installed on your machine before proceeding.
 
 8. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
    can use this system. The usernames are the Federal IDs and each one should be stored on a separate line.
+
    ```bash
    cp active_usernames.example.txt active_usernames.txt
    ```
 
 9. Start the microservice using Uvicorn:
+
    ```bash
    uvicorn ldap_jwt_auth.main:app --log-config ldap_jwt_auth/logging.ini --reload
    ```
+
    The microservice should now be running locally at http://localhost:8000. The Swagger UI could be accessed
    at http://localhost:8000/docs.
 
 10. To run the unit tests, run:
-   ```bash
-   pytest -c test/pytest.ini test/unit/
-   ```
+
+```bash
+pytest -c test/pytest.ini test/unit/
+```
 
 ## Notes
 
 ### Application Configuration
+
 The configuration for the application is handled
 using [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/). It allows for loading config
 values from environment variables or the `.env` file. Please note that even when using the `.env` file, Pydantic will
@@ -185,5 +207,43 @@ Listed below are the environment variables supported by the application.
 | `AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES` | Minutes after which the JWT access token expires.                                                                         | Yes       |                                                           |
 | `AUTHENTICATION__REFRESH_TOKEN_VALIDITY_DAYS`   | Days after which the JWT refresh token expires.                                                                           | Yes       |                                                           |
 | `AUTHENTICATION__ACTIVE_USERNAMES_PATH`         | The path to the `txt` file containing the active usernames and defining who can use this service.                         | Yes       |                                                           |
+| `MAINTENANCE__MAINTENANCE_PATH`                 | The path to the `json` file containing the maintenance state.                                                             | Yes       |                                                           |
+| `MAINTENANCE__SCHEDULED_MAINTENANCE_PATH`       | The path to the `json` file containing the scheduled maintenance state.                                                   | Yes       |                                                           |
 | `LDAP_SERVER__URL`                              | The URL to the LDAP server to connect to.                                                                                 | Yes       |                                                           |
 | `LDAP_SERVER__REALM`                            | The realm for the LDAP server.                                                                                            | Yes       |                                                           |
+
+### How to add or remove user from system
+
+The `active_usernames.txt` file at the root of the project directory contains the Federal IDs of the users with access
+to the system. This means that you can add or remove a user from the system by adding or removing their Federal ID in
+the `active_usernames.txt` file.
+
+**PLEASE NOTE** Changes made to the `active_usernames.txt` file using vim do not get synced in the Docker container
+because it changes the inode index number of the file. A workaround is to create a new file using
+the `active_usernames.txt` file, apply your changes in the new file, and then overwrite the `active_usernames.txt` file
+with the content of the new file, see below.
+
+```bash
+cp active_usernames.txt new_active_usernames.txt
+vim new_active_usernames.txt
+cat new_active_usernames.txt > active_usernames.txt
+rm new_active_usernames.txt
+```
+
+### How to update maintenance or scheduled maintenance state
+
+The `maintenance` folder at the root of the project directory contains two json files which return the appropriate state
+of the system. This means that you can edit the values in the files in accordance with the desired state of the system.
+
+**_PLEASE NOTE_** Changes made to `maintenance.json` and `scheduled_maintenance.json` file using vim do not get synced
+in the Docker container because it changes the inode index number of the file. A workaround is to create a new file
+using the `maintenance.json` or `scheduled_maintenance.json` file, apply your changes in the new file, and then
+overwrite the `maintenance.json` / `scheduled_maintenance.json` file with the content of the new file, see below an
+example for `maintenance.json` file.
+
+```bash
+cp maintenance/maintenance.json new_maintenance.json
+vim new_maintenance.json
+cat new_maintenance.json > maintenance/maintenance.json
+rm new_maintenance.json
+```

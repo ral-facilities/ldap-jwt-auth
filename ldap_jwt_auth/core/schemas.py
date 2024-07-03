@@ -14,3 +14,18 @@ class UserCredentialsPostRequestSchema(BaseModel):
     password: SecretStr
 
     model_config = ConfigDict(hide_input_in_errors=True)
+
+
+class MaintenanceState(BaseModel):
+    """
+    Model for maintenance response
+    """
+
+    show: bool
+    message: str
+
+
+class ScheduledMaintenanceState(MaintenanceState):
+    """
+    Model for scheduled maintenance state
+    """
