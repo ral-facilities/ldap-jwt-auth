@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   ldap-jwt-auth-run:
     container_name: ldap_jwt_auth_container

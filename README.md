@@ -166,10 +166,10 @@ Ensure that Python is installed on your machine before proceeding.
    cp active_usernames.example.txt active_usernames.txt
    ```
 
-9. Start the microservice using Uvicorn:
+9. Start the microservice using FastAPI's CLI:
 
    ```bash
-   uvicorn ldap_jwt_auth.main:app --log-config ldap_jwt_auth/logging.ini --reload
+   fastapi dev ldap_jwt_auth/main.py --log-config ldap_jwt_auth/logging.ini
    ```
 
    The microservice should now be running locally at http://localhost:8000. The Swagger UI could be accessed
@@ -194,7 +194,7 @@ values loaded from the `.env` file.
 Listed below are the environment variables supported by the application.
 
 | Environment Variable                            | Description                                                                                                               | Mandatory | Default Value                                             |
-|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|-----------|-----------------------------------------------------------|
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------- | --------------------------------------------------------- |
 | `API__TITLE`                                    | The title of the API which is added to the generated OpenAPI.                                                             | No        | `LDAP-JWT Authentication Service API`                     |
 | `API__DESCRIPTION`                              | The description of the API which is added to the generated OpenAPI.                                                       | No        | `This is the API for the LDAP-JWT Authentication Service` |
 | `API__ROOT_PATH`                                | (If using a proxy) The path prefix handled by a proxy that is not seen by the app.                                        | No        | ` `                                                       |
