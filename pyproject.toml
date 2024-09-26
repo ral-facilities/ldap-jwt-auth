@@ -18,12 +18,9 @@ dependencies = [
 
 [project.optional-dependencies]
 code-analysis = [
+    "black==24.8.0",
     "pylint==3.2.7",
     "ldap-jwt-auth[test]"
-]
-
-formatting = [
-    "black==24.8.0"
 ]
 
 test = [
@@ -34,7 +31,6 @@ test = [
 
 dev = [
     "ldap-jwt-auth[code-analysis]",
-    "ldap-jwt-auth[formatting]",
     "ldap-jwt-auth[test]"
 ]
 
