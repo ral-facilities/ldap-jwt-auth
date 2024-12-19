@@ -62,10 +62,13 @@ jobs:
           python -m pip install .[test]
 
       - name: Create logging configuration file
-        run: cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini
+        run: pytest -c test/pytest.ini test/unit/ --cov --cov-report=xml
 
-      - name: Run unit tests
-        run: pytest -c test/pytest.ini test/unit/ --cov
+      - name: Upload coverage reports to Codecov
+        if: success()
+        uses: codecov/codecov-action@1e68e06f1dbfde0e4cefc87efeba9e4643565303 # v5.1.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   docker:
     # This job triggers only if all the other jobs succeed. It builds the Docker image and if successful,
