@@ -6,11 +6,11 @@ requires-python = ">=3.12"
 version = "1.0.0"
 
 dependencies = [
-    "cryptography==43.0.3",
-    "fastapi[all]==0.115.5",
-    "PyJWT==2.10.0",
+    "cryptography==44.0.1",
+    "fastapi[all]==0.115.8",
+    "PyJWT==2.10.1",
     "python-ldap==3.4.4",
-    "uvicorn==0.32.1"
+    "uvicorn==0.34.0"
 ]
 
 [project.urls]
@@ -18,13 +18,13 @@ dependencies = [
 
 [project.optional-dependencies]
 code-analysis = [
-    "black==24.10.0",
-    "pylint==3.3.1",
+    "black==25.1.0",
+    "pylint==3.3.4",
     "ldap-jwt-auth[test]"
 ]
 
 test = [
-    "pytest==8.3.3",
+    "pytest==8.3.4",
     "pytest-cov==6.0.0",
     "pytest-env==1.1.5"
 ]
