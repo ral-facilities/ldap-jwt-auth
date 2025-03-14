@@ -3,14 +3,14 @@ name = "ldap-jwt-auth"
 description = "Python microservice providing user authentication against LDAP server and returning a JSON Web Token."
 readme = "README.md"
 requires-python = ">=3.12"
-version = "1.0.0"
+version = "1.0.2"
 
 dependencies = [
-    "cryptography==43.0.3",
-    "fastapi[all]==0.115.5",
-    "PyJWT==2.10.0",
-    "python-ldap==3.4.4",
-    "uvicorn==0.32.1"
+    "cryptography",
+    "fastapi[all]",
+    "PyJWT",
+    "python-ldap",
+    "uvicorn"
 ]
 
 [project.urls]
