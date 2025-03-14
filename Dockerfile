@@ -15,5 +15,5 @@ RUN --mount=type=cache,target=/root/.cache \
     # Ensure the pinned versions of the production dependencies and subdependencies are installed \
     python -m pip install --no-cache-dir --requirement requirements.txt;
 
-CMD ["uvicorn", "ldap_jwt_auth.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["fastapi", "dev", "ldap_jwt_auth/main.py", "--host", "0.0.0.0", "--port", "8000"]
 EXPOSE 8000
