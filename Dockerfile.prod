@@ -2,7 +2,7 @@ FROM python:3.12.9-alpine3.21@sha256:28b8a72c4e0704dd2048b79830e692e94ac2d43d30c
 
 WORKDIR /ldap-jwt-auth-run
 
-COPY README.md pyproject.toml ./
+COPY requirements.txt ./
 # Copy ldap_jwt_auth source files
 COPY ldap_jwt_auth/ ldap_jwt_auth/
 
@@ -12,7 +12,7 @@ RUN set -eux; \
     apk add --no-cache build-base openldap-dev python3-dev; \
     \
     # Install pip dependencies \
-    python -m pip install --no-cache-dir .; \
+    python -m pip install --no-cache-dir --requirement requirements.txt; \
     \
     # Create loging.ini from its .example file \
     cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini; \
