@@ -134,6 +134,7 @@ Ensure that Python is installed on your machine before proceeding.
 3. Install the required dependencies using pip:
    ```bash
    pip install .[dev]
+   pip install -r requirements.txt
    ```
 4. Create a `.env` file alongside the `.env.example` file. Use the example file as a reference and modify the values
    accordingly.
