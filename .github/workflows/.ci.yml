@@ -57,9 +57,6 @@ jobs:
         run: cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini
 
       - name: Run unit tests
-        run: pytest -c test/pytest.ini test/unit/ --cov --cov-report=xml
-
-      - name: Run unit tests
         run: |
           docker build --file Dockerfile --target test --tag ldap-jwt-auth:test .
           docker run \
