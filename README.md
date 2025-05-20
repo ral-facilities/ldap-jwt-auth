@@ -58,8 +58,8 @@ Ensure that Docker is installed and running on your machine before proceeding.
 #### Using `docker-compose.yml`
 
 The easiest way to run the application with Docker for local development is using the `docker-compose.yml` file. It is
-configured to start the application in a reload mode which using the mounted `ldap_jwt_auth` directory mans that FastAPI
-will watch for changes made to the code and automatically reload the application on the fly.
+configured to start the application in a reload mode using the mounted `ldap_jwt_auth` directory which means that
+FastAPI will watch for changes made to the code and automatically reload the application on the fly.
 
 1. Build and start the Docker container:
 
@@ -133,7 +133,7 @@ the container next time you run the tests.
    ```bash
    docker run \
     --rm \
-    --name ldap-jwt-auth \
+    --name ldap-jwt-auth-test \
     --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
     --volume ./test:/app/test \
     ldap-jwt-auth:test
