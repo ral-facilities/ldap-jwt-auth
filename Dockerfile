@@ -33,7 +33,7 @@ FROM python:3.12.10-alpine3.21@sha256:9c51ecce261773a684c8345b2d4673700055c513b4
 
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY pyproject.toml requirements.txt ./
 COPY ldap_jwt_auth/ ldap_jwt_auth/
 
 RUN --mount=type=cache,target=/root/.cache \
@@ -42,6 +42,9 @@ RUN --mount=type=cache,target=/root/.cache \
     # Install python-ldap system dependencies \
     apk add --no-cache build-base openldap-dev python3-dev; \
     \
+    # Ensure the package gets installed properly using the pyproject.toml file \
+    pip install --no-cache-dir .; \
+    # Ensure the pinned versions of the production dependencies and subdependencies are installed \
     pip install --no-cache-dir --requirement requirements.txt; \
     \
     # Create a non-root user to run as \
