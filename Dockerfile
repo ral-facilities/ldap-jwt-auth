@@ -1,15 +1,20 @@
-FROM python:3.12.10-alpine3.21@sha256:9c51ecce261773a684c8345b2d4673700055c513b4d54bc0719337d3e4ee552e AS dev
+FROM python:3.12.10-alpine3.21@sha256:9c51ecce261773a684c8345b2d4673700055c513b4d54bc0719337d3e4ee552e AS base
+
+# Install python-ldap system dependencies
+RUN apk add --no-cache build-base openldap-dev
 
 WORKDIR /app
 
 COPY pyproject.toml requirements.txt ./
 COPY ldap_jwt_auth/ ldap_jwt_auth/
 
+
+FROM base AS dev
+
+WORKDIR /app
+
 RUN --mount=type=cache,target=/root/.cache \
     set -eux; \
-    \
-    # Install python-ldap system dependencies \
-    apk add --no-cache build-base openldap-dev; \
     \
     pip install --no-cache-dir .[dev]; \
     # Ensure the pinned versions of the production dependencies and subdependencies are installed \
@@ -29,18 +34,12 @@ COPY test/ test/
 CMD ["pytest",  "--config-file", "test/pytest.ini", "-v"]
 
 
-FROM python:3.12.10-alpine3.21@sha256:9c51ecce261773a684c8345b2d4673700055c513b4d54bc0719337d3e4ee552e AS prod
+FROM base AS prod
 
 WORKDIR /app
 
-COPY pyproject.toml requirements.txt ./
-COPY ldap_jwt_auth/ ldap_jwt_auth/
-
 RUN --mount=type=cache,target=/root/.cache \
     set -eux; \
-    \
-    # Install python-ldap system dependencies \
-    apk add --no-cache build-base openldap-dev python3-dev; \
     \
     # Ensure the package gets installed properly using the pyproject.toml file \
     pip install --no-cache-dir .; \
