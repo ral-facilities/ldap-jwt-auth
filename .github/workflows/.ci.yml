@@ -61,6 +61,7 @@ jobs:
           docker build --file Dockerfile --target test --tag ldap-jwt-auth:test .
           docker run \
            --name ldap-jwt-auth \
+           --volume ./logging.ini:/app/logging.ini \
            ldap-jwt-auth:test \
            pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report xml test/unit -v
           docker cp ldap-jwt-auth:/app/coverage.xml coverage.xml
