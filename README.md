@@ -102,11 +102,11 @@ changes made to the code and automatically reload the application on the fly.
    The microservice should now be running inside Docker at http://localhost:8000 and its Swagger UI could be accessed
    at http://localhost:8000/docs.
 
-#### Using `Dockerfile` for running the tests
+#### Using `Dockerfile` for running the unit tests
 
-Use the `Dockerfile`'s `test` stage to run the tests in a container. Mounting the `ldap_jwt_auth` and `test` directories
-to the container via volumes means that any changes made to the application or test code will automatically be synced to
-the container next time you run the tests.
+Use the `Dockerfile`'s `test` stage to run the unit tests in a container. Mounting the `ldap_jwt_auth` and `test`
+directories to the container via volumes means that any changes made to the application or test code will automatically
+be synced to the container next time you run the tests.
 
 1. Build an image using the `Dockerfile`'s `test` stage from the root of the project directory:
 
@@ -124,6 +124,7 @@ the container next time you run the tests.
     --volume ./test:/app/test \
     --volume ./logging.ini:/app/logging.ini \
     ldap-jwt-auth:test
+    pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report term-missing test/unit -v
    ```
 
 ### Outside of Docker
