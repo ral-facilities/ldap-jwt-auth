@@ -54,13 +54,14 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Create logging configuration file
-        run: cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini
+        run: cp logging.example.ini logging.ini
 
       - name: Run unit tests
         run: |
           docker build --file Dockerfile --target test --tag ldap-jwt-auth:test .
           docker run \
            --name ldap-jwt-auth \
+           --volume ./logging.ini:/app/logging.ini \
            ldap-jwt-auth:test \
            pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report xml test/unit -v
           docker cp ldap-jwt-auth:/app/coverage.xml coverage.xml

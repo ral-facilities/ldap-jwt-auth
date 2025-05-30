@@ -24,14 +24,14 @@ This microservice requires an LDAP server to run against.
    accordingly.
 
    ```bash
-   cp ldap_jwt_auth/.env.example ldap_jwt_auth/.env
+   cp .env.example .env
    ```
 
 2. Create a `logging.ini` file alongside the `logging.example.ini` file. Use the example file as a reference and modify
    it accordingly:
 
    ```bash
-   cp ldap_jwt_auth/logging.example.ini ldap_jwt_auth/logging.ini
+   cp logging.example.ini logging.ini
    ```
 
 3. Navigate to the `keys` directory in the root of the project directory, and generate OpenSSH encoded private and
@@ -88,39 +88,25 @@ changes made to the code and automatically reload the application on the fly.
    docker run \
     --publish 8000:8000 \
     --name ldap-jwt-auth \
+    --env-file ./.env \
     --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
     --volume ./keys:/app/keys \
     --volume ./ldap_server_certs/cacert.pem:/app/ldap_server_certs/cacert.pem \
     --volume ./active_usernames.txt:/app/active_usernames.txt \
     --volume ./maintenance/maintenance.json:/app/maintenance/maintenance.json \
     --volume ./maintenance/scheduled_maintenance.json:/app/maintenance/scheduled_maintenance.json \
-    ldap-jwt-auth:dev
-   ```
-
-   or with values for the environment variables:
-
-   ```bash
-   docker run \
-    --publish 8000:8000 \
-    --name ldap-jwt-auth \
-    --env AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES=10 \
-    --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
-    --volume ./keys:/app/keys \
-    --volume ./ldap_server_certs/cacert.pem:/app/ldap_server_certs/cacert.pem \
-    --volume ./active_usernames.txt:/app/active_usernames.txt \
-    --volume ./maintenance/maintenance.json:/app/maintenance/maintenance.json \
-    --volume ./maintenance/scheduled_maintenance.json:/app/maintenance/scheduled_maintenance.json \
+    --volume ./logging.ini:/app/logging.ini \
     ldap-jwt-auth:dev
    ```
 
    The microservice should now be running inside Docker at http://localhost:8000 and its Swagger UI could be accessed
    at http://localhost:8000/docs.
 
-#### Using `Dockerfile` for running the tests
+#### Using `Dockerfile` for running the unit tests
 
-Use the `Dockerfile`'s `test` stage to run the tests in a container. Mounting the `ldap_jwt_auth` and `test` directories
-to the container via volumes means that any changes made to the application or test code will automatically be synced to
-the container next time you run the tests.
+Use the `Dockerfile`'s `test` stage to run the unit tests in a container. Mounting the `ldap_jwt_auth` and `test`
+directories to the container via volumes means that any changes made to the application or test code will automatically
+be synced to the container next time you run the tests.
 
 1. Build an image using the `Dockerfile`'s `test` stage from the root of the project directory:
 
@@ -136,10 +122,12 @@ the container next time you run the tests.
     --name ldap-jwt-auth-test \
     --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
     --volume ./test:/app/test \
+    --volume ./logging.ini:/app/logging.ini \
     ldap-jwt-auth:test
+    pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report term-missing test/unit -v
    ```
 
-### Outisde of Docker
+### Outside of Docker
 
 ### Local Setup
 
@@ -156,12 +144,13 @@ Ensure that Python is installed on your machine before proceeding.
    info [here](https://www.python-ldap.org/en/python-ldap-3.3.0/installing.html).
 
 3. Install the required dependencies using pip:
+
    ```bash
    pip install .[dev]
    pip install -r requirements.txt
    ```
 
-9. Start the application:
+4. Start the application:
 
    ```bash
    fastapi dev ldap_jwt_auth/main.py --host 0.0.0.0 --port 8000
@@ -202,7 +191,6 @@ Listed below are the environment variables supported by the application.
 | `LDAP_SERVER__REALM`                            | The realm for the LDAP server.                                                                                                                                      | Yes                               |                                                           |
 | `LDAP_SERVER__CERTIFICATE_VALIDATION`           | Whether to enforce TLS certificate validation when connecting to the LDAP server. Disabling this allows insecure connections and is not recommended for production. | Yes                               |                                                           |
 | `LDAP_SERVER__CA_CERTIFICATE_FILE_PATH`         | The path to the trusted Certificate Authority (CA) file used to verify the LDAP server’s TLS/SSL certificate.                                                       | If certificate validation enabled |                                                           |
-
 
 ### How to add or remove user from system
 
