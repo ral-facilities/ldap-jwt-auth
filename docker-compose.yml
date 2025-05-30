@@ -11,6 +11,9 @@ services:
       - ./active_usernames.txt:/app/active_usernames.txt
       - ./maintenance/maintenance.json:/app/maintenance/maintenance.json
       - ./maintenance/scheduled_maintenance.json:/app/maintenance/scheduled_maintenance.json
+      - ./logging.ini:/app/logging.ini
+    env_file:
+      - path: ./.env
     ports:
       - 8000:8000
     restart: on-failure
