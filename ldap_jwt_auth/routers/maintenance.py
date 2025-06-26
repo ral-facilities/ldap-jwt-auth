@@ -6,6 +6,7 @@ import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+
 from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MaintenanceFileReadError
 from ldap_jwt_auth.core.maintenance import Maintenance
 from ldap_jwt_auth.core.schemas import MaintenanceState, ScheduledMaintenanceState
@@ -34,7 +35,7 @@ def get_maintenance_state(maintenance: Annotated[Maintenance, Depends(Maintenanc
     response_description="Returns the scheduled maintenance state",
 )
 def get_scheduled_maintenance_state(
-    maintenance: Annotated[Maintenance, Depends(Maintenance)]
+    maintenance: Annotated[Maintenance, Depends(Maintenance)],
 ) -> ScheduledMaintenanceState:
     # pylint: disable=missing-function-docstring
     logger.info("Getting scheduled maintenance state")
