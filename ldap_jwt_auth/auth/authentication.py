@@ -18,7 +18,7 @@ from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 logger = logging.getLogger()
 
 
-class Authentication:
+class LDAPAuthentication:
     """
     Class for managing authentication against an LDAP server.
     """
@@ -29,6 +29,7 @@ class Authentication:
 
         Before attempting to authenticate against LDAP, it checks that the credentials are not empty and that the
         username is part of the active usernames.
+
         :param user_credentials: The credentials of the user.
         :raises InvalidCredentialsError: If the user credentials are empty or invalid.
         :raises LDAPServerError: If there is a problem with the LDAP server.
@@ -84,6 +85,7 @@ class Authentication:
     def is_user_active(self, username: str) -> bool:
         """
         Check if the provided username is part of the active usernames.
+
         :param username: The username to check.
         :return: `True` if the user is active, `False` otherwise.
         """
@@ -95,6 +97,7 @@ class Authentication:
         """
         Load the active usernames as a list from a `txt` file. It removes any leading and trailing whitespaces and does
         not load empty lines/strings.
+
         :return: The list of active usernames.
         :raises ActiveUsernamesFileNotFoundError: If the file containing the active usernames cannot be found.
         """

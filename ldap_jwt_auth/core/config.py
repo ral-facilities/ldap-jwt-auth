@@ -4,7 +4,7 @@ Module for the overall configuration for the application.
 
 from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, SecretStr, field_validator
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, SecretStr, field_validator
 from pydantic_core.core_schema import ValidationInfo
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -42,6 +42,7 @@ class AuthenticationConfig(BaseModel):
     access_token_validity_minutes: int
     refresh_token_validity_days: int
     active_usernames_path: str
+    active_user_emails_path: str
 
 
 class LDAPServerConfig(BaseModel):
@@ -78,6 +79,19 @@ class LDAPServerConfig(BaseModel):
         return field_value
 
 
+class OIDCProviderConfig(BaseModel):
+    """
+    Configuration model for an OIDC provider.
+    """
+
+    display_name: str
+    configuration_url: HttpUrl
+    client_id: str
+    audience: str
+    verify_cert: bool = True
+    username_claim: str
+
+
 class Config(BaseSettings):
     """
     Overall configuration model for the application.
@@ -91,6 +105,7 @@ class Config(BaseSettings):
     authentication: AuthenticationConfig
     ldap_server: LDAPServerConfig
     maintenance: MaintenanceConfig
+    oidc_providers: dict[str, OIDCProviderConfig] = {}
 
     model_config = SettingsConfigDict(
         env_file=".env",

@@ -7,38 +7,35 @@ from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from ldap_jwt_auth.auth.authentication import LDAPAuthentication
 from ldap_jwt_auth.auth.jwt_handler import JWTHandler
+from ldap_jwt_auth.auth.oidc_handler import OidcHandler
 from ldap_jwt_auth.core.config import config
-from ldap_jwt_auth.core.exceptions import (
-    InvalidCredentialsError,
-    LDAPServerError,
-    UserNotActiveError,
-    ActiveUsernamesFileNotFoundError,
-)
-from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
+from ldap_jwt_auth.core.exceptions import UserNotActiveError, OIDCServerError, ActiveUserEmailsFileNotFoundError
 
 logger = logging.getLogger()
 
-router = APIRouter(prefix="/login", tags=["authentication"])
+router = APIRouter(tags=["authentication"])
 
 
 @router.post(
-    path="",
-    summary="Login with a username and password",
+    path="/oidc_login",
+    summary="Login with an OIDC ID token",
     response_description="A JWT access token including a refresh token as an HTTP-only cookie",
 )
 def login(
-    user_credentials: Annotated[UserCredentialsPostRequestSchema, Body(description="The credentials of the user")],
-    authentication: Annotated[LDAPAuthentication, Depends(LDAPAuthentication)],
+    oidc_handler: Annotated[OidcHandler, Depends(OidcHandler)],
     jwt_handler: Annotated[JWTHandler, Depends(JWTHandler)],
+    bearer_token: Annotated[HTTPAuthorizationCredentials, Depends(HTTPBearer(description="OIDC ID token"))]
 ) -> JSONResponse:
     # pylint: disable=missing-function-docstring
+
+    encoded_token = bearer_token.credentials
     try:
-        authentication.authenticate(user_credentials)
-        access_token = jwt_handler.get_access_token(user_credentials.username.get_secret_value())
-        refresh_token = jwt_handler.get_refresh_token(user_credentials.username.get_secret_value())
+        oidc_username = oidc_handler.handle(encoded_token)
+        access_token = jwt_handler.get_access_token(oidc_username)
+        refresh_token = jwt_handler.get_refresh_token(oidc_username)
 
         response = JSONResponse(content=access_token)
         response.set_cookie(
@@ -51,15 +48,15 @@ def login(
             path=f"{config.api.root_path}/refresh",
         )
         return response
-    except (InvalidCredentialsError, UserNotActiveError) as exc:
+    except UserNotActiveError as exc:
         message = "Invalid credentials provided"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=message) from exc
-    except LDAPServerError as exc:
+    except OIDCServerError as exc:
         message = "Something went wrong"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
-    except ActiveUsernamesFileNotFoundError as exc:
+    except ActiveUserEmailsFileNotFoundError as exc:
         message = "Something went wrong"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc

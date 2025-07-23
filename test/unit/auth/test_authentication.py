@@ -8,7 +8,7 @@ import ldap
 import pytest
 from ldap.ldapobject import LDAPObject
 
-from ldap_jwt_auth.auth.authentication import Authentication
+from ldap_jwt_auth.auth.authentication import LDAPAuthentication
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
@@ -28,7 +28,7 @@ def test_authenticate(ldap_initialize_mock):
     ldap_obj_mock.simple_bind_s.return_value = (97, [], 2, [])
     ldap_initialize_mock.return_value = ldap_obj_mock
 
-    authentication = Authentication()
+    authentication = LDAPAuthentication()
     user_credentials = UserCredentialsPostRequestSchema(username="username", password="password")
     authentication.authenticate(user_credentials)
 
@@ -45,7 +45,7 @@ def test_authenticate_with_empty_credentials():
     """
     Test LDAP authentication with empty credentials.
     """
-    authentication = Authentication()
+    authentication = LDAPAuthentication()
     user_credentials = UserCredentialsPostRequestSchema(username="", password="")
 
     with pytest.raises(InvalidCredentialsError) as exc:
@@ -62,7 +62,7 @@ def test_authenticate_with_invalid_credentials(ldap_initialize_mock):
     ldap_obj_mock.simple_bind_s.side_effect = ldap.INVALID_CREDENTIALS
     ldap_initialize_mock.return_value = ldap_obj_mock
 
-    authentication = Authentication()
+    authentication = LDAPAuthentication()
     user_credentials = UserCredentialsPostRequestSchema(username="username", password="password")
 
     with pytest.raises(InvalidCredentialsError) as exc:
@@ -81,7 +81,7 @@ def test_authenticate_with_not_active_username():
     """
     Test LDAP authentication with username that is not active.
     """
-    authentication = Authentication()
+    authentication = LDAPAuthentication()
     username = "username_not_active"
     user_credentials = UserCredentialsPostRequestSchema(username=username, password="password")
 
@@ -99,7 +99,7 @@ def test_authenticate_ldap_server_error(ldap_initialize_mock):
     ldap_obj_mock.start_tls_s.side_effect = ldap.LDAPError
     ldap_initialize_mock.return_value = ldap_obj_mock
 
-    authentication = Authentication()
+    authentication = LDAPAuthentication()
     user_credentials = UserCredentialsPostRequestSchema(username="username", password="password")
 
     with pytest.raises(LDAPServerError) as exc:
@@ -114,7 +114,7 @@ def test_is_user_active():
     """
     Test `is_user_active` returns `True` when active username is passed to it.
     """
-    authentication = Authentication()
+    authentication = LDAPAuthentication()
     is_user_active = authentication.is_user_active("username")
 
     assert is_user_active is True
@@ -124,7 +124,7 @@ def test_is_user_active_with_not_active_username():
     """
     Test `is_user_active` returns `False` when username that is not active is passed to it.
     """
-    authentication = Authentication()
+    authentication = LDAPAuthentication()
     is_user_active = authentication.is_user_active("username_not_active")
 
     assert is_user_active is False
@@ -138,7 +138,7 @@ def test_is_user_active_active_usernames_file_not_found(file_open_mock):
     file_open_mock.side_effect = FileNotFoundError()
 
     with pytest.raises(ActiveUsernamesFileNotFoundError) as exc:
-        authentication = Authentication()
+        authentication = LDAPAuthentication()
         authentication.is_user_active("username_not_active")
     assert (
         str(exc.value)

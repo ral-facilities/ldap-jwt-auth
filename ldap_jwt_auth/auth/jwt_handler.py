@@ -9,7 +9,7 @@ from typing import Any, Dict
 import jwt
 from cryptography.hazmat.primitives import serialization
 
-from ldap_jwt_auth.auth.authentication import Authentication
+from ldap_jwt_auth.auth.authentication import LDAPAuthentication
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
 from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UserNotActiveError, UsernameMismatchError
@@ -67,7 +67,7 @@ class JWTHandler:
         try:
             access_token_payload = self._get_jwt_payload(access_token, {"verify_exp": False})
 
-            authentication = Authentication()
+            authentication = LDAPAuthentication()
             username = access_token_payload["username"]
 
             if username != refresh_token_payload["username"]:
