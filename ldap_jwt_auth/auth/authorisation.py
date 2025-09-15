@@ -23,10 +23,7 @@ class Authorisation:
            user_config = yaml.safe_load(file)
            self.roles = user_config.get('roles', {})
            self.users = user_config.get('users', {})
-           print(self.roles)
-           print(self.users)
-
-
+           
        except FileNotFoundError as exc:
           raise UserConfigFileNotFoundError(
              f"Cannot find file containing users configuration with path: {config.authentication.user_config_path}"

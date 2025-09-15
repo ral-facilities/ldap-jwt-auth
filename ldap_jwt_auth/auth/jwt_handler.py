@@ -80,13 +80,12 @@ class JWTHandler:
         try:
             access_token_payload = self._get_jwt_payload(access_token, {"verify_exp": False})
 
-            authentication = Authentication()
             username = access_token_payload["username"]
 
             if username != refresh_token_payload["username"]:
                 raise UsernameMismatchError("The usernames in the access and refresh tokens do not match")
 
-            if not authentication.is_user_active(username):
+            if not self._authorisation.is_active_user(username):
                 raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
 
             access_token_payload["exp"] = datetime.now(timezone.utc) + timedelta(
