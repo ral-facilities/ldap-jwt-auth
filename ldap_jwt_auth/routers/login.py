@@ -15,7 +15,7 @@ from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
     LDAPServerError,
     UserNotActiveError,
-    ActiveUsernamesFileNotFoundError,
+    UserConfigFileNotFoundError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
@@ -59,7 +59,7 @@ def login(
         message = "Something went wrong"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
-    except ActiveUsernamesFileNotFoundError as exc:
+    except UserConfigFileNotFoundError as exc:
         message = "Something went wrong"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc

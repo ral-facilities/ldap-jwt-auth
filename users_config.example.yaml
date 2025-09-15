@@ -5,9 +5,9 @@ roles:
     userIsAdmin: false
 
 users:
-  alice:
+  abc123:
     roles: [admin, moderator]
-  bob:
+  def456:
     roles: [moderator]
-  charlie:
+  ghi789:
     roles: []

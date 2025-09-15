@@ -14,7 +14,7 @@ from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
     LDAPServerError,
     UserNotActiveError,
-    ActiveUsernamesFileNotFoundError,
+    UserConfigFileNotFoundError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
@@ -137,7 +137,7 @@ def test_is_user_active_active_usernames_file_not_found(file_open_mock):
     """
     file_open_mock.side_effect = FileNotFoundError()
 
-    with pytest.raises(ActiveUsernamesFileNotFoundError) as exc:
+    with pytest.raises(UserConfigFileNotFoundError) as exc:
         authentication = Authentication()
         authentication.is_user_active("username_not_active")
     assert (

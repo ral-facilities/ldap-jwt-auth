@@ -1,5 +1,4 @@
 logging.ini
-/active_usernames.txt
 /users_config.yaml
 keys/*
 !keys/.keep
