@@ -5,7 +5,7 @@ Module for for providing a class for managing user authorisation
 import yaml
 
 from ldap_jwt_auth.core.config import config
-from ldap_jwt_auth.core.exceptions import UserConfigFileNotFoundError
+from ldap_jwt_auth.core.exceptions import UserConfigFileNotFoundError, UserNotActiveError
 
 
 class Authorisation:
@@ -44,6 +44,9 @@ class Authorisation:
        :param username: The username to fetch for
        :return `List[str]` containing the defined roles of the user, can be an empty list
        """
+       if not self.is_active_user(username):
+          raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
+       
        return self.users.get(username, {}).get("roles", [])
     
     def is_user_admin(self, roles: list[str]) -> bool:

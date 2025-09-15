@@ -14,7 +14,6 @@ from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
     LDAPServerError,
     UserNotActiveError,
-    UserConfigFileNotFoundError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
@@ -109,38 +108,3 @@ def test_authenticate_ldap_server_error(ldap_initialize_mock):
     ldap_obj_mock.start_tls_s.assert_called_once()
     ldap_obj_mock.unbind.assert_not_called()
 
-
-def test_is_user_active():
-    """
-    Test `is_user_active` returns `True` when active username is passed to it.
-    """
-    authentication = Authentication()
-    is_user_active = authentication.is_user_active("username")
-
-    assert is_user_active is True
-
-
-def test_is_user_active_with_not_active_username():
-    """
-    Test `is_user_active` returns `False` when username that is not active is passed to it.
-    """
-    authentication = Authentication()
-    is_user_active = authentication.is_user_active("username_not_active")
-
-    assert is_user_active is False
-
-
-@patch("builtins.open")
-def test_is_user_active_active_usernames_file_not_found(file_open_mock):
-    """
-    Test `is_user_active` when file containing active usernames cannot be found.
-    """
-    file_open_mock.side_effect = FileNotFoundError()
-
-    with pytest.raises(UserConfigFileNotFoundError) as exc:
-        authentication = Authentication()
-        authentication.is_user_active("username_not_active")
-    assert (
-        str(exc.value)
-        == f"Cannot find file containing active usernames with path: {config.authentication.active_usernames_path}"
-    )

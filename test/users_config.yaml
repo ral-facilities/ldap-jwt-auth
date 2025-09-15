@@ -1,0 +1,9 @@
+roles:
+  admin:
+    userIsAdmin: true
+  moderator:
+    userIsAdmin: false
+
+users:
+  username:
+    roles: [admin]
