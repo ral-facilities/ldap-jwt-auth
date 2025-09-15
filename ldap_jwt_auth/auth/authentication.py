@@ -83,4 +83,3 @@ class Authentication:
             message = "Problem with LDAP server"
             logger.exception(message)
             raise LDAPServerError(message) from exc
-        

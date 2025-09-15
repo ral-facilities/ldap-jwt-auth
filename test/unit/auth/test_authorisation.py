@@ -1,4 +1,3 @@
-
 """
 Unit tests for the `Authorisation` class.
 """
@@ -52,33 +51,31 @@ def test_get_user_roles():
     Test `get_user_roles` returns the correct roles for a given username.
     """
     authorisation = Authorisation()
-    user_roles = authorisation.get_user_roles('username')
+    user_roles = authorisation.get_user_roles("username")
 
-    assert user_roles == ['admin']
+    assert user_roles == ["admin"]
+
 
 def test_get_user_roles_for_non_active_user():
     """
     Test `get_user_roles` when searching for roles for a non-active username
     """
 
-    
-
     with pytest.raises(UserNotActiveError) as exc:
         authorisation = Authorisation()
-        authorisation.get_user_roles('username_not_active')
-    assert (
-        str(exc.value)
-        == f"The provided username 'username_not_active' is not part of the active usernames"
-    )
+        authorisation.get_user_roles("username_not_active")
+    assert str(exc.value) == f"The provided username 'username_not_active' is not part of the active usernames"
+
 
 def test_is_user_admin():
     """
     Test `is_user_admin` for roles which include highest privilege role
     """
     authorisation = Authorisation()
-    is_user_admin = authorisation.is_user_admin(['admin', 'moderator'])
+    is_user_admin = authorisation.is_user_admin(["admin", "moderator"])
 
     assert is_user_admin is True
+
 
 def test_is_user_admin_non_existent_roles():
     """

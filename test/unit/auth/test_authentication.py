@@ -107,4 +107,3 @@ def test_authenticate_ldap_server_error(ldap_initialize_mock):
     ldap_initialize_mock.assert_called_once_with(config.ldap_server.url.get_secret_value())
     ldap_obj_mock.start_tls_s.assert_called_once()
     ldap_obj_mock.unbind.assert_not_called()
-

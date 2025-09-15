@@ -9,7 +9,6 @@ from typing import Any, Dict
 import jwt
 from cryptography.hazmat.primitives import serialization
 
-from ldap_jwt_auth.auth.authentication import Authentication
 from ldap_jwt_auth.auth.authorisation import Authorisation
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
