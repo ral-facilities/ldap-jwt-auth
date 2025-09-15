@@ -6,11 +6,11 @@ import logging
 
 import ldap
 
+from ldap_jwt_auth.auth.authorisation import Authorisation
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
     LDAPServerError,
-    ActiveUsernamesFileNotFoundError,
     UserNotActiveError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
@@ -22,6 +22,9 @@ class Authentication:
     """
     Class for managing authentication against an LDAP server.
     """
+
+    def __init__(self) -> None:
+        self._authorisation = Authorisation()
 
     def authenticate(self, user_credentials: UserCredentialsPostRequestSchema) -> None:
         """
@@ -42,7 +45,7 @@ class Authentication:
         if not username or not password:
             raise InvalidCredentialsError("Empty username or password")
 
-        if not self.is_user_active(username):
+        if not self._authorisation.is_active_user(username):
             raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
 
         try:
@@ -80,28 +83,4 @@ class Authentication:
             message = "Problem with LDAP server"
             logger.exception(message)
             raise LDAPServerError(message) from exc
-
-    def is_user_active(self, username: str) -> bool:
-        """
-        Check if the provided username is part of the active usernames.
-        :param username: The username to check.
-        :return: `True` if the user is active, `False` otherwise.
-        """
-        logger.info("Checking if user is active")
-        active_usernames = self._get_active_usernames()
-        return username in active_usernames
-
-    def _get_active_usernames(self) -> list:
-        """
-        Load the active usernames as a list from a `txt` file. It removes any leading and trailing whitespaces and does
-        not load empty lines/strings.
-        :return: The list of active usernames.
-        :raises ActiveUsernamesFileNotFoundError: If the file containing the active usernames cannot be found.
-        """
-        try:
-            with open(config.authentication.active_usernames_path, "r", encoding="utf-8") as file:
-                return [line.strip() for line in file.readlines() if line.strip()]
-        except FileNotFoundError as exc:
-            raise ActiveUsernamesFileNotFoundError(
-                f"Cannot find file containing active usernames with path: {config.authentication.active_usernames_path}"
-            ) from exc
+        

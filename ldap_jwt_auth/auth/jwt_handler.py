@@ -10,6 +10,7 @@ import jwt
 from cryptography.hazmat.primitives import serialization
 
 from ldap_jwt_auth.auth.authentication import Authentication
+from ldap_jwt_auth.auth.authorisation import Authorisation
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
 from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UserNotActiveError, UsernameMismatchError
@@ -22,6 +23,9 @@ class JWTHandler:
     Class for handling JWTs.
     """
 
+    def __init__(self) -> None:
+        self._authorisation = Authorisation()
+
     def get_access_token(self, username: str) -> str:
         """
         Generates a payload and returns a signed JWT access token.
@@ -29,8 +33,12 @@ class JWTHandler:
         :return: The signed JWT access token
         """
         logger.info("Getting an access token")
+
+        user_roles = self._authorisation.get_user_roles(username)
         payload = {
             "username": username,
+            "roles": user_roles,
+            "userIsAdmin": self._authorisation.is_user_admin(user_roles),
             "exp": datetime.now(timezone.utc) + timedelta(minutes=config.authentication.access_token_validity_minutes),
         }
         return self._pack_jwt(payload)
@@ -42,8 +50,12 @@ class JWTHandler:
         :return: The signed JWT refresh token.
         """
         logger.info("Getting a refresh token")
+
+        user_roles = self._authorisation.get_user_roles(username)
         payload = {
             "username": username,
+            "roles": user_roles,
+            "userIsAdmin": self._authorisation.is_user_admin(user_roles),
             "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days),
         }
         return self._pack_jwt(payload)

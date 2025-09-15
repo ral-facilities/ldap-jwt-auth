@@ -3,9 +3,9 @@ Module for custom exception classes.
 """
 
 
-class ActiveUsernamesFileNotFoundError(Exception):
+class UserConfigFileNotFoundError(Exception):
     """
-    Exception raised when the file containing the active usernames cannot be found.
+    Exception raised when the file containing the user configuration cannot be found.
     """
 
 

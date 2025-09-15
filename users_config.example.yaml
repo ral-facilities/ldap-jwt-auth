@@ -1,0 +1,13 @@
+roles:
+  admin:
+    userIsAdmin: true
+  moderator:
+    userIsAdmin: false
+
+users:
+  alice:
+    roles: [admin, moderator]
+  bob:
+    roles: [moderator]
+  charlie:
+    roles: []
