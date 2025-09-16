@@ -4,21 +4,25 @@ Module for providing a class for managing authentication.
 """
 import logging
 
-import ldap
+from cachetools.func import ttl_cache
 
-from ldap_jwt_auth.core.config import config
+import ldap
+import requests
+
+from ldap_jwt_auth.core.config import OIDCProviderConfig, config
 from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
     LDAPServerError,
     ActiveUsernamesFileNotFoundError,
     UserNotActiveError,
+    OIDCProviderError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
 logger = logging.getLogger()
 
 
-class Authentication:
+class LDAPAuthentication:
     """
     Class for managing authentication against an LDAP server.
     """
@@ -29,6 +33,7 @@ class Authentication:
 
         Before attempting to authenticate against LDAP, it checks that the credentials are not empty and that the
         username is part of the active usernames.
+
         :param user_credentials: The credentials of the user.
         :raises InvalidCredentialsError: If the user credentials are empty or invalid.
         :raises LDAPServerError: If there is a problem with the LDAP server.
@@ -84,6 +89,7 @@ class Authentication:
     def is_user_active(self, username: str) -> bool:
         """
         Check if the provided username is part of the active usernames.
+
         :param username: The username to check.
         :return: `True` if the user is active, `False` otherwise.
         """
@@ -95,6 +101,7 @@ class Authentication:
         """
         Load the active usernames as a list from a `txt` file. It removes any leading and trailing whitespaces and does
         not load empty lines/strings.
+
         :return: The list of active usernames.
         :raises ActiveUsernamesFileNotFoundError: If the file containing the active usernames cannot be found.
         """
@@ -105,3 +112,26 @@ class Authentication:
             raise ActiveUsernamesFileNotFoundError(
                 f"Cannot find file containing active usernames with path: {config.authentication.active_usernames_path}"
             ) from exc
+
+
+@ttl_cache(ttl=24 * 60 * 60)
+def _get_well_known_config(provider_id: str) -> dict:
+    """
+    Fetch the well known configugration for the specified OIDC provider.
+
+    :param provider_id: The ID of the OIDC provider to fetch the well known configugration for.
+    :raises OIDCProviderError: If it fails to fetch the well known configuration.
+    :return: The well known configuration for the specified OIDC provider.
+    """
+
+    provider_config: OIDCProviderConfig = config.oidc_providers[provider_id]
+    try:
+        r = requests.get(
+            provider_config.configuration_url,
+            verify=provider_config.verify_cert,
+            timeout=provider_config.request_timeout_seconds,
+        )
+        r.raise_for_status()
+        return r.json()
+    except Exception as exc:
+        raise OIDCProviderError(f"Failed to fetch well known configuration for OIDC provider: {provider_id}") from exc
