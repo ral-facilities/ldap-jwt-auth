@@ -42,6 +42,7 @@ class AuthenticationConfig(BaseModel):
     access_token_validity_minutes: int
     refresh_token_validity_days: int
     active_usernames_path: str
+    active_user_emails_path: str
 
 
 class LDAPServerConfig(BaseModel):
