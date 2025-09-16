@@ -17,6 +17,7 @@ from ldap_jwt_auth.core.exceptions import (
     ActiveUsernamesFileNotFoundError,
     UserNotActiveError,
     OIDCProviderError,
+    ActiveUserEmailsFileNotFoundError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
@@ -112,6 +113,40 @@ class LDAPAuthentication:
         except FileNotFoundError as exc:
             raise ActiveUsernamesFileNotFoundError(
                 f"Cannot find file containing active usernames with path: {config.authentication.active_usernames_path}"
+            ) from exc
+
+
+class OIDCAuthentication:
+    """
+    Class for managing authentication against an OIDC provider.
+    """
+
+    def is_user_active(self, user_email: str) -> bool:
+        """
+        Check if the provided user email is part of the active user emails.
+
+        :param user_email: The user email to check.
+        :return: `True` if the user is active, `False` otherwise.
+        """
+        logger.info("Checking if user is active")
+        active_user_emails = self.get_active_user_emails()
+        return user_email in active_user_emails
+
+    def get_active_user_emails(self) -> list:
+        """
+        Load the emails of the active users as a list from a `txt` file. It removes any leading and trailing whitespaces
+        and does not load empty lines/strings.
+
+        :return: The list of emails of the active users.
+        :raises ActiveUsernamesFileNotFoundError: If the file containing the emails of the active users cannot be found.
+        """
+        try:
+            with open(config.authentication.active_user_emails_path, "r", encoding="utf-8") as file:
+                return [line.strip() for line in file.readlines() if line.strip()]
+        except FileNotFoundError as exc:
+            raise ActiveUserEmailsFileNotFoundError(
+                "Cannot find file containing emails of active users with path: "
+                f"{config.authentication.active_user_emails_path}"
             ) from exc
 
 
