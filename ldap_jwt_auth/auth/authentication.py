@@ -6,6 +6,7 @@ import logging
 
 from cachetools.func import ttl_cache
 
+import jwt
 import ldap
 import requests
 
@@ -112,6 +113,39 @@ class LDAPAuthentication:
             raise ActiveUsernamesFileNotFoundError(
                 f"Cannot find file containing active usernames with path: {config.authentication.active_usernames_path}"
             ) from exc
+
+
+@ttl_cache(ttl=2 * 60 * 60)
+def _get_jwks(provider_id: str) -> dict:
+    """
+    Fetch the JWKs for the specified OIDC provider.
+
+    :param provider_id: The ID of the OIDC provider to fetch the JWKs for.
+    :raises OIDCProviderError: If it fails to fetch the JWKs.
+    :return: The JWKs for the specified OIDC provider.
+    """
+
+    provider_config: OIDCProviderConfig = config.oidc_providers[provider_id]
+    well_known_config = _get_well_known_config(provider_id)
+    jwks_uri = well_known_config["jwks_uri"]
+
+    try:
+        r = requests.get(jwks_uri, verify=provider_config.verify_cert, timeout=provider_config.request_timeout_seconds)
+        r.raise_for_status()
+        jwks_config = r.json()
+    except Exception as exc:
+        raise OIDCProviderError(f"Failed to fetch JWKs for OIDC provider: {provider_id}") from exc
+
+    keys = {}
+    for key in jwks_config["keys"]:
+        kid = key["kid"]
+        try:
+            keys[kid] = jwt.PyJWK(key)
+        except jwt.exceptions.PyJWKError:
+            # Possibly unsupported algorithm (e.g. RSA-OAEP)
+            logger.warning("Could not load JWK for OIDC provider: %s", provider_id)
+
+    return keys
 
 
 @ttl_cache(ttl=24 * 60 * 60)
