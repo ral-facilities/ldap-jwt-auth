@@ -29,6 +29,27 @@ logger = logging.getLogger()
 router = APIRouter(tags=["authentication"])
 
 
+@router.get(
+    path="/oidc_providers",
+    summary="Get a list of OIDC providers",
+    response_description="Returns a list of OIDC providers",
+)
+def get_oidc_providers() -> JSONResponse:
+    # pylint: disable=missing-function-docstring
+    logger.info("Getting a list of OIDC providers")
+    providers = {}
+    for provider_id, provider_config in config.oidc_providers.items():
+        providers[provider_id] = {
+            "display_name": provider_config.display_name,
+            "configuration_url": provider_config.configuration_url,
+            "client_id": provider_config.client_id,
+            "pkce": True,
+            "scope": provider_config.scope,
+        }
+
+    return JSONResponse(content=providers)
+
+
 @router.post(
     path="/oidc_login/{provider_id}",
     summary="Login with an OIDC ID token",
