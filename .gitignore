@@ -1,5 +1,6 @@
 logging.ini
 /active_usernames.txt
+/active_user_emails.txt
 keys/*
 !keys/.keep
 ldap_server_certs/*
