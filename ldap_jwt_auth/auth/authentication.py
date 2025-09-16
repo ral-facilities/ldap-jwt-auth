@@ -16,7 +16,9 @@ from ldap_jwt_auth.core.exceptions import (
     LDAPServerError,
     ActiveUsernamesFileNotFoundError,
     UserNotActiveError,
+    OIDCProviderNotFoundError,
     OIDCProviderError,
+    InvalidJWTError,
     ActiveUserEmailsFileNotFoundError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
@@ -120,6 +122,54 @@ class OIDCAuthentication:
     """
     Class for managing authentication against an OIDC provider.
     """
+
+    def authenticate(self, provider_id: str, id_token: str) -> str:
+        """
+        Authenticate a user by verifying the provided OIDC ID token using the JWKs of the specified OIDC provider.
+
+        After the verification succeeds, it checks that the username claim specified in the configuration is not missing
+        and that the username is part of the active user emails.
+
+        :param provider_id: The ID of the OIDC provider to get the corresponding configuration for.
+        :param id_token: The provided OIDC token to verify using the JWKs of the specified OIDC provider. 
+        :raises OIDCProviderNotFoundError: If no configuration can be found for the specified OIDC provider.
+        :raises InvalidJWTError: If the username claim specified in the configuration is missing in the OIDC ID token.
+        :raises UserNotActiveError: If the username is not part of the active user emails.
+        :raises InvalidJWTError: If the OIDC ID token is invalid.
+        :return: The username.
+        """
+
+        try:
+            provider_config: OIDCProviderConfig = config.oidc_providers[provider_id]
+        except KeyError as exc:
+            raise OIDCProviderNotFoundError(f"No configuration found for OIDC provider: {provider_id}") from exc
+
+        try:
+            unverified_header = jwt.get_unverified_header(id_token)
+            kid = unverified_header["kid"]
+            key = _get_jwks(provider_id)[kid]
+
+            payload = jwt.decode(
+                jwt=id_token,
+                key=key,
+                algorithms=[key.algorithm_name],
+                audience=provider_config.client_id,
+                isser=1,
+                verify=True,
+                options={"require": ["exp", "aud", "iss"], "verify_exp": True, "verify_aud": True, "verify_iss": True},
+            )
+
+            username = payload.get(provider_config.username_claim)
+            if not username:
+                raise InvalidJWTError("Username claim missing in OIDC ID token")
+
+            if not self.is_user_active(username):
+                raise UserNotActiveError(f"The provided email '{username}' is not part of the active user emails")
+
+            return username
+
+        except (jwt.exceptions.ExpiredSignatureError, jwt.exceptions.InvalidTokenError) as exc:
+            raise InvalidJWTError("Invalid OIDC ID token") from exc
 
     def is_user_active(self, user_email: str) -> bool:
         """
