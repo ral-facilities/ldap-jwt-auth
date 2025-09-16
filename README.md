@@ -1,7 +1,7 @@
 # LDAP-JWT Authentication Service
 
-This is a Python microservice created using FastAPI that provides user authentication against an LDAP server and returns
-a JSON Web Token (JWT).
+This is a Python microservice created using FastAPI that provides user authentication against an LDAP server as well as
+an SSO (Single Sign-On) OIDC provider, and returns a JSON Web Token (JWT).
 
 ## How to Run
 
@@ -11,11 +11,13 @@ This microservice requires an LDAP server to run against.
 
 - Docker and Docker Compose installed (if you want to run the microservice inside Docker)
 - Python 3.12 installed on your machine (if you are not using Docker)
-- LDAP server to connect to
+- OIDC provider(s) to connect to for users authenticating using an SSO OIDC ID token
+- LDAP server to connect to for users authenticating using LDAP credentials
 - CA certificate PEM file containing all the trusted CA certificates (if LDAP certificate validation is enabled which is
   strongly recommended to be in production)
 - Private and public key pair (must be OpenSSH encoded) for encrypting and decrypting the JWTs
-- A list of active usernames, defining who can use this service
+- A list of active user emails for SSO OIDC authentication, defining who can use this service
+- A list of active usernames for LDAP authentication, defining who can use this service
 - This repository cloned
 
 ### Prerequisite Steps
@@ -44,8 +46,16 @@ This microservice requires an LDAP server to run against.
 4. (If LDAP certificate validation is enabled) Copy the `cacert.pem` file that contains all the trusted CA certificates
    to the `ldap_server_certs` directory in the root of the project.
 
-5. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
-   can use this system. The usernames are the Federal IDs and each one should be stored on a separate line.
+5. Create a `active_user_emails.txt` file alongside the `active_user_emails.example.txt` file and add all the user
+   emails that can use this service through SSO OIDC authentication. The emails should be stored on a separate line.
+
+   ```bash
+   cp active_user_emails.example.txt active_user_emails.txt
+   ```
+
+6. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
+   can use this service through LDAP authentication. The usernames are the Federal IDs and each one should be stored on
+   a separate line.
 
    ```bash
    cp active_usernames.example.txt active_usernames.txt
@@ -58,8 +68,24 @@ Ensure that Docker is installed and running on your machine before proceeding.
 #### Using `docker-compose.yml`
 
 The easiest way to run the application with Docker for local development is using the `docker-compose.yml` file. It is
-configured to start the application in a reload mode using the mounted `ldap_jwt_auth` directory which means that
-FastAPI will watch for changes made to the code and automatically reload the application on the fly.
+configured to start:
+-  A keycloack instance for SSO authentication that can be accessed at `localhost:9001` using `admin` as the username
+and password to access the Admin Console. To get an ID token from the keycloak instance to then use for the `http://localhost:8000/oidc_login/keycloak` endpoint,
+   run:
+   
+   ```bash
+   curl -X POST http://localhost:9001/realms/testrealm/protocol/openid-connect/token \
+      -H "Content-Type: application/x-www-form-urlencoded" \
+      -d "grant_type=password" \
+      -d "client_id=test-client-id" \
+      -d "scope=openid profile email" \
+      -d "username=test" \
+      -d "password=password"
+   ```
+
+
+- The application in a reload mode which using the mounted `ldap_jwt_auth` directory means that FastAPI will watch for changes made to the code and automatically reload the application on the fly.
+
 
 1. Build and start the Docker container:
 
@@ -92,6 +118,7 @@ changes made to the code and automatically reload the application on the fly.
     --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
     --volume ./keys:/app/keys \
     --volume ./ldap_server_certs/cacert.pem:/app/ldap_server_certs/cacert.pem \
+    --volume ./active_user_emails.txt:/app/active_user_emails.txt \
     --volume ./active_usernames.txt:/app/active_usernames.txt \
     --volume ./maintenance/maintenance.json:/app/maintenance/maintenance.json \
     --volume ./maintenance/scheduled_maintenance.json:/app/maintenance/scheduled_maintenance.json \
@@ -184,7 +211,8 @@ Listed below are the environment variables supported by the application.
 | `AUTHENTICATION__JWT_ALGORITHM`                 | The algorithm to use to decode the JWT access and refresh tokens.                                                                                                   | Yes                               |                                                           |
 | `AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES` | Minutes after which the JWT access token expires.                                                                                                                   | Yes                               |                                                           |
 | `AUTHENTICATION__REFRESH_TOKEN_VALIDITY_DAYS`   | Days after which the JWT refresh token expires.                                                                                                                     | Yes                               |                                                           |
-| `AUTHENTICATION__ACTIVE_USERNAMES_PATH`         | The path to the `txt` file containing the active usernames and defining who can use this service.                                                                   | Yes                               |                                                           |
+| `AUTHENTICATION__ACTIVE_USER_EMAILS_PATH`       | The path to the `txt` file containing the active user emails for SSO OIDC authentication, defining who can use this service.                                        | Yes                               |                                                           |
+| `AUTHENTICATION__ACTIVE_USERNAMES_PATH`         | The path to the `txt` file containing the active usernames for LDAP authentication, defining who can use this service.                                              | Yes                               |                                                           |
 | `MAINTENANCE__MAINTENANCE_PATH`                 | The path to the `json` file containing the maintenance state.                                                                                                       | Yes                               |                                                           |
 | `MAINTENANCE__SCHEDULED_MAINTENANCE_PATH`       | The path to the `json` file containing the scheduled maintenance state.                                                                                             | Yes                               |                                                           |
 | `LDAP_SERVER__URL`                              | The URL to the LDAP server to connect to.                                                                                                                           | Yes                               |                                                           |
@@ -192,15 +220,33 @@ Listed below are the environment variables supported by the application.
 | `LDAP_SERVER__CERTIFICATE_VALIDATION`           | Whether to enforce TLS certificate validation when connecting to the LDAP server. Disabling this allows insecure connections and is not recommended for production. | Yes                               |                                                           |
 | `LDAP_SERVER__CA_CERTIFICATE_FILE_PATH`         | The path to the trusted Certificate Authority (CA) file used to verify the LDAP server’s TLS/SSL certificate.                                                       | If certificate validation enabled |                                                           |
 
-### How to add or remove user from system
+### How to add or remove user from system (SSO OIDC authentication)
+
+The `active_user_emails.txt` file at the root of the project directory contains the emails of the users with access to
+the system through SSO OIDC authentication. This means that you can add or remove a user from the system by adding or
+removing their email in the `active_user_emails.txt` file.
+
+**PLEASE NOTE** Changes made to the `active_user_emails.txt` file using vim do not get synced in the Docker container
+because it changes the inode index number of the file. A workaround is to create a new file using the
+`active_user_emails.txt` file, apply your changes in the new file, and then overwrite the `active_user_emails.txt` file
+with the content of the new file, see below.
+
+```bash
+cp active_user_emails.txt new_active_user_emails.txt
+vim new_active_user_emails.txt
+cat new_active_user_emails.txt > active_user_emails.txt
+rm new_active_user_emails.txt
+```
+
+### How to add or remove user from system (LDAP authentication)
 
 The `active_usernames.txt` file at the root of the project directory contains the Federal IDs of the users with access
-to the system. This means that you can add or remove a user from the system by adding or removing their Federal ID in
-the `active_usernames.txt` file.
+to the system through LDAP authentication. This means that you can add or remove a user from the system by adding or
+removing their Federal ID in the `active_usernames.txt` file.
 
 **PLEASE NOTE** Changes made to the `active_usernames.txt` file using vim do not get synced in the Docker container
-because it changes the inode index number of the file. A workaround is to create a new file using
-the `active_usernames.txt` file, apply your changes in the new file, and then overwrite the `active_usernames.txt` file
+because it changes the inode index number of the file. A workaround is to create a new file using the
+`active_usernames.txt` file, apply your changes in the new file, and then overwrite the `active_usernames.txt` file
 with the content of the new file, see below.
 
 ```bash
