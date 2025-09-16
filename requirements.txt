@@ -33,6 +33,7 @@ python-dotenv==1.1.1
 python-ldap==3.4.4
 python-multipart==0.0.20
 PyYAML==6.0.2
+requests==2.32.4
 rich==14.1.0
 rich-toolkit==0.14.9
 rignore==0.6.4
