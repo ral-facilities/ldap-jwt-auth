@@ -19,14 +19,14 @@ class Authorisation:
         """
 
         try:
-            with open(config.authentication.user_config_path, "r", encoding="utf-8") as file:
+            with open(config.authentication.users_config_path, "r", encoding="utf-8") as file:
                 user_config = yaml.safe_load(file)
                 self.roles = user_config.get("roles", {})
                 self.users = user_config.get("users", {})
 
         except FileNotFoundError as exc:
             raise UserConfigFileNotFoundError(
-                f"Cannot find file containing users configuration with path: {config.authentication.user_config_path}"
+                f"Cannot find file containing users configuration with path: {config.authentication.users_config_path}"
             ) from exc
 
     def is_active_user(self, username: str) -> bool:
@@ -50,7 +50,7 @@ class Authorisation:
 
     def is_user_admin(self, roles: list[str]) -> bool:
         """
-        Check if the given user's roles hold at least one role with the highest privilege level 
+        Check if the given user's roles hold at least one role with the highest privilege level
         defined in the configuration.
         param: roles: The list of roles for the given user
         return `True` if the user has any role which matches the role(s) with the highest privilege, `False` otherwise

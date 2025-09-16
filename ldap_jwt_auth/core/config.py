@@ -41,7 +41,7 @@ class AuthenticationConfig(BaseModel):
     jwt_algorithm: str
     access_token_validity_minutes: int
     refresh_token_validity_days: int
-    user_config_path: str
+    users_config_path: str
 
 
 class LDAPServerConfig(BaseModel):

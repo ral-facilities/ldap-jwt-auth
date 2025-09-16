@@ -44,11 +44,12 @@ This microservice requires an LDAP server to run against.
 4. (If LDAP certificate validation is enabled) Copy the `cacert.pem` file that contains all the trusted CA certificates
    to the `ldap_server_certs` directory in the root of the project.
 
-5. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
-   can use this system. The usernames are the Federal IDs and each one should be stored on a separate line.
+5. Create a `users_config.yaml` file alongside the `users_config.example.yaml` file and add all the usernames that
+   can use this system, and their roles. The usernames are the Federal IDs and each one should be stored under `users` using
+   correct yaml notation. You can also define the various roles in the system and if they are of the highest privilege.
 
    ```bash
-   cp active_usernames.example.txt active_usernames.txt
+   cp users_config.example.yaml users_config.yaml
    ```
 
 ### Inside of Docker
@@ -184,7 +185,7 @@ Listed below are the environment variables supported by the application.
 | `AUTHENTICATION__JWT_ALGORITHM`                 | The algorithm to use to decode the JWT access and refresh tokens.                                                                                                   | Yes                               |                                                           |
 | `AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES` | Minutes after which the JWT access token expires.                                                                                                                   | Yes                               |                                                           |
 | `AUTHENTICATION__REFRESH_TOKEN_VALIDITY_DAYS`   | Days after which the JWT refresh token expires.                                                                                                                     | Yes                               |                                                           |
-| `AUTHENTICATION__ACTIVE_USERNAMES_PATH`         | The path to the `txt` file containing the active usernames and defining who can use this service.                                                                   | Yes                               |                                                           |
+| `AUTHENTICATION__USERS_CONFIG_PATH`             | The path to the `yaml` file containing the active usernames and defining who can use this service and their roles.                                                  | Yes                               |                                                           |
 | `MAINTENANCE__MAINTENANCE_PATH`                 | The path to the `json` file containing the maintenance state.                                                                                                       | Yes                               |                                                           |
 | `MAINTENANCE__SCHEDULED_MAINTENANCE_PATH`       | The path to the `json` file containing the scheduled maintenance state.                                                                                             | Yes                               |                                                           |
 | `LDAP_SERVER__URL`                              | The URL to the LDAP server to connect to.                                                                                                                           | Yes                               |                                                           |

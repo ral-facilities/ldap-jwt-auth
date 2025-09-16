@@ -42,7 +42,7 @@ def test_user_config_file_not_found(file_open_mock):
         authorisation.is_active_user("username_not_active")
     assert (
         str(exc.value)
-        == f"Cannot find file containing users configuration with path: {config.authentication.user_config_path}"
+        == f"Cannot find file containing users configuration with path: {config.authentication.users_config_path}"
     )
 
 
