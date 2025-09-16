@@ -78,6 +78,20 @@ class LDAPServerConfig(BaseModel):
         return field_value
 
 
+class OIDCProviderConfig(BaseModel):
+    """
+    Configuration model for an OIDC provider.
+    """
+
+    display_name: str
+    configuration_url: str
+    client_id: str
+    verify_cert: bool = True
+    request_timeout_seconds: int = 10
+    scope: str = "openid"
+    username_claim: str = "email"
+
+
 class Config(BaseSettings):
     """
     Overall configuration model for the application.
@@ -91,6 +105,7 @@ class Config(BaseSettings):
     authentication: AuthenticationConfig
     ldap_server: LDAPServerConfig
     maintenance: MaintenanceConfig
+    oidc_providers: dict[str, OIDCProviderConfig] = {}
 
     model_config = SettingsConfigDict(
         env_file=".env",
