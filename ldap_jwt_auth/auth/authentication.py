@@ -131,7 +131,7 @@ class OIDCAuthentication:
         and that the username is part of the active user emails.
 
         :param provider_id: The ID of the OIDC provider to get the corresponding configuration for.
-        :param id_token: The provided OIDC token to verify using the JWKs of the specified OIDC provider. 
+        :param id_token: The provided OIDC token to verify using the JWKs of the specified OIDC provider.
         :raises OIDCProviderNotFoundError: If no configuration can be found for the specified OIDC provider.
         :raises InvalidJWTError: If the username claim specified in the configuration is missing in the OIDC ID token.
         :raises UserNotActiveError: If the username is not part of the active user emails.

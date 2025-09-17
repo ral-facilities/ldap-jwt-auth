@@ -110,7 +110,7 @@ class JWTHandler:
         the case then it should be checked against the list of LDAP active usernames.
 
         :param username: The username to check.
-        :return: `True` if the user is active, `False` otherwise.  
+        :return: `True` if the user is active, `False` otherwise.
         """
 
         if "@" in username and "." in username:
