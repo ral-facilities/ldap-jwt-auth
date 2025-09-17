@@ -236,9 +236,9 @@ def _get_jwks(provider_id: str) -> dict:
 @ttl_cache(ttl=24 * 60 * 60)
 def _get_well_known_config(provider_id: str) -> dict:
     """
-    Fetch the well known configugration for the specified OIDC provider.
+    Fetch the well known configuration for the specified OIDC provider.
 
-    :param provider_id: The ID of the OIDC provider to fetch the well known configugration for.
+    :param provider_id: The ID of the OIDC provider to fetch the well known configuration for.
     :raises OIDCProviderError: If it fails to fetch the well known configuration.
     :return: The well known configuration for the specified OIDC provider.
     """

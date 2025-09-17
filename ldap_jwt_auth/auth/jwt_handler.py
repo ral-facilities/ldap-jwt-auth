@@ -105,9 +105,9 @@ class JWTHandler:
 
     def _is_user_active(self, username: str) -> bool:
         """
-        Checks if the provided username is active. If the username contains an '@' and '.' charcaters then it should be
+        Checks if the provided username is active. If the username contains an '@' and '.' characters then it should be
         checked against the list of OIDC active user emails as the user was authenticated through OIDC. If this is not
-        the case then it should be checked against the list of LPDA active usernames.
+        the case then it should be checked against the list of LDAP active usernames.
 
         :param username: The username to check.
         :return: `True` if the user is active, `False` otherwise.  

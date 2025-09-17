@@ -106,7 +106,7 @@ def ldap_login(
     jwt_handler: Annotated[JWTHandler, Depends(JWTHandler)],
 ) -> JSONResponse:
     # pylint: disable=missing-function-docstring
-    logger.info("Authenticating a user using username and password")
+    logger.info("Authenticating a user using LDAP credentials")
 
     try:
         ldap_authentication.authenticate(user_credentials)
