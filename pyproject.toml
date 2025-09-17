@@ -36,3 +36,9 @@ dev = [
 
 [tool.setuptools]
 packages = ["ldap_jwt_auth"]
+
+[tool.coverage.run]
+omit = [
+    # Exclude routers from coverage measurement as they are not unit tested
+    "ldap_jwt_auth/routers/*"
+]
