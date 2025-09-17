@@ -10,7 +10,7 @@ This microservice requires an LDAP server to run against.
 ### Prerequisites
 
 - Docker and Docker Compose installed (if you want to run the microservice inside Docker)
-- Python 3.13 installed on your machine (if you are not using Docker)
+- Python 3.12 installed on your machine (if you are not using Docker)
 - LDAP server to connect to
 - CA certificate PEM file containing all the trusted CA certificates (if LDAP certificate validation is enabled which is
   strongly recommended to be in production)
@@ -123,7 +123,7 @@ be synced to the container next time you run the tests.
     --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
     --volume ./test:/app/test \
     --volume ./logging.ini:/app/logging.ini \
-    ldap-jwt-auth:test \
+    ldap-jwt-auth:test
     pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report term-missing test/unit -v
    ```
 

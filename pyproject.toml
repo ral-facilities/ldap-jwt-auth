@@ -2,7 +2,7 @@
 name = "ldap-jwt-auth"
 description = "Python microservice providing user authentication against LDAP server and returning a JSON Web Token."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 version = "2.0.0"
 
 dependencies = [
