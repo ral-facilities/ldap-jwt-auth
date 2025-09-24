@@ -89,7 +89,7 @@ class OIDCProviderConfig(BaseModel):
     client_id: str
     verify_cert: bool = True
     request_timeout_seconds: int = 10
-    scope: str = "openid"
+    scope: str = "openid email"
     username_claim: str = "email"
 
 
