@@ -154,7 +154,7 @@ class OIDCAuthentication:
                 key=key,
                 algorithms=[key.algorithm_name],
                 audience=provider_config.client_id,
-                isser=1,
+                issuer=_get_well_known_config(provider_id)["issuer"],
                 verify=True,
                 options={"require": ["exp", "aud", "iss"], "verify_exp": True, "verify_aud": True, "verify_iss": True},
             )
