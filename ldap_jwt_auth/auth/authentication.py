@@ -158,7 +158,7 @@ class OIDCAuthentication:
                 verify=True,
                 options={"require": ["exp", "aud", "iss"], "verify_exp": True, "verify_aud": True, "verify_iss": True},
                 # Amount of leeway (in seconds) when validating exp & iat
-                leeway=5
+                leeway=5,
             )
 
             username = payload.get(provider_config.username_claim)
