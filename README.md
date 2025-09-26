@@ -226,7 +226,7 @@ Listed below are the environment variables supported by the application.
 | `OIDC_PROVIDERS__{provider_name}__SCOPE`                   | The claims (listed in the `GET` response of the `/oidc_providers` endpoint) the API client should request from the OIDC provider (i.e. email etc) when obtaining an OIDC ID token for the `/oidc_login/{provider_id}` endpoint. | No                                | `openid email`                                            |
 | `OIDC_PROVIDERS__{provider_name}__USERNAME_CLAIM`          | The username claim to get from the OIDC ID token payload to check against the list of active user emails.                                                                                                                       | No                                | `email`                                                   |
 
-### How to add or remove user from system (SSO OIDC authentication)
+### How to add or remove a user from the system (SSO OIDC authentication)
 
 The `active_user_emails.txt` file at the root of the project directory contains the emails of the users with access to
 the system through SSO OIDC authentication. This means that you can add or remove a user from the system by adding or
@@ -244,7 +244,7 @@ cat new_active_user_emails.txt > active_user_emails.txt
 rm new_active_user_emails.txt
 ```
 
-### How to add or remove user from system (LDAP authentication)
+### How to add or remove a user from the system (LDAP authentication)
 
 The `active_usernames.txt` file at the root of the project directory contains the Federal IDs of the users with access
 to the system through LDAP authentication. This means that you can add or remove a user from the system by adding or
