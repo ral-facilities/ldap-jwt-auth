@@ -4,15 +4,16 @@ Unit tests for the `Maintenance` class.
 
 import json
 
+from unittest.mock import mock_open, patch
+
 import pytest
 from ldap_jwt_auth.core.exceptions import InvalidMaintenanceFileError, MaintenanceFileReadError
 from ldap_jwt_auth.core.maintenance import Maintenance
-from unittest.mock import mock_open, patch
 
 
 def test_get_maintenance_state():
     """
-    Test returning maintenance state schema
+    Test returning maintenance state schema.
     """
     mock_maintenance_data = {"show": True, "message": "This is a test message"}
     mock_maintenance_file = json.dumps(mock_maintenance_data)
@@ -30,7 +31,7 @@ def test_get_maintenance_state():
 
 def test_get_maintenance_state_invalid_file():
     """
-    Test returning maintenance state schema when file is invalid
+    Test returning maintenance state schema when file is invalid.
     """
     mock_maintenance_data = {"show": "test", "message": False}
     mock_maintenance_file = json.dumps(mock_maintenance_data)
@@ -47,6 +48,9 @@ def test_get_maintenance_state_invalid_file():
 
 
 def test_get_maintenance_state_missing_file():
+    """
+    Test returning maintenance state schema when file is missing.
+    """
     with patch("builtins.open", mock_open()) as mocked_open:
         mocked_open.side_effect = IOError
         maintenance = Maintenance()
@@ -58,7 +62,7 @@ def test_get_maintenance_state_missing_file():
 
 def test_get_scheduled_maintenance_state():
     """
-    Test returning scheduled maintenance state schema
+    Test returning scheduled maintenance state schema.
     """
     mock_scheduled_maintenance_data = {"show": True, "message": "This is a test message"}
     mock_scheduled_maintenance_file = json.dumps(mock_scheduled_maintenance_data)
@@ -76,7 +80,7 @@ def test_get_scheduled_maintenance_state():
 
 def test_get_scheduled_maintenance_state_invalid_file():
     """
-    Test returning scheduled maintenance state schema when file is invalid
+    Test returning scheduled maintenance state schema when file is invalid.
     """
     mock_scheduled_maintenance_data = {"show": None, "message": "This is a test message"}
     mock_scheduled_maintenance_file = json.dumps(mock_scheduled_maintenance_data)
@@ -93,6 +97,9 @@ def test_get_scheduled_maintenance_state_invalid_file():
 
 
 def test_get_scheduled_maintenance_state_missing_file():
+    """
+    Test returning scheduled maintenance state schema when file is missing.
+    """
     with patch("builtins.open", mock_open()) as mocked_open:
         mocked_open.side_effect = IOError
         maintenance = Maintenance()

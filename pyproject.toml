@@ -6,10 +6,12 @@ requires-python = ">=3.13"
 version = "2.0.0"
 
 dependencies = [
+    "cachetools",
     "cryptography",
     "fastapi[all]",
     "PyJWT",
     "python-ldap",
+    "requests",
     "uvicorn"
 ]
 

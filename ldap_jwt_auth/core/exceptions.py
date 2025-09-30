@@ -9,6 +9,12 @@ class ActiveUsernamesFileNotFoundError(Exception):
     """
 
 
+class ActiveUserEmailsFileNotFoundError(Exception):
+    """
+    Exception raised when the file containing the emails of the active users cannot be found.
+    """
+
+
 class InvalidCredentialsError(Exception):
     """
     Exception raised when invalid credentials are provided.
@@ -29,7 +35,19 @@ class JWTRefreshError(Exception):
 
 class LDAPServerError(Exception):
     """
-    Exception raised when there is problem with the LDAP server.
+    Exception raised when there is a problem with the LDAP server.
+    """
+
+
+class OIDCProviderNotFoundError(Exception):
+    """
+    Exception raised when an unknown OIDC provider is used.
+    """
+
+
+class OIDCProviderError(Exception):
+    """
+    Exception raised when there is a problem with the OIDC provider.
     """
 
 
@@ -42,6 +60,12 @@ class UserNotActiveError(Exception):
 class UsernameMismatchError(Exception):
     """
     Exception raised when the usernames in the access and refresh tokens do not match.
+    """
+
+
+class UserEmailMismatchError(Exception):
+    """
+    Exception raised when the user emails in the access and refresh tokens do not match.
     """
 
 
