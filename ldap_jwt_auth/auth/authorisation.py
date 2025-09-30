@@ -5,7 +5,7 @@ Module for for providing a class for managing user authorisation
 import yaml
 
 from ldap_jwt_auth.core.config import config
-from ldap_jwt_auth.core.exceptions import UserConfigFileNotFoundError, UserNotActiveError
+from ldap_jwt_auth.core.exceptions import UserConfigFileNotFoundError
 
 
 class Authorisation:
@@ -37,7 +37,6 @@ class Authorisation:
         """
         return self._find_user(identifier) is not None
 
-
     def get_user_roles(self, identifier: str) -> list[str]:
         """
         Get the provided user's roles
@@ -47,7 +46,6 @@ class Authorisation:
 
         user = self._find_user(identifier)
         return user.get("roles", []) if user else []
-
 
     def is_user_admin(self, roles: list[str]) -> bool:
         """
@@ -59,9 +57,8 @@ class Authorisation:
         for role in roles:
             if self.roles.get(role, {}).get("userIsAdmin", False):
                 return True
-            
-        return False
 
+        return False
 
     def _find_user(self, identifier: str) -> dict | None:
         """

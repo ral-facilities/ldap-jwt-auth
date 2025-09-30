@@ -13,8 +13,6 @@ from ldap_jwt_auth.auth.authentication import LDAPAuthentication, OIDCAuthentica
 from ldap_jwt_auth.auth.jwt_handler import JWTHandler
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import (
-    InvalidCredentialsError,
-    LDAPServerError,
     UserNotActiveError,
     UserConfigFileNotFoundError,
     InvalidCredentialsError,
@@ -22,7 +20,6 @@ from ldap_jwt_auth.core.exceptions import (
     LDAPServerError,
     OIDCProviderError,
     OIDCProviderNotFoundError,
-    UserNotActiveError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 

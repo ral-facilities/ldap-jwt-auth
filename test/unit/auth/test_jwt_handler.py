@@ -11,27 +11,50 @@ from ldap_jwt_auth.auth.jwt_handler import JWTHandler
 from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UsernameMismatchError, UserNotActiveError
 
 VALID_ACCESS_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRydWUsImV4cCI6MjUzNDAyMzAwNzk5fQ.gWXkZNeLCgNA04KhkGcAUB8WwrrVr8HMKp8yd9BUEBfDuiN1yekPxwKJ7LZDndHqYL4z9WWfVsDE5vYyWfjDJjhoymuP-VYTAI2GxbmazRmknsl9L-vRo31oPX3v2Cs5V2tcBv7dM49gzY7w-dS0b9QsOrn4Y1z9zLj4kLpVtNm0EhtbwThxMk8qVNNtEu76TAnYrdWAoz7_IedBh9NRf48EKJFfoh4CSbfXhHsGRZjvAKnjU-khaibWP3aWuMzN1nwQJ8WasgvhPaxMxd1qzKTbfpMMjg2eo3hDcQogU545P8zO4PcfzIid1g9hF1vMgRsAtQNK385oqBjYfOOWZw"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRyd"
+    "WUsImV4cCI6MjUzNDAyMzAwNzk5fQ.gWXkZNeLCgNA04KhkGcAUB8WwrrVr8HMKp8yd9BUEBfDuiN1yekPxwKJ7LZDndHqYL4z9WWfVsDE5vYyWfjD"
+    "JjhoymuP-VYTAI2GxbmazRmknsl9L-vRo31oPX3v2Cs5V2tcBv7dM49gzY7w-dS0b9QsOrn4Y1z9zLj4kLpVtNm0EhtbwThxMk8qVNNtEu76TAnYrd"
+    "WAoz7_IedBh9NRf48EKJFfoh4CSbfXhHsGRZjvAKnjU-khaibWP3aWuMzN1nwQJ8WasgvhPaxMxd1qzKTbfpMMjg2eo3hDcQogU545P8zO4PcfzIid"
+    "1g9hF1vMgRsAtQNK385oqBjYfOOWZw"
 )
 
 VALID_REFRESH_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRydWUsImV4cCI6MjUzNDAyMzAwNzk5fQ.gWXkZNeLCgNA04KhkGcAUB8WwrrVr8HMKp8yd9BUEBfDuiN1yekPxwKJ7LZDndHqYL4z9WWfVsDE5vYyWfjDJjhoymuP-VYTAI2GxbmazRmknsl9L-vRo31oPX3v2Cs5V2tcBv7dM49gzY7w-dS0b9QsOrn4Y1z9zLj4kLpVtNm0EhtbwThxMk8qVNNtEu76TAnYrdWAoz7_IedBh9NRf48EKJFfoh4CSbfXhHsGRZjvAKnjU-khaibWP3aWuMzN1nwQJ8WasgvhPaxMxd1qzKTbfpMMjg2eo3hDcQogU545P8zO4PcfzIid1g9hF1vMgRsAtQNK385oqBjYfOOWZw"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRyd"
+    "WUsImV4cCI6MjUzNDAyMzAwNzk5fQ.gWXkZNeLCgNA04KhkGcAUB8WwrrVr8HMKp8yd9BUEBfDuiN1yekPxwKJ7LZDndHqYL4z9WWfVsDE5vYyWfjD"
+    "JjhoymuP-VYTAI2GxbmazRmknsl9L-vRo31oPX3v2Cs5V2tcBv7dM49gzY7w-dS0b9QsOrn4Y1z9zLj4kLpVtNm0EhtbwThxMk8qVNNtEu76TAnYrd"
+    "WAoz7_IedBh9NRf48EKJFfoh4CSbfXhHsGRZjvAKnjU-khaibWP3aWuMzN1nwQJ8WasgvhPaxMxd1qzKTbfpMMjg2eo3hDcQogU545P8zO4PcfzIid"
+    "1g9hF1vMgRsAtQNK385oqBjYfOOWZw"
 )
-
 EXPIRED_ACCESS_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRydWUsImV4cCI6OTQ2Njg0Nzk5fQ.T9CEJWxCzvpuphZictOzaYVCJOEpO5eZ7T3EbYUE-AMUFNPzFJwYjuZVsA-rw-pNIAbUDfvlbYyMxx2ViII9XYjW0wLc3jJhpYz1t3kxhZI24NI5uReqZCtsiWLnRtVYeAjfRb8xgVH4ileEirR4xQLazBGNzN1KI8kYEcZ9m1253YUD5nsNcyz7cNirRoeSmfAi-kBU_zT7SuuP2NoVAKdhyX_tj-O44vzj8J-HK9YDxdLigiDZfTF2KVkPltDKe-ImumH9Z4zvHJMQC5Fq323VrjFp4WQn9cob-zYzS61s9jnqiikEsl89uLA-DlExviEnXIogsGL-6Qqq1_HldQ"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRyd"
+    "WUsImV4cCI6OTQ2Njg0Nzk5fQ.T9CEJWxCzvpuphZictOzaYVCJOEpO5eZ7T3EbYUE-AMUFNPzFJwYjuZVsA-rw-pNIAbUDfvlbYyMxx2ViII9XYjW"
+    "0wLc3jJhpYz1t3kxhZI24NI5uReqZCtsiWLnRtVYeAjfRb8xgVH4ileEirR4xQLazBGNzN1KI8kYEcZ9m1253YUD5nsNcyz7cNirRoeSmfAi-kBU_z"
+    "T7SuuP2NoVAKdhyX_tj-O44vzj8J-HK9YDxdLigiDZfTF2KVkPltDKe-ImumH9Z4zvHJMQC5Fq323VrjFp4WQn9cob-zYzS61s9jnqiikEsl89uLA-"
+    "DlExviEnXIogsGL-6Qqq1_HldQ"
 )
 
 EXPIRED_REFRESH_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRydWUsImV4cCI6OTQ2Njg0Nzk5fQ.T9CEJWxCzvpuphZictOzaYVCJOEpO5eZ7T3EbYUE-AMUFNPzFJwYjuZVsA-rw-pNIAbUDfvlbYyMxx2ViII9XYjW0wLc3jJhpYz1t3kxhZI24NI5uReqZCtsiWLnRtVYeAjfRb8xgVH4ileEirR4xQLazBGNzN1KI8kYEcZ9m1253YUD5nsNcyz7cNirRoeSmfAi-kBU_zT7SuuP2NoVAKdhyX_tj-O44vzj8J-HK9YDxdLigiDZfTF2KVkPltDKe-ImumH9Z4zvHJMQC5Fq323VrjFp4WQn9cob-zYzS61s9jnqiikEsl89uLA-DlExviEnXIogsGL-6Qqq1_HldQ"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRyd"
+    "WUsImV4cCI6OTQ2Njg0Nzk5fQ.T9CEJWxCzvpuphZictOzaYVCJOEpO5eZ7T3EbYUE-AMUFNPzFJwYjuZVsA-rw-pNIAbUDfvlbYyMxx2ViII9XYjW"
+    "0wLc3jJhpYz1t3kxhZI24NI5uReqZCtsiWLnRtVYeAjfRb8xgVH4ileEirR4xQLazBGNzN1KI8kYEcZ9m1253YUD5nsNcyz7cNirRoeSmfAi-kBU_z"
+    "T7SuuP2NoVAKdhyX_tj-O44vzj8J-HK9YDxdLigiDZfTF2KVkPltDKe-ImumH9Z4zvHJMQC5Fq323VrjFp4WQn9cob-zYzS61s9jnqiikEsl89uLA-"
+    "DlExviEnXIogsGL-6Qqq1_HldQ"
 )
 
 EXPECTED_ACCESS_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRydWUsImV4cCI6MTcwNTQ4NTkwMH0.CiKTW_7_1GG9vGyADwx1DW9m6rmqFpoGIqeDGN4TXZURVlRP9RvQhs6vBawDa2TTXEAzVno3rNBbycGdgFAu8JKJk0h244PpBmTmUKxFGGTcZt1cSJ8-tEC0Yy3gZti9-DaG8S1ByQJ1b5IJE_gcDv6gXfUNurr2KWzeIh2ki_b_p96fj4Vexr5z1IsL9IEpb84_TzfQ6fEWaeIWGOXvCPHx4qMofNfo4GotF83vbN9tlYoZX11cuSQY-9q_v3yOt9r5azXqBDPeGLqX4kGhNZE40Y56Cbyqz-eWPfxQmuyiF0PNgu1-u2f4lx4pXKuYdDqbCFBnlwtrdr8vlm8xyA"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRyd"
+    "WUsImV4cCI6MTcwNTQ4NTkwMH0.CiKTW_7_1GG9vGyADwx1DW9m6rmqFpoGIqeDGN4TXZURVlRP9RvQhs6vBawDa2TTXEAzVno3rNBbycGdgFAu8JK"
+    "Jk0h244PpBmTmUKxFGGTcZt1cSJ8-tEC0Yy3gZti9-DaG8S1ByQJ1b5IJE_gcDv6gXfUNurr2KWzeIh2ki_b_p96fj4Vexr5z1IsL9IEpb84_TzfQ6"
+    "fEWaeIWGOXvCPHx4qMofNfo4GotF83vbN9tlYoZX11cuSQY-9q_v3yOt9r5azXqBDPeGLqX4kGhNZE40Y56Cbyqz-eWPfxQmuyiF0PNgu1-u2f4lx4"
+    "pXKuYdDqbCFBnlwtrdr8vlm8xyA"
 )
 
 EXPECTED_REFRESH_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRydWUsImV4cCI6MTcwNjA5MDQwMH0.X7rHFpxSxySjKQs1RtL7U8whFEg8lLQbPTwt1DtokQpGdBgTyOcuLeK1Rf_PH1kgY54WaY6_MU4koirHwTp17VNk--M8YUSVhdG1q6gco6_Nbb-XWLigqWllVpDwNaKXZIPgtWZpCxc-Sz5OP7K6Oj0k0Zd8OIbP5KQM5H74jfoMxwfFHGJ3oJ5T3LdZTRmALRAsfXGqebEzVUsbNEXTUzJ6dAexA-k8LgpRGcQyS6qQu5FmQXyxT-qW5cd9WaV4C3bMgGW7qO2jgSZ_VnYHl0ZlR7iDO-lRK4PqJ9uZ2tluJ173KLVW0AcX_zjdssstLT100wLKrx5DgwwCjTX4Qg"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZXMiOlsiYWRtaW4iXSwidXNlcklzQWRtaW4iOnRyd"
+    "WUsImV4cCI6MTcwNjA5MDQwMH0.X7rHFpxSxySjKQs1RtL7U8whFEg8lLQbPTwt1DtokQpGdBgTyOcuLeK1Rf_PH1kgY54WaY6_MU4koirHwTp17VN"
+    "k--M8YUSVhdG1q6gco6_Nbb-XWLigqWllVpDwNaKXZIPgtWZpCxc-Sz5OP7K6Oj0k0Zd8OIbP5KQM5H74jfoMxwfFHGJ3oJ5T3LdZTRmALRAsfXGqe"
+    "bEzVUsbNEXTUzJ6dAexA-k8LgpRGcQyS6qQu5FmQXyxT-qW5cd9WaV4C3bMgGW7qO2jgSZ_VnYHl0ZlR7iDO-lRK4PqJ9uZ2tluJ173KLVW0AcX_zj"
+    "dssstLT100wLKrx5DgwwCjTX4Qg"
 )
 
 
@@ -164,7 +187,7 @@ def test_verify_token_with_access_token():
     jwt_handler = JWTHandler()
     payload = jwt_handler.verify_token(VALID_ACCESS_TOKEN)
 
-    assert payload == {'username': 'username', 'roles': ['admin'], 'userIsAdmin': True, 'exp': 253402300799}
+    assert payload == {"username": "username", "roles": ["admin"], "userIsAdmin": True, "exp": 253402300799}
 
 
 def test_verify_token_with_refresh_token():
@@ -174,7 +197,7 @@ def test_verify_token_with_refresh_token():
     jwt_handler = JWTHandler()
     payload = jwt_handler.verify_token(VALID_REFRESH_TOKEN)
 
-    assert payload == {'username': 'username', 'roles': ['admin'], 'userIsAdmin': True, 'exp': 253402300799}
+    assert payload == {"username": "username", "roles": ["admin"], "userIsAdmin": True, "exp": 253402300799}
 
 
 def test_verify_token_with_expired_access_token():

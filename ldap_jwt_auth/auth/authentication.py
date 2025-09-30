@@ -6,12 +6,11 @@ import logging
 
 from cachetools.func import ttl_cache
 
-from ldap_jwt_auth.auth.authorisation import Authorisation
-from ldap_jwt_auth.core.config import config
 import jwt
 import ldap
 import requests
 
+from ldap_jwt_auth.auth.authorisation import Authorisation
 from ldap_jwt_auth.core.config import OIDCProviderConfig, config
 from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
@@ -94,13 +93,11 @@ class LDAPAuthentication:
             raise LDAPServerError(message) from exc
 
 
-
-
 class OIDCAuthentication:
     """
     Class for managing authentication against an OIDC provider.
     """
-    
+
     def __init__(self) -> None:
         self._authorisation = Authorisation()
 

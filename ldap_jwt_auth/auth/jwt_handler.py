@@ -10,7 +10,6 @@ import jwt
 from cryptography.hazmat.primitives import serialization
 
 from ldap_jwt_auth.auth.authorisation import Authorisation
-from ldap_jwt_auth.auth.authentication import LDAPAuthentication, OIDCAuthentication
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
 from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UserNotActiveError, UsernameMismatchError
