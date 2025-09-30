@@ -2,14 +2,16 @@
 name = "ldap-jwt-auth"
 description = "Python microservice providing user authentication against LDAP server and returning a JSON Web Token."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 version = "2.0.0"
 
 dependencies = [
+    "cachetools",
     "cryptography",
     "fastapi[all]",
     "PyJWT",
     "python-ldap",
+    "requests",
     "uvicorn"
 ]
 
@@ -36,3 +38,9 @@ dev = [
 
 [tool.setuptools]
 packages = ["ldap_jwt_auth"]
+
+[tool.coverage.run]
+omit = [
+    # Exclude routers from coverage measurement as they are not unit tested
+    "ldap_jwt_auth/routers/*"
+]

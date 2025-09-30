@@ -15,5 +15,25 @@ services:
     env_file:
       - path: ./.env
     ports:
-      - 8000:8000
+      - 8004:8000
     restart: on-failure
+    depends_on:
+      - keycloak
+    extra_hosts:
+      # Want to use localhost for keycloak connection so the presigned URLs are correct but also want to avoid using
+      # host networking
+      - "localhost:host-gateway"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    container_name: keycloak
+    command: start-dev --import-realm
+    volumes:
+      - ./keycloak/testrealm.json:/opt/keycloak/data/import/testrealm.json
+    restart: always
+    ports:
+      - 9004:8080
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: dev-file

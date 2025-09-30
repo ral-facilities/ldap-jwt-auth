@@ -87,7 +87,7 @@ def test_get_refresh_token(datetime_mock):
     assert refresh_token == EXPECTED_REFRESH_TOKEN
 
 
-@patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
+@patch("ldap_jwt_auth.auth.jwt_handler.LDAPAuthentication.is_user_active")
 @patch("ldap_jwt_auth.auth.jwt_handler.datetime")
 def test_refresh_access_token(datetime_mock, is_user_active_mock):
     """
@@ -102,7 +102,7 @@ def test_refresh_access_token(datetime_mock, is_user_active_mock):
     assert access_token == EXPECTED_ACCESS_TOKEN
 
 
-@patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
+@patch("ldap_jwt_auth.auth.jwt_handler.LDAPAuthentication.is_user_active")
 def test_refresh_access_token_with_non_matching_usernames(is_user_active_mock):
     """
     Test refreshing an access token when the usernames in the access and refresh tokens do not match.
@@ -123,7 +123,7 @@ def test_refresh_access_token_with_non_matching_usernames(is_user_active_mock):
     assert str(exc.value.__cause__) == "The usernames in the access and refresh tokens do not match"
 
 
-@patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
+@patch("ldap_jwt_auth.auth.jwt_handler.LDAPAuthentication.is_user_active")
 def test_refresh_access_token_with_not_active_username(is_user_active_mock):
     """
     Test refreshing an access token when username is not active.
@@ -138,7 +138,7 @@ def test_refresh_access_token_with_not_active_username(is_user_active_mock):
     assert str(exc.value.__cause__) == "The provided username 'username' is not part of the active usernames"
 
 
-@patch("ldap_jwt_auth.auth.jwt_handler.Authentication.is_user_active")
+@patch("ldap_jwt_auth.auth.jwt_handler.LDAPAuthentication.is_user_active")
 @patch("ldap_jwt_auth.auth.jwt_handler.datetime")
 def test_refresh_access_token_with_valid_access_token(datetime_mock, is_user_active_mock):
     """
