@@ -5,9 +5,12 @@ roles:
     userIsAdmin: false
 
 users:
-  abc123:
+  - username: abc123
+    email: abc123@example.com
     roles: [admin, moderator]
-  def456:
+
+  - username: def456:
     roles: [moderator]
-  ghi789:
+  
+  - email: ghi789@example.com
     roles: []

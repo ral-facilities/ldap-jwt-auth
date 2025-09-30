@@ -87,7 +87,7 @@ class JWTHandler:
             if username != refresh_token_payload["username"]:
                 raise UsernameMismatchError("The usernames in the access and refresh tokens do not match")
 
-            if not self._is_user_active(username):
+            if not self._authorisation.is_active_user(username):
                 raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
 
             access_token_payload["exp"] = datetime.now(timezone.utc) + timedelta(
@@ -115,23 +115,6 @@ class JWTHandler:
             message = "Invalid JWT token"
             logger.exception(message)
             raise InvalidJWTError(message) from exc
-
-    def _is_user_active(self, username: str) -> bool:
-        """
-        Checks if the provided username is active. If the username contains an '@' and '.' characters then it should be
-        checked against the list of OIDC active user emails as the user was authenticated through OIDC. If this is not
-        the case then it should be checked against the list of LDAP active usernames.
-
-        :param username: The username to check.
-        :return: `True` if the user is active, `False` otherwise.
-        """
-
-        if "@" in username and "." in username:
-            oidc_authentication = OIDCAuthentication()
-            return oidc_authentication.is_user_active(username)
-
-        ldap_authentication = LDAPAuthentication()
-        return ldap_authentication.is_user_active(username)
 
     def _get_jwt_payload(self, token: str, jwt_decode_options: dict | None = None) -> Dict[str, Any]:
         """

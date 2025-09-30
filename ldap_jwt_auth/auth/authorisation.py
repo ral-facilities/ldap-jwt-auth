@@ -29,24 +29,25 @@ class Authorisation:
                 f"Cannot find file containing users configuration with path: {config.authentication.users_config_path}"
             ) from exc
 
-    def is_active_user(self, username: str) -> bool:
+    def is_active_user(self, identifier: str) -> bool:
         """
-        Check if the provided username is a part of the active usernames.
-        :param username: The username to check.
+        Check if the provided username or email is a part of the active users username or email.
+        :param identifier: The username or email to check.
         :return `True` if the user is active, `False` otherwise
         """
-        return username in self.users
+        return self._find_user(identifier) is not None
 
-    def get_user_roles(self, username: str) -> list[str]:
+
+    def get_user_roles(self, identifier: str) -> list[str]:
         """
-        Get the provided username's roles
-        :param username: The username to fetch for
+        Get the provided user's roles
+        :param identifier: The username or email to fetch for
         :return `List[str]` containing the defined roles of the user, can be an empty list
         """
-        if not self.is_active_user(username):
-            raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
 
-        return self.users.get(username, {}).get("roles", [])
+        user = self._find_user(identifier)
+        return user.get("roles", []) if user else []
+
 
     def is_user_admin(self, roles: list[str]) -> bool:
         """
@@ -58,4 +59,17 @@ class Authorisation:
         for role in roles:
             if self.roles.get(role, {}).get("userIsAdmin", False):
                 return True
+            
         return False
+
+
+    def _find_user(self, identifier: str) -> dict | None:
+        """
+        Find a user by username or email.
+        :param identifier: The username or email to check.
+        Returns the user dict if found, otherwise None.
+        """
+        for user in self.users:
+            if user.get("username") == identifier or user.get("email") == identifier:
+                return user
+        return None

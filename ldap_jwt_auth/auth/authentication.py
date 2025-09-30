@@ -20,7 +20,6 @@ from ldap_jwt_auth.core.exceptions import (
     OIDCProviderNotFoundError,
     OIDCProviderError,
     InvalidJWTError,
-    ActiveUserEmailsFileNotFoundError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
@@ -101,6 +100,9 @@ class OIDCAuthentication:
     """
     Class for managing authentication against an OIDC provider.
     """
+    
+    def __init__(self) -> None:
+        self._authorisation = Authorisation()
 
     def authenticate(self, provider_id: str, id_token: str) -> str:
         """
@@ -144,41 +146,13 @@ class OIDCAuthentication:
             if not username:
                 raise InvalidJWTError("Username claim missing in OIDC ID token")
 
-            if not self.is_user_active(username):
+            if not self._authorisation.is_active_user(username):
                 raise UserNotActiveError(f"The provided email '{username}' is not part of the active user emails")
 
             return username
 
         except (jwt.exceptions.ExpiredSignatureError, jwt.exceptions.InvalidTokenError) as exc:
             raise InvalidJWTError("Invalid OIDC ID token") from exc
-
-    def is_user_active(self, user_email: str) -> bool:
-        """
-        Check if the provided user email is part of the active user emails.
-
-        :param user_email: The user email to check.
-        :return: `True` if the user is active, `False` otherwise.
-        """
-        logger.info("Checking if user is active")
-        active_user_emails = self.get_active_user_emails()
-        return user_email in active_user_emails
-
-    def get_active_user_emails(self) -> list:
-        """
-        Load the emails of the active users as a list from a `txt` file. It removes any leading and trailing whitespaces
-        and does not load empty lines/strings.
-
-        :return: The list of emails of the active users.
-        :raises ActiveUsernamesFileNotFoundError: If the file containing the emails of the active users cannot be found.
-        """
-        try:
-            with open(config.authentication.active_user_emails_path, "r", encoding="utf-8") as file:
-                return [line.strip() for line in file.readlines() if line.strip()]
-        except FileNotFoundError as exc:
-            raise ActiveUserEmailsFileNotFoundError(
-                "Cannot find file containing emails of active users with path: "
-                f"{config.authentication.active_user_emails_path}"
-            ) from exc
 
 
 @ttl_cache(ttl=2 * 60 * 60)
