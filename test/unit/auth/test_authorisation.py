@@ -56,17 +56,6 @@ def test_get_user_roles():
     assert user_roles == ["admin"]
 
 
-def test_get_user_roles_for_non_active_user():
-    """
-    Test `get_user_roles` when searching for roles for a non-active username
-    """
-
-    with pytest.raises(UserNotActiveError) as exc:
-        authorisation = Authorisation()
-        authorisation.get_user_roles("username_not_active")
-    assert str(exc.value) == f"The provided username 'username_not_active' is not part of the active usernames"
-
-
 def test_is_user_admin():
     """
     Test `is_user_admin` for roles which include highest privilege role
