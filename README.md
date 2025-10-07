@@ -46,9 +46,10 @@ This microservice requires an LDAP server to run against.
 4. (If LDAP certificate validation is enabled) Copy the `cacert.pem` file that contains all the trusted CA certificates
    to the `ldap_server_certs` directory in the root of the project.
 
-5. Create a `users_config.yaml` file alongside the `users_config.example.yaml` file and add all the usernames (Federal IDs) and emails that
-   can use this system (via LDAP authentication or SSO OIDC), and their roles. The usernames are the Federal IDs and each one should be stored under `users` using
-   correct yaml notation. You can also define the various roles in the system and if they are of the highest privilege.
+5. Create a `users_config.yaml` file alongside the `users_config.example.yaml` file and add all the usernames
+   (FederalIDs) and emails that can use this system (via LDAP authentication or SSO OIDC), and their roles. The
+   usernames are the Federal IDs and each one should be stored under `users` using correct yaml notation. You can also
+   define the various roles in the system and if they are of the highest privilege.
 
    ```bash
    cp users_config.example.yaml users_config.yaml
@@ -63,8 +64,8 @@ Ensure that Docker is installed and running on your machine before proceeding.
 The easiest way to run the application with Docker for local development is using the `docker-compose.yml` file. It is
 configured to start:
 
-- A keycloack instance for SSO authentication that can be accessed at `localhost:9004` using `admin` as the username
-  and password to access the Admin Console. To get an ID token from the keycloak instance to then use for the
+- A keycloak instance for SSO authentication that can be accessed at `localhost:9004` using `admin` as the username and
+  password to access the Admin Console. To get an ID token from the keycloak instance to then use for the
   `http://localhost:8004/oidc_login/keycloak` endpoint, run:
 
   ```bash
@@ -111,8 +112,7 @@ changes made to the code and automatically reload the application on the fly.
     --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
     --volume ./keys:/app/keys \
     --volume ./ldap_server_certs/cacert.pem:/app/ldap_server_certs/cacert.pem \
-    --volume ./active_user_emails.txt:/app/active_user_emails.txt \
-    --volume ./active_usernames.txt:/app/active_usernames.txt \
+    --volume ./users_config.yaml:/app/users_config.yaml \
     --volume ./maintenance/maintenance.json:/app/maintenance/maintenance.json \
     --volume ./maintenance/scheduled_maintenance.json:/app/maintenance/scheduled_maintenance.json \
     --volume ./logging.ini:/app/logging.ini \
@@ -211,7 +211,6 @@ Listed below are the environment variables supported by the application.
 | `LDAP_SERVER__REALM`                                       | The realm for the LDAP server.                                                                                                                                                                                                  | Yes                               |                                                           |
 | `LDAP_SERVER__CERTIFICATE_VALIDATION`                      | Whether to enforce TLS certificate validation when connecting to the LDAP server. Disabling this allows insecure connections and is not recommended for production.                                                             | Yes                               |                                                           |
 | `LDAP_SERVER__CA_CERTIFICATE_FILE_PATH`                    | The path to the trusted Certificate Authority (CA) file used to verify the LDAP server’s TLS/SSL certificate.                                                                                                                   | If certificate validation enabled |                                                           |
-|                                                            |
 | `OIDC_PROVIDERS__{provider_name}__DISPLAY_NAME`            | The display name (listed in the `GET` response of the `/oidc_providers` endpoint) for use by frontend web applications.                                                                                                         | Yes                               |                                                           |
 | `OIDC_PROVIDERS__{provider_name}__CONFIGURATION_URL`       | The URL to the well known configuration for the OIDC provider.                                                                                                                                                                  | Yes                               |                                                           |
 | `OIDC_PROVIDERS__{provider_name}__CLIENT_ID`               | The unique identifier for the registered service given by the OIDC provider.                                                                                                                                                    | Yes                               |                                                           |
@@ -222,10 +221,11 @@ Listed below are the environment variables supported by the application.
 
 ### How to add or remove a user from the system
 
-The `users_config.yaml` file at the root of the project directory contains the schema of users with access to
-the system through SSO OIDC and/or LDAP authentication. This means that you can add or remove a user from the system by adding or
-removing their username/email in the `users_config.yaml` file. You can also define a user's roles in their schema, roles can be
-defined at the top of the `users_config.yaml` file. See `users_config.example.yaml` for an example yaml structure.
+The `users_config.yaml` file at the root of the project directory contains the schema of users with access to the system
+through SSO OIDC and/or LDAP authentication. This means that you can add or remove a user from the system by adding or
+removing their username/email in the `users_config.yaml` file. You can also define a user's roles in their schema, roles
+can be defined at the top of the `users_config.yaml` file. See `users_config.example.yaml` for an example yaml
+structure.
 
 **PLEASE NOTE** Changes made to the `users_config.yaml` file using vim do not get synced in the Docker container
 because it changes the inode index number of the file. A workaround is to create a new file using the

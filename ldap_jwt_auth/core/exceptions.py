@@ -8,10 +8,10 @@ class UserConfigFileNotFoundError(Exception):
     Exception raised when the file containing the user configuration cannot be found.
     """
 
-
-class ActiveUserEmailsFileNotFoundError(Exception):
+    
+class InvalidUserConfigFileError(Exception):
     """
-    Exception raised when the file containing the emails of the active users cannot be found.
+    Exception raised when the user config file cannot be loaded/parsed correctly.
     """
 
 
@@ -60,12 +60,6 @@ class UserNotActiveError(Exception):
 class UsernameMismatchError(Exception):
     """
     Exception raised when the usernames in the access and refresh tokens do not match.
-    """
-
-
-class UserEmailMismatchError(Exception):
-    """
-    Exception raised when the user emails in the access and refresh tokens do not match.
     """
 
 

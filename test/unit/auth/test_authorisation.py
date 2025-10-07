@@ -4,10 +4,11 @@ Unit tests for the `Authorisation` class.
 
 from unittest.mock import patch
 import pytest
+import yaml
 
 from ldap_jwt_auth.auth.authorisation import Authorisation
 from ldap_jwt_auth.core.config import config
-from ldap_jwt_auth.core.exceptions import UserConfigFileNotFoundError, UserNotActiveError
+from ldap_jwt_auth.core.exceptions import InvalidUserConfigFileError, UserConfigFileNotFoundError
 
 
 def test_is_active_user():
@@ -33,16 +34,29 @@ def test_is_active_user_with_not_active_username():
 @patch("builtins.open")
 def test_user_config_file_not_found(file_open_mock):
     """
-    Test `is_active_user` when file containing active usernames cannot be found.
+    Test when file containing active users cannot be found.
     """
     file_open_mock.side_effect = FileNotFoundError()
 
     with pytest.raises(UserConfigFileNotFoundError) as exc:
-        authorisation = Authorisation()
-        authorisation.is_active_user("username_not_active")
+        Authorisation()
     assert (
         str(exc.value)
         == f"Cannot find file containing users configuration with path: {config.authentication.users_config_path}"
+    )
+    
+@patch("yaml.safe_load")
+def test_invalid_user_config_file_error(yaml_load_mock):
+    """
+    Test when the user config file is present but contains invalid YAML.
+    """
+    yaml_load_mock.side_effect = yaml.YAMLError("Invalid YAML")
+
+    with pytest.raises(InvalidUserConfigFileError) as exc:
+        Authorisation()
+    assert (
+        str(exc.value)
+        == f"Cannot load user configuration file with path: {config.authentication.users_config_path}"
     )
 
 
