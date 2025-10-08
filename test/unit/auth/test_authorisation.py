@@ -67,7 +67,7 @@ def test_invalid_user_config_file_missing_users(yaml_load_mock):
     yaml_load_mock.return_value = {"roles": {"admin": {"userIsAdmin": True}}, "users": {}}
     with pytest.raises(InvalidUserConfigFileError) as exc:
         Authorisation()
-    assert str(exc.value) == f"Cannot parse user configuration file. Missing users or roles."
+    assert str(exc.value) == "Cannot parse user configuration file. Missing users or roles."
 
 
 @patch("yaml.safe_load")
@@ -79,7 +79,7 @@ def test_invalid_user_config_file_missing_roles(yaml_load_mock):
     yaml_load_mock.return_value = {"roles": {}, "users": [{"username": "user1"}]}
     with pytest.raises(InvalidUserConfigFileError) as exc:
         Authorisation()
-    assert str(exc.value) == f"Cannot parse user configuration file. Missing users or roles."
+    assert str(exc.value) == "Cannot parse user configuration file. Missing users or roles."
 
 
 def test_get_user_role():
