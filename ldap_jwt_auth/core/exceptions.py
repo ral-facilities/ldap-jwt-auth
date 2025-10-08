@@ -8,7 +8,7 @@ class UserConfigFileNotFoundError(Exception):
     Exception raised when the file containing the user configuration cannot be found.
     """
 
-    
+
 class InvalidUserConfigFileError(Exception):
     """
     Exception raised when the user config file cannot be loaded/parsed correctly.

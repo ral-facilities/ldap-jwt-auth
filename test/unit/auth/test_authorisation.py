@@ -44,7 +44,8 @@ def test_user_config_file_not_found(file_open_mock):
         str(exc.value)
         == f"Cannot find file containing users configuration with path: {config.authentication.users_config_path}"
     )
-    
+
+
 @patch("yaml.safe_load")
 def test_invalid_user_config_file_error(yaml_load_mock):
     """
@@ -54,10 +55,7 @@ def test_invalid_user_config_file_error(yaml_load_mock):
 
     with pytest.raises(InvalidUserConfigFileError) as exc:
         Authorisation()
-    assert (
-        str(exc.value)
-        == f"Cannot load user configuration file with path: {config.authentication.users_config_path}"
-    )
+    assert str(exc.value) == f"Cannot load user configuration file with path: {config.authentication.users_config_path}"
 
 
 def test_get_user_roles():

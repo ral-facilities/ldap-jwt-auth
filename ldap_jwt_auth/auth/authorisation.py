@@ -32,12 +32,11 @@ class Authorisation:
             raise InvalidUserConfigFileError(
                 f"Cannot load user configuration file with path: {config.authentication.users_config_path}"
             )
-            
 
     def is_active_user(self, identifier: str) -> bool:
         """
         Check if the provided username or email is a part of the active users username or email.
-        
+
         :param identifier: The username or email to check.
         :return: `True` if the user is active, `False` otherwise
         """
@@ -46,7 +45,7 @@ class Authorisation:
     def get_user_roles(self, identifier: str) -> list[str]:
         """
         Get the provided user's roles.
-        
+
         :param identifier: The username or email to fetch for
         :return: `List[str]` containing the defined roles of the user, can be an empty list
         """
@@ -58,7 +57,7 @@ class Authorisation:
         """
         Check if the given user's roles hold at least one role with the highest privilege level
         defined in the configuration.
-        
+
         :param roles: The list of roles for the given user
         :return: `True` if the user has any role which matches the role(s) with the highest privilege, `False` otherwise
         """
@@ -71,7 +70,7 @@ class Authorisation:
     def _find_user(self, identifier: str) -> dict | None:
         """
         Find a user by username or email.
-        
+
         :param identifier: The username or email to check.
         :return: The user as a dict if found, otherwise None.
         """
