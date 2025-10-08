@@ -85,4 +85,4 @@ def test_is_user_admin_non_existent_roles():
     authorisation = Authorisation()
     is_user_admin = authorisation.is_user_admin(["invalid", "does_not_exist"])
 
-    assert is_user_admin == False
+    assert is_user_admin is False

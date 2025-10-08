@@ -31,7 +31,7 @@ class Authorisation:
         except yaml.YAMLError as exc:
             raise InvalidUserConfigFileError(
                 f"Cannot load user configuration file with path: {config.authentication.users_config_path}"
-            )
+            ) from exc
 
     def is_active_user(self, identifier: str) -> bool:
         """
