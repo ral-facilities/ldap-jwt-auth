@@ -23,11 +23,9 @@ class Authorisation:
                 user_config = yaml.safe_load(file)
                 self.roles = user_config.get("roles", {})
                 self.users = user_config.get("users", {})
-                
-                if(self.users == {} or self.roles == {}):
-                    raise InvalidUserConfigFileError(
-                        f"Cannot parse user configuration file. Missing users or roles."
-                    )
+
+                if self.users == {} or self.roles == {}:
+                    raise InvalidUserConfigFileError(f"Cannot parse user configuration file. Missing users or roles.")
 
         except FileNotFoundError as exc:
             raise UserConfigFileNotFoundError(
@@ -47,28 +45,28 @@ class Authorisation:
         """
         return self._find_user(identifier) is not None
 
-    def get_user_roles(self, identifier: str) -> list[str]:
+    def get_user_role(self, identifier: str) -> str:
         """
-        Get the provided user's roles.
+        Get the provided user's role.
 
         :param identifier: The username or email to fetch for
-        :return: `List[str]` containing the defined roles of the user, can be an empty list
+        :return: `str` which is the defined role of the user, 'default' if no role
         """
 
         user = self._find_user(identifier)
-        return user.get("roles", []) if user else []
+        return user.get("role", "default") if user else "default"
 
-    def is_user_admin(self, roles: list[str]) -> bool:
+    def is_user_admin(self, role: str) -> bool:
         """
-        Check if the given user's roles hold at least one role with the highest privilege level
+        Check if the given user's role is a role with the highest privilege level
         defined in the configuration.
 
-        :param roles: The list of roles for the given user
-        :return: `True` if the user has any role which matches the role(s) with the highest privilege, `False` otherwise
+        :param role: The role for the given user
+        :return: `True` if the user has a role which matches the role(s) with the highest privilege, `False` otherwise
         """
-        for role in roles:
-            if self.roles.get(role, {}).get("userIsAdmin", False):
-                return True
+
+        if self.roles.get(role, {}).get("userIsAdmin", False):
+            return True
 
         return False
 

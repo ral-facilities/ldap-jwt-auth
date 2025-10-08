@@ -34,11 +34,11 @@ class JWTHandler:
         """
         logger.info("Getting an access token")
 
-        user_roles = self._authorisation.get_user_roles(username)
+        user_role = self._authorisation.get_user_role(username)
         payload = {
             "username": username,
-            "roles": user_roles,
-            "userIsAdmin": self._authorisation.is_user_admin(user_roles),
+            "role": user_role,
+            "userIsAdmin": self._authorisation.is_user_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(minutes=config.authentication.access_token_validity_minutes),
         }
         logging.debug(payload)
@@ -53,11 +53,11 @@ class JWTHandler:
         """
         logger.info("Getting a refresh token")
 
-        user_roles = self._authorisation.get_user_roles(username)
+        user_role = self._authorisation.get_user_role(username)
         payload = {
             "username": username,
-            "roles": user_roles,
-            "userIsAdmin": self._authorisation.is_user_admin(user_roles),
+            "role": user_role,
+            "userIsAdmin": self._authorisation.is_user_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days),
         }
         return self._pack_jwt(payload)

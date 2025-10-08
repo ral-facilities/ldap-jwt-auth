@@ -63,7 +63,7 @@ def test_invalid_user_config_file_missing_users(yaml_load_mock):
     """
     Test InvalidUserConfigFileError is raised if users is an empty dict.
     """
-   
+
     yaml_load_mock.return_value = {"roles": {"admin": {"userIsAdmin": True}}, "users": {}}
     with pytest.raises(InvalidUserConfigFileError) as exc:
         Authorisation()
@@ -75,38 +75,38 @@ def test_invalid_user_config_file_missing_roles(yaml_load_mock):
     """
     Test InvalidUserConfigFileError is raised if roles is an empty dict.
     """
-   
+
     yaml_load_mock.return_value = {"roles": {}, "users": [{"username": "user1"}]}
     with pytest.raises(InvalidUserConfigFileError) as exc:
         Authorisation()
     assert str(exc.value) == f"Cannot parse user configuration file. Missing users or roles."
 
 
-def test_get_user_roles():
+def test_get_user_role():
     """
-    Test `get_user_roles` returns the correct roles for a given username.
+    Test `get_user_role` returns the correct role for a given username.
     """
     authorisation = Authorisation()
-    user_roles = authorisation.get_user_roles("username")
+    user_role = authorisation.get_user_role("username")
 
-    assert user_roles == ["admin"]
+    assert user_role == "admin"
 
 
 def test_is_user_admin():
     """
-    Test `is_user_admin` for roles which include highest privilege role
+    Test `is_user_admin` for role which is a highest privilege role
     """
     authorisation = Authorisation()
-    is_user_admin = authorisation.is_user_admin(["admin", "moderator"])
+    is_user_admin = authorisation.is_user_admin("admin")
 
     assert is_user_admin is True
 
 
-def test_is_user_admin_non_existent_roles():
+def test_is_user_admin_non_existent_role():
     """
-    Test `is_user_admin` for roles which do not exist in the config
+    Test `is_user_admin` for role which does not exist in the config
     """
     authorisation = Authorisation()
-    is_user_admin = authorisation.is_user_admin(["invalid", "does_not_exist"])
+    is_user_admin = authorisation.is_user_admin("invalid")
 
     assert is_user_admin is False

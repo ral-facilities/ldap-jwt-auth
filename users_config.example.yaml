@@ -7,10 +7,9 @@ roles:
 users:
   - username: abc123
     email: abc123@example.com
-    roles: [admin, moderator]
+    role: admin
 
   - username: def456
-    roles: [moderator]
+    role: moderator
 
   - email: ghi789@example.com
-    roles: []

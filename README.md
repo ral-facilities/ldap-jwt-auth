@@ -47,7 +47,7 @@ This microservice requires an LDAP server to run against.
    to the `ldap_server_certs` directory in the root of the project.
 
 5. Create a `users_config.yaml` file alongside the `users_config.example.yaml` file and add all the usernames
-   (FederalIDs) and emails that can use this system (via LDAP authentication or SSO OIDC), and their roles. The
+   (FederalIDs) and emails that can use this system (via LDAP authentication or SSO OIDC), and their role. The
    usernames are the Federal IDs and each one should be stored under `users` using correct yaml notation. You can also
    define the various roles in the system and if they are of the highest privilege.
 
@@ -204,7 +204,7 @@ Listed below are the environment variables supported by the application.
 | `AUTHENTICATION__JWT_ALGORITHM`                            | The algorithm to use to decode the JWT access and refresh tokens.                                                                                                                                                               | Yes                               |                                                           |
 | `AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES`            | Minutes after which the JWT access token expires.                                                                                                                                                                               | Yes                               |                                                           |
 | `AUTHENTICATION__REFRESH_TOKEN_VALIDITY_DAYS`              | Days after which the JWT refresh token expires.                                                                                                                                                                                 | Yes                               |                                                           |
-| `AUTHENTICATION__USERS_CONFIG_PATH`                        | The path to the `yaml` file containing the active usernames and defining who can use this service and their roles.                                                                                                              | Yes                               |                                                           |
+| `AUTHENTICATION__USERS_CONFIG_PATH`                        | The path to the `yaml` file containing the active usernames and defining who can use this service and their role.                                                                                                               | Yes                               |                                                           |
 | `MAINTENANCE__MAINTENANCE_PATH`                            | The path to the `json` file containing the maintenance state.                                                                                                                                                                   | Yes                               |                                                           |
 | `MAINTENANCE__SCHEDULED_MAINTENANCE_PATH`                  | The path to the `json` file containing the scheduled maintenance state.                                                                                                                                                         | Yes                               |                                                           |
 | `LDAP_SERVER__URL`                                         | The URL to the LDAP server to connect to.                                                                                                                                                                                       | Yes                               |                                                           |
@@ -223,7 +223,7 @@ Listed below are the environment variables supported by the application.
 
 The `users_config.yaml` file at the root of the project directory contains the schema of users with access to the system
 through SSO OIDC and/or LDAP authentication. This means that you can add or remove a user from the system by adding or
-removing their username/email in the `users_config.yaml` file. You can also define a user's roles in their schema, roles
+removing their username/email in the `users_config.yaml` file. You can also define a user's role in their schema, roles
 can be defined at the top of the `users_config.yaml` file. See `users_config.example.yaml` for an example yaml
 structure.
 
