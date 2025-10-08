@@ -23,6 +23,11 @@ class Authorisation:
                 user_config = yaml.safe_load(file)
                 self.roles = user_config.get("roles", {})
                 self.users = user_config.get("users", {})
+                
+                if(self.users == {} or self.roles == {}):
+                    raise InvalidUserConfigFileError(
+                        f"Cannot parse user configuration file. Missing users or roles."
+                    )
 
         except FileNotFoundError as exc:
             raise UserConfigFileNotFoundError(

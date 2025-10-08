@@ -58,6 +58,30 @@ def test_invalid_user_config_file_error(yaml_load_mock):
     assert str(exc.value) == f"Cannot load user configuration file with path: {config.authentication.users_config_path}"
 
 
+@patch("yaml.safe_load")
+def test_invalid_user_config_file_missing_users(yaml_load_mock):
+    """
+    Test InvalidUserConfigFileError is raised if users is an empty dict.
+    """
+   
+    yaml_load_mock.return_value = {"roles": {"admin": {"userIsAdmin": True}}, "users": {}}
+    with pytest.raises(InvalidUserConfigFileError) as exc:
+        Authorisation()
+    assert str(exc.value) == f"Cannot parse user configuration file. Missing users or roles."
+
+
+@patch("yaml.safe_load")
+def test_invalid_user_config_file_missing_roles(yaml_load_mock):
+    """
+    Test InvalidUserConfigFileError is raised if roles is an empty dict.
+    """
+   
+    yaml_load_mock.return_value = {"roles": {}, "users": [{"username": "user1"}]}
+    with pytest.raises(InvalidUserConfigFileError) as exc:
+        Authorisation()
+    assert str(exc.value) == f"Cannot parse user configuration file. Missing users or roles."
+
+
 def test_get_user_roles():
     """
     Test `get_user_roles` returns the correct roles for a given username.
