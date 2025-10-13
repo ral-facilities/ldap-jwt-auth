@@ -67,7 +67,7 @@ class Authorisation:
 
         # protects against role with no dictionary defined
         role_config = self.roles.get(role, None)
-        return role_config is not None and role_config.get("userIsAdmin", False) == True
+        return role_config is not None and role_config.get("userIsAdmin", False) is True
 
     def _find_user(self, identifier: str) -> dict | None:
         """
