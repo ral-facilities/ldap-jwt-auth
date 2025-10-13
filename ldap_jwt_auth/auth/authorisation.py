@@ -64,12 +64,10 @@ class Authorisation:
         :param role: The role for the given user
         :return: `True` if the user has a role which matches the role(s) with the highest privilege, `False` otherwise
         """
-        
+
         # protects against role with no dictionary defined
         role_config = self.roles.get(role, None)
         return role_config is not None and role_config.get("userIsAdmin", False) == True
-        
-
 
     def _find_user(self, identifier: str) -> dict | None:
         """

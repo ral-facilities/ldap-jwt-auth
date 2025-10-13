@@ -41,7 +41,7 @@ class JWTHandler:
             "userIsAdmin": self._authorisation.is_user_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(minutes=config.authentication.access_token_validity_minutes),
         }
-        
+
         return self._pack_jwt(payload)
 
     def get_refresh_token(self, username: str) -> str:
