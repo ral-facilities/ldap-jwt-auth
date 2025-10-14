@@ -7,3 +7,4 @@ roles:
 users:
   - username: username
     role: admin
+  - email: test@example.com

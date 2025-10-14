@@ -20,8 +20,7 @@ services:
     depends_on:
       - keycloak
     extra_hosts:
-      # Want to use localhost for keycloak connection so the presigned URLs are correct but also want to avoid using
-      # host networking
+      # Want to use localhost for keycloak connection but also want to avoid using host networking
       - "localhost:host-gateway"
 
   keycloak:
