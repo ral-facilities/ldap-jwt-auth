@@ -1,7 +1,7 @@
 roles:
   admin:
     userIsAdmin: true
-  moderator:
+  site-admin:
     userIsAdmin: false
 
 users:

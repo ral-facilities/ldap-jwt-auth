@@ -1,15 +1,15 @@
 roles:
   admin:
     userIsAdmin: true
-  moderator:
+  site-admin:
     userIsAdmin: false
 
 users:
   - username: abc123
-    email: abc123@example.com
+    email: test@example.com
     role: admin
 
   - username: def456
-    role: moderator
+    role: site-admin
 
   - email: ghi789@example.com
