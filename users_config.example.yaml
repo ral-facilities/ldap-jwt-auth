@@ -1,15 +1,14 @@
 roles:
-  admin:
+  scigateway-admin:
     userIsAdmin: true
-  site-admin:
-    userIsAdmin: false
+  admin: null
 
 users:
   - username: abc123
     email: test@example.com
-    role: admin
+    role: scigateway-admin
 
   - username: def456
-    role: site-admin
+    role: admin
 
   - email: ghi789@example.com

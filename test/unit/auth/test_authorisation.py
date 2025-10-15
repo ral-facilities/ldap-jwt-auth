@@ -92,12 +92,12 @@ def test_get_user_role():
     assert user_role == "admin"
 
 
-def test_is_user_admin():
+def test_is_user_scigateway_admin():
     """
-    Test `is_user_admin` for role which is a highest privilege role
+    Test `test_is_user_scigateway_admin` for role which has `userIsAdmin` set to true
     """
     authorisation = Authorisation()
-    is_user_admin = authorisation.is_user_admin("admin")
+    is_user_admin = authorisation.is_user_scigateway_admin("scigateway-admin")
 
     assert is_user_admin is True
 
@@ -107,6 +107,6 @@ def test_is_user_admin_non_existent_role():
     Test `is_user_admin` for role which does not exist in the config
     """
     authorisation = Authorisation()
-    is_user_admin = authorisation.is_user_admin("invalid")
+    is_user_admin = authorisation.is_user_scigateway_admin("invalid")
 
     assert is_user_admin is False

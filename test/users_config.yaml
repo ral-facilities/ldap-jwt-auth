@@ -1,8 +1,7 @@
 roles:
-  admin:
+  scigateway-admin:
     userIsAdmin: true
-  site-admin:
-    userIsAdmin: false
+  admin: null
 
 users:
   - username: username
