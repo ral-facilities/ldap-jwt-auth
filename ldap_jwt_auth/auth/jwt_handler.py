@@ -60,7 +60,6 @@ class JWTHandler:
             "userIsAdmin": self._authorisation.is_user_scigateway_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days),
         }
-        logger.debug(payload)
         return self._pack_jwt(payload)
 
     def refresh_access_token(self, access_token: str, refresh_token: str) -> str:
