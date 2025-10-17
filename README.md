@@ -46,19 +46,13 @@ This microservice requires an LDAP server to run against.
 4. (If LDAP certificate validation is enabled) Copy the `cacert.pem` file that contains all the trusted CA certificates
    to the `ldap_server_certs` directory in the root of the project.
 
-5. Create a `active_user_emails.txt` file alongside the `active_user_emails.example.txt` file and add all the user
-   emails that can use this service through SSO OIDC authentication. The emails should be stored on a separate line.
+5. Create a `users_config.yaml` file alongside the `users_config.example.yaml` file and add all the usernames
+   (FederalIDs) and emails that can use this system (via LDAP authentication or SSO OIDC), and their role. The
+   usernames are the Federal IDs and each one should be stored under `users` using correct yaml notation. You can also
+   define the various roles in the system and if they are of the highest privilege.
 
    ```bash
-   cp active_user_emails.example.txt active_user_emails.txt
-   ```
-
-6. Create a `active_usernames.txt` file alongside the `active_usernames.example.txt` file and add all the usernames that
-   can use this service through LDAP authentication. The usernames are the Federal IDs and each one should be stored on
-   a separate line.
-
-   ```bash
-   cp active_usernames.example.txt active_usernames.txt
+   cp users_config.example.yaml users_config.yaml
    ```
 
 ### Inside of Docker
@@ -69,22 +63,23 @@ Ensure that Docker is installed and running on your machine before proceeding.
 
 The easiest way to run the application with Docker for local development is using the `docker-compose.yml` file. It is
 configured to start:
--  A keycloack instance for SSO authentication that can be accessed at `localhost:9004` using `admin` as the username
-and password to access the Admin Console. To get an ID token from the keycloak instance to then use for the
-`http://localhost:8004/oidc_login/keycloak` endpoint, run:
 
-   ```bash
-   curl -X POST http://localhost:9004/realms/testrealm/protocol/openid-connect/token \
-      -H "Content-Type: application/x-www-form-urlencoded" \
-      -d "grant_type=password" \
-      -d "client_id=test-client-id" \
-      -d "scope=openid profile email" \
-      -d "username=test" \
-      -d "password=password"
-   ```
+- A keycloak instance for SSO authentication that can be accessed at `localhost:9004` using `admin` as the username and
+  password to access the Admin Console. To get an ID token from the keycloak instance to then use for the
+  `http://localhost:8004/oidc_login/keycloak` endpoint, run:
+
+  ```bash
+  curl -X POST http://localhost:9004/realms/testrealm/protocol/openid-connect/token \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "grant_type=password" \
+     -d "client_id=test-client-id" \
+     -d "scope=openid profile email" \
+     -d "username=test" \
+     -d "password=password"
+  ```
 
 - The application in a reload mode which using the mounted `ldap_jwt_auth` directory means that FastAPI will watch for
-changes made to the code and automatically reload the application on the fly.
+  changes made to the code and automatically reload the application on the fly.
 
 1. Build and start the Docker container:
 
@@ -117,8 +112,7 @@ changes made to the code and automatically reload the application on the fly.
     --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
     --volume ./keys:/app/keys \
     --volume ./ldap_server_certs/cacert.pem:/app/ldap_server_certs/cacert.pem \
-    --volume ./active_user_emails.txt:/app/active_user_emails.txt \
-    --volume ./active_usernames.txt:/app/active_usernames.txt \
+    --volume ./users_config.yaml:/app/users_config.yaml \
     --volume ./maintenance/maintenance.json:/app/maintenance/maintenance.json \
     --volume ./maintenance/scheduled_maintenance.json:/app/maintenance/scheduled_maintenance.json \
     --volume ./logging.ini:/app/logging.ini \
@@ -210,8 +204,7 @@ Listed below are the environment variables supported by the application.
 | `AUTHENTICATION__JWT_ALGORITHM`                            | The algorithm to use to decode the JWT access and refresh tokens.                                                                                                                                                               | Yes                               |                                                           |
 | `AUTHENTICATION__ACCESS_TOKEN_VALIDITY_MINUTES`            | Minutes after which the JWT access token expires.                                                                                                                                                                               | Yes                               |                                                           |
 | `AUTHENTICATION__REFRESH_TOKEN_VALIDITY_DAYS`              | Days after which the JWT refresh token expires.                                                                                                                                                                                 | Yes                               |                                                           |
-| `AUTHENTICATION__ACTIVE_USER_EMAILS_PATH`                  | The path to the `txt` file containing the active user emails for SSO OIDC authentication, defining who can use this service.                                                                                                    | Yes                               |                                                           |
-| `AUTHENTICATION__ACTIVE_USERNAMES_PATH`                    | The path to the `txt` file containing the active usernames for LDAP authentication, defining who can use this service.                                                                                                          | Yes                               |                                                           |
+| `AUTHENTICATION__USERS_CONFIG_PATH`                        | The path to the `yaml` file containing the active usernames and defining who can use this service and their role.                                                                                                               | Yes                               |                                                           |
 | `MAINTENANCE__MAINTENANCE_PATH`                            | The path to the `json` file containing the maintenance state.                                                                                                                                                                   | Yes                               |                                                           |
 | `MAINTENANCE__SCHEDULED_MAINTENANCE_PATH`                  | The path to the `json` file containing the scheduled maintenance state.                                                                                                                                                         | Yes                               |                                                           |
 | `LDAP_SERVER__URL`                                         | The URL to the LDAP server to connect to.                                                                                                                                                                                       | Yes                               |                                                           |
@@ -226,40 +219,25 @@ Listed below are the environment variables supported by the application.
 | `OIDC_PROVIDERS__{provider_name}__SCOPE`                   | The claims (listed in the `GET` response of the `/oidc_providers` endpoint) the API client should request from the OIDC provider (i.e. email etc) when obtaining an OIDC ID token for the `/oidc_login/{provider_id}` endpoint. | No                                | `openid email`                                            |
 | `OIDC_PROVIDERS__{provider_name}__USERNAME_CLAIM`          | The username claim to get from the OIDC ID token payload to check against the list of active user emails.                                                                                                                       | No                                | `email`                                                   |
 
-### How to add or remove a user from the system (SSO OIDC authentication)
+### How to add or remove a user from the system
 
-The `active_user_emails.txt` file at the root of the project directory contains the emails of the users with access to
-the system through SSO OIDC authentication. This means that you can add or remove a user from the system by adding or
-removing their email in the `active_user_emails.txt` file.
+The `users_config.yaml` file at the root of the project directory contains the schema of users with access to the system
+through SSO OIDC and/or LDAP authentication. This means that you can add or remove a user from the system by adding or
+removing their username/email in the `users_config.yaml` file. You can also define a user's role in their schema, roles
+can be defined at the top of the `users_config.yaml` file. See `users_config.example.yaml` for an example yaml
+structure. The `userIsAdmin` flag in the example file, relates to **scigateway** admin functionality, it has no relation
+to any admin functionality within IMS, that functionality is derived from the user's role only.
 
-**PLEASE NOTE** Changes made to the `active_user_emails.txt` file using vim do not get synced in the Docker container
+**PLEASE NOTE** Changes made to the `users_config.yaml` file using vim do not get synced in the Docker container
 because it changes the inode index number of the file. A workaround is to create a new file using the
-`active_user_emails.txt` file, apply your changes in the new file, and then overwrite the `active_user_emails.txt` file
+`users_config.yaml` file, apply your changes in the new file, and then overwrite the `users_config.yaml` file
 with the content of the new file, see below.
 
 ```bash
-cp active_user_emails.txt new_active_user_emails.txt
-vim new_active_user_emails.txt
-cat new_active_user_emails.txt > active_user_emails.txt
-rm new_active_user_emails.txt
-```
-
-### How to add or remove a user from the system (LDAP authentication)
-
-The `active_usernames.txt` file at the root of the project directory contains the Federal IDs of the users with access
-to the system through LDAP authentication. This means that you can add or remove a user from the system by adding or
-removing their Federal ID in the `active_usernames.txt` file.
-
-**PLEASE NOTE** Changes made to the `active_usernames.txt` file using vim do not get synced in the Docker container
-because it changes the inode index number of the file. A workaround is to create a new file using the
-`active_usernames.txt` file, apply your changes in the new file, and then overwrite the `active_usernames.txt` file
-with the content of the new file, see below.
-
-```bash
-cp active_usernames.txt new_active_usernames.txt
-vim new_active_usernames.txt
-cat new_active_usernames.txt > active_usernames.txt
-rm new_active_usernames.txt
+cp users_config.yaml new_users_config.yaml
+vim new_users_config.yaml
+cat new_users_config.yaml > users_config.yaml
+rm new_users_config.yaml
 ```
 
 ### How to update maintenance or scheduled maintenance state

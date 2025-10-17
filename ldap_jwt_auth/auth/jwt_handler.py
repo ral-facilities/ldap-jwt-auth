@@ -9,7 +9,7 @@ from typing import Any, Dict
 import jwt
 from cryptography.hazmat.primitives import serialization
 
-from ldap_jwt_auth.auth.authentication import LDAPAuthentication, OIDCAuthentication
+from ldap_jwt_auth.auth.authorisation import Authorisation
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
 from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UserNotActiveError, UsernameMismatchError
@@ -22,6 +22,9 @@ class JWTHandler:
     Class for handling JWTs.
     """
 
+    def __init__(self) -> None:
+        self._authorisation = Authorisation()
+
     def get_access_token(self, username: str) -> str:
         """
         Generates a payload and returns a signed JWT access token.
@@ -30,10 +33,15 @@ class JWTHandler:
         :return: The signed JWT access token
         """
         logger.info("Getting an access token")
+
+        user_role = self._authorisation.get_user_role(username)
         payload = {
             "username": username,
+            "role": user_role,
+            "userIsAdmin": self._authorisation.is_user_scigateway_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(minutes=config.authentication.access_token_validity_minutes),
         }
+
         return self._pack_jwt(payload)
 
     def get_refresh_token(self, username: str) -> str:
@@ -44,8 +52,12 @@ class JWTHandler:
         :return: The signed JWT refresh token.
         """
         logger.info("Getting a refresh token")
+
+        user_role = self._authorisation.get_user_role(username)
         payload = {
             "username": username,
+            "role": user_role,
+            "userIsAdmin": self._authorisation.is_user_scigateway_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days),
         }
         return self._pack_jwt(payload)
@@ -74,7 +86,7 @@ class JWTHandler:
             if username != refresh_token_payload["username"]:
                 raise UsernameMismatchError("The usernames in the access and refresh tokens do not match")
 
-            if not self._is_user_active(username):
+            if not self._authorisation.is_active_user(username):
                 raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
 
             access_token_payload["exp"] = datetime.now(timezone.utc) + timedelta(
@@ -102,23 +114,6 @@ class JWTHandler:
             message = "Invalid JWT token"
             logger.exception(message)
             raise InvalidJWTError(message) from exc
-
-    def _is_user_active(self, username: str) -> bool:
-        """
-        Checks if the provided username is active. If the username contains an '@' and '.' characters then it should be
-        checked against the list of OIDC active user emails as the user was authenticated through OIDC. If this is not
-        the case then it should be checked against the list of LDAP active usernames.
-
-        :param username: The username to check.
-        :return: `True` if the user is active, `False` otherwise.
-        """
-
-        if "@" in username and "." in username:
-            oidc_authentication = OIDCAuthentication()
-            return oidc_authentication.is_user_active(username)
-
-        ldap_authentication = LDAPAuthentication()
-        return ldap_authentication.is_user_active(username)
 
     def _get_jwt_payload(self, token: str, jwt_decode_options: dict | None = None) -> Dict[str, Any]:
         """

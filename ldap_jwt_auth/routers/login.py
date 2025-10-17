@@ -13,14 +13,13 @@ from ldap_jwt_auth.auth.authentication import LDAPAuthentication, OIDCAuthentica
 from ldap_jwt_auth.auth.jwt_handler import JWTHandler
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import (
-    ActiveUserEmailsFileNotFoundError,
-    ActiveUsernamesFileNotFoundError,
+    UserNotActiveError,
+    UserConfigFileNotFoundError,
     InvalidCredentialsError,
     InvalidJWTError,
     LDAPServerError,
     OIDCProviderError,
     OIDCProviderNotFoundError,
-    UserNotActiveError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
@@ -89,7 +88,7 @@ def oidc_login(
         message = "OIDC provider not found"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=message) from exc
-    except (ActiveUserEmailsFileNotFoundError, OIDCProviderError) as exc:
+    except (UserConfigFileNotFoundError, OIDCProviderError) as exc:
         message = "Something went wrong"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
@@ -128,7 +127,7 @@ def ldap_login(
         message = "Invalid credentials provided"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=message) from exc
-    except (ActiveUsernamesFileNotFoundError, LDAPServerError) as exc:
+    except (UserConfigFileNotFoundError, LDAPServerError) as exc:
         message = "Something went wrong"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc

@@ -11,45 +11,49 @@ from ldap_jwt_auth.auth.jwt_handler import JWTHandler
 from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UsernameMismatchError, UserNotActiveError
 
 VALID_ACCESS_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoyNTM0MDE2OTU5OTl9.nqT4Ct4VpdcDCv1Yd8M5"
-    "I2LWWfN9or2N6C3jnNbxyq90z8jysZfkEQ5ZIPMDV2KgI4E7E44qYzLpqirAw2EKp03vZyE28G0XkEYAA1KlDlgDw5C3AdN_dfaR1xD3HjgQVII2zW"
-    "5P5Wp8DfGV174KI8g-InzvOAMSl9e5Ci1S6ewqkUDhrUnvsAKZzqdYM-oewrySnTiRfP-eQOaR0MBBKjURaJeh9mWDiQFdfqh_4vwauI7FiCj2R0Z0"
-    "IySTTR6_R-Jw2h1EUxrHVioqK9vlY6fi96jp9BmSET17n0j06wunkz8MJg8i479VjqtQL0e_if6cm3zOHRZJ7iTXicHmSg"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
+    "CJleHAiOjI1MzQwMjMwMDc5OX0.FrsDUqnKskhIvmIjtYVgC9im-cSu1dFlwVQ4cFJf2BgCaSh82XuEngOLkbtQuuXWC1wiipsGP4Y-usq7Q_R68vw"
+    "XqGYusHo4fXw6AcBcwplgXZ3n60wsTegpBxKZY5foOre0Ng1GpK-7rrx9H-YQUCHSBOtzWOw_eLzu-eNTwMnMnnpGM9L91_hj0dAKiP90Z3Hp0Ueln"
+    "Yydc0sf6msOs7RKI2Sij-13vFSL8LToIbfUTZYwKZHbBPD5glce_gsW6_W5W-iGemt7yyhfyf7IxKWq3Q02HCiSkI0uCcBal44sabPrsQ4EaPRwyUn"
+    "H0X25MC00IAPRHh-1KqabV7IA9w"
 )
 
 VALID_REFRESH_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoyNTM0MDIzMDA3OTl9.bagU2Wix8wKzydVU_L3Z"
-    "ZuuMAxGxV4OTuZq_kS2Fuwm839_8UZOkICnPTkkpvsm1je0AWJaIXLGgwEa5zUjpG6lTrMMmzR9Zi63F0NXpJqQqoOZpTBMYBaggsXqFkdsv-yAKUZ"
-    "8MfjCEyk3UZ4PXZmEcUZcLhKcXZr4kYJPjio2e5WOGpdjK6q7s-iHGs9DQFT_IoCnw9CkyOKwYdgpB35hIGHkNjiwVSHpyKbFQvzJmIv5XCTSRYqq0"
-    "1fldh-QYuZqZeuaFidKbLRH610o2-1IfPMUr-yPtj5PZ-AaX-XTLkuMqdVMCk0_jeW9Os2BPtyUDkpcu1fvW3_S6_dK3nQ"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
+    "CJleHAiOjI1MzQwMjMwMDc5OX0.FrsDUqnKskhIvmIjtYVgC9im-cSu1dFlwVQ4cFJf2BgCaSh82XuEngOLkbtQuuXWC1wiipsGP4Y-usq7Q_R68vw"
+    "XqGYusHo4fXw6AcBcwplgXZ3n60wsTegpBxKZY5foOre0Ng1GpK-7rrx9H-YQUCHSBOtzWOw_eLzu-eNTwMnMnnpGM9L91_hj0dAKiP90Z3Hp0Ueln"
+    "Yydc0sf6msOs7RKI2Sij-13vFSL8LToIbfUTZYwKZHbBPD5glce_gsW6_W5W-iGemt7yyhfyf7IxKWq3Q02HCiSkI0uCcBal44sabPrsQ4EaPRwyUn"
+    "H0X25MC00IAPRHh-1KqabV7IA9w"
 )
-
 EXPIRED_ACCESS_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjotNjIxMzU1OTY4MDB9.G_cfC8PNYE5yERyyQNRk"
-    "9mTmDusU_rEPgm7feo2lWQF6QMNnf8PUN-61FfMNRVE0QDSvAmIMMNEOa8ma0JHZARafgnYJfn1_FSJSoRxC740GpG8EFSWrpM-dQXnoD263V9FlK-"
-    "On6IbhF-4Rh9MdoxNyZk2Lj7NvCzJ7gbgbgYM5-sJXLxB-I5LfMfuYM3fx2cRixZFA153l46tFzcMVBrAiBxl_LdyxTIOPfHF0UGlaW2UtFi02gyBU"
-    "4E4wTOqPc4t_CSi1oBSbY7h9O63i8IU99YsOCdvZ7AD3ePxyM1xJR7CFHycg9Z_IDouYnJmXpTpbFMMl7SjME3cVMfMrAQ"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
+    "CJleHAiOjk0NjY4NDc5OX0.EQnEYrwwwjuudk_mBdAe_V4dts-nTSU2WEoxyahVfsmCWOAAsyNbRvctGPLBaXIzMU73dgtKMpIiE9etlWKhP68GWRG"
+    "21x155-Qm8i_sJu4r6AOcjwPQRV1fPxf5s37L9V-nj1cWgc_HpBJWSG_DnJtZ_T4AQULYDmZRgoGmRl6UsvavKFYFMHwjSRAcSWlT2yn2YjGZ2vDhS"
+    "FSEsdj77XM7JC3OiNb6nLJz4pCYlHsNDxp0XRrKrgx7sYlyDgMIJpfK9OrCsf8r02qdVct2SOYaGP7VXYs17xo5JRSGACq9UUPdbz1Vv-q-7ra2GJX"
+    "Yex1UzoTFh5LzOf-UMtLSKA"
 )
-
 EXPIRED_REFRESH_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjotNjIxMzQ5OTIwMDB9.Xu6Tnh_NVQjHAXiRyhAz"
-    "L8yIVeon3nO6lQfX2Ct928dBDbUI5jG2ZrA0EyoeMPRuJIqv0gVg3L561A547mx2aVkzJmemqIIYgaUd4uOZWU5dyLp0Y9Tx2oMaSQBiK_HDoWo4dw"
-    "1XVcvZXhw08J3CCvrCIGwwcQKuTg0u43G9_shPr_1Ntdg5Z7hLiYMlKVilYtWBV0JsPq28qQ4m7m-Fe9l27l033YjtmxvgmGlDw2PA6DIHnxxSxpB3"
-    "aXPzty4sReU6uWwx5-XpjnHtctCe99lefsqHCA8LNlW915PyRsCQOylQo0IM-aNp2WvITdUj4ZNIgZ4KigR28BRj1NMpSA"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
+    "CJleHAiOjk0NjY4NDc5OX0.EQnEYrwwwjuudk_mBdAe_V4dts-nTSU2WEoxyahVfsmCWOAAsyNbRvctGPLBaXIzMU73dgtKMpIiE9etlWKhP68GWRG"
+    "21x155-Qm8i_sJu4r6AOcjwPQRV1fPxf5s37L9V-nj1cWgc_HpBJWSG_DnJtZ_T4AQULYDmZRgoGmRl6UsvavKFYFMHwjSRAcSWlT2yn2YjGZ2vDhS"
+    "FSEsdj77XM7JC3OiNb6nLJz4pCYlHsNDxp0XRrKrgx7sYlyDgMIJpfK9OrCsf8r02qdVct2SOYaGP7VXYs17xo5JRSGACq9UUPdbz1Vv-q-7ra2GJX"
+    "Yex1UzoTFh5LzOf-UMtLSKA"
 )
 
 EXPECTED_ACCESS_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNzA1NDg1OTAwfQ.aWJ8T8RGHF93YhRSP9nOAD"
-    "EKY9nFjVIDu7RQhPGiMpvhgdpPBP17VQPbJ6Smt8mG1TjLXjquJZaDQRF7syrJd8ESDo-lh3ef-cMWg2hWZpbtpQaPaNHLAAMrjZo97qLxrBjeOKjY"
-    "ggqwKMr-7g_LlB--z9GiQrLJVhpGxAXjnTy9VSrioZIU7OE9L9tUyOI7LGjY0X2znWQ3Loy5sMwCP_SeFHBPolKXiErKeLItriaxYNEc5l5VXD2wsK"
-    "G9L8dDZZwe4BSU2eyT_2hhPTrVNfI8-J1KtwpLywC0NfS0Vaksy4HG2IbH8hpl6gaLZhtr2C5_0H_IpkTsvm_Zsnzhbg"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
+    "CJleHAiOjE3MDU0ODU5MDB9.l9-3DudRuhtyHr_dcKp6XvjMRorV9XI4l7CaSBI5CKiH2UCynHcepW0frKKgBfVyo8neEHSCQRE9TQK0c69NQuZJgo"
+    "IEow3M3AOWy5MgbrYLpjCUpCC9XZgAKbj4QGuro_z5FJ-fUsZr2swGP_MLLlMAilYdTlU-7AHoL6OrmHWHsXOuCjh1V-KbSTRjQPCfkxB8tOQOglgf"
+    "c5ci737AQ7HWu_K3hCcV_ozwy3uGsET3g5V-LDncosicPgZl-7a5WX2aIdPILpx3SQzzJ8_kwHrotvpd1UeSwzqIT1CBGccYkbp-aQMmWIaTN3cyjN"
+    "ZYRHcMNSRUcewieSi2KUwScw"
 )
 
 EXPECTED_REFRESH_TOKEN = (
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNzA2MDkwNDAwfQ.OPl4pB7_fIGYB80782b0iG"
-    "nFToF5HoYAUjVSfU521KHyeDvXTSrbwVod8_-8Js9aiQlXyA-sTwtfbic6jc6tLiB0vOJ3l12152QqMok8_h7tY2nJ1UjLoPWI-QQ9m2JkOHu8TWRM"
-    "DmbtcJ4X2_7h7AcJyW08ORMWQNJq9PjIEb8HXJlkyd3SMiak2HxYjFik1wbjq3Q3RGN8IQdCTiPu_bB6Rot5vH5_q4JQ9CKCgEt7Mc6ZntED14I1rc"
-    "okx3dwI2GFhpGPJfW87PZqCsJC1fgSPHQoEs1o_prRmEIOzFT2x343mCjHJwwxYXyMh5xq0A-_6_b74bLbO2HEa68EEw"
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
+    "CJleHAiOjE3MDYwOTA0MDB9.gagdip1GIPwTDKvlTKK8J1Y36s5mFljW5iNpRdqMnF8kiNpcmFJwHwXG8hQ-PpO3h0jgyK85KLe0JQKszz91i0Nbnm"
+    "bHjhWqB2e_vfqt5lAfA9POE-pvLv4BPqXNBO8sItAztgbBSziAH5ZwLHyhpExMY6I-EQi0veDWIaZQHBh4Cq2vlwnGwE8E3tQN5MzTZr0ROL9hirE0"
+    "1ADEMtTpIxjQxiA6jIHXVKXu0d04r-873iXZ2eNnt-3AFseWnYdmD98JROB8b0IeyoLFfbpaLBNjRMTinvdYBoSs64PeuU90uUOoA8DmGrDYLpYiel"
+    "q3W_DIDgiG64Df7e2Aj1icZg"
 )
 
 
@@ -87,7 +91,7 @@ def test_get_refresh_token(datetime_mock):
     assert refresh_token == EXPECTED_REFRESH_TOKEN
 
 
-@patch("ldap_jwt_auth.auth.jwt_handler.LDAPAuthentication.is_user_active")
+@patch("ldap_jwt_auth.auth.jwt_handler.Authorisation.is_active_user")
 @patch("ldap_jwt_auth.auth.jwt_handler.datetime")
 def test_refresh_access_token(datetime_mock, is_user_active_mock):
     """
@@ -102,7 +106,7 @@ def test_refresh_access_token(datetime_mock, is_user_active_mock):
     assert access_token == EXPECTED_ACCESS_TOKEN
 
 
-@patch("ldap_jwt_auth.auth.jwt_handler.LDAPAuthentication.is_user_active")
+@patch("ldap_jwt_auth.auth.jwt_handler.Authorisation.is_active_user")
 def test_refresh_access_token_with_non_matching_usernames(is_user_active_mock):
     """
     Test refreshing an access token when the usernames in the access and refresh tokens do not match.
@@ -123,7 +127,7 @@ def test_refresh_access_token_with_non_matching_usernames(is_user_active_mock):
     assert str(exc.value.__cause__) == "The usernames in the access and refresh tokens do not match"
 
 
-@patch("ldap_jwt_auth.auth.jwt_handler.LDAPAuthentication.is_user_active")
+@patch("ldap_jwt_auth.auth.jwt_handler.Authorisation.is_active_user")
 def test_refresh_access_token_with_not_active_username(is_user_active_mock):
     """
     Test refreshing an access token when username is not active.
@@ -138,7 +142,7 @@ def test_refresh_access_token_with_not_active_username(is_user_active_mock):
     assert str(exc.value.__cause__) == "The provided username 'username' is not part of the active usernames"
 
 
-@patch("ldap_jwt_auth.auth.jwt_handler.LDAPAuthentication.is_user_active")
+@patch("ldap_jwt_auth.auth.jwt_handler.Authorisation.is_active_user")
 @patch("ldap_jwt_auth.auth.jwt_handler.datetime")
 def test_refresh_access_token_with_valid_access_token(datetime_mock, is_user_active_mock):
     """
@@ -182,7 +186,7 @@ def test_verify_token_with_access_token():
     jwt_handler = JWTHandler()
     payload = jwt_handler.verify_token(VALID_ACCESS_TOKEN)
 
-    assert payload == {"username": "username", "exp": 253401695999}
+    assert payload == {"username": "username", "role": "admin", "userIsAdmin": False, "exp": 253402300799}
 
 
 def test_verify_token_with_refresh_token():
@@ -192,7 +196,7 @@ def test_verify_token_with_refresh_token():
     jwt_handler = JWTHandler()
     payload = jwt_handler.verify_token(VALID_REFRESH_TOKEN)
 
-    assert payload == {"username": "username", "exp": 253402300799}
+    assert payload == {"username": "username", "role": "admin", "userIsAdmin": False, "exp": 253402300799}
 
 
 def test_verify_token_with_expired_access_token():
