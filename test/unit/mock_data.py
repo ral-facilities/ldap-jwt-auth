@@ -1,0 +1,51 @@
+"""
+Mock data for use in tests.
+"""
+
+VALID_ACCESS_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOnRydWUsI"
+    "mV4cCI6MjUzNDAyMzAwNzk5fQ.e_yNd4axueRx9_4rG05tWNHiUkwsoZUsNdpl8vb5ofHiFkJAB7D2Gy6NJmg9Pg4fKxpGS-HqRfCjrtQiWX-ZM3UC"
+    "J3S468bWk_DEpEeift3wfp8Kmha3iEgAYruMta7RaoWeeyYMVqq581zHhb8zCquMfFz30R-VKZw_MQidvhK1G3QpwAs-kwcCLgugZi3C2kw5JBDm_j"
+    "QlyyGiK06C_X5c4tGSvpgMFz0ex6gAr6QcEX9kkS7TKrLySoL5DC_ElKrjOs24QhPO2xlKOw82rfJa7wRpARWFdbY0NFy7veAiQfzlfW_9X_Mas2gR"
+    "MF6tu6pkTnVRoLIv07l-nukjlA"
+)
+
+VALID_REFRESH_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOnRydWUsI"
+    "mV4cCI6MjUzNDAyMzAwNzk5fQ.e_yNd4axueRx9_4rG05tWNHiUkwsoZUsNdpl8vb5ofHiFkJAB7D2Gy6NJmg9Pg4fKxpGS-HqRfCjrtQiWX-ZM3UC"
+    "J3S468bWk_DEpEeift3wfp8Kmha3iEgAYruMta7RaoWeeyYMVqq581zHhb8zCquMfFz30R-VKZw_MQidvhK1G3QpwAs-kwcCLgugZi3C2kw5JBDm_j"
+    "QlyyGiK06C_X5c4tGSvpgMFz0ex6gAr6QcEX9kkS7TKrLySoL5DC_ElKrjOs24QhPO2xlKOw82rfJa7wRpARWFdbY0NFy7veAiQfzlfW_9X_Mas2gR"
+    "MF6tu6pkTnVRoLIv07l-nukjlA"
+)
+
+EXPIRED_ACCESS_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOnRydWUsI"
+    "mV4cCI6OTQ2Njg0Nzk5fQ.Uy2rbVeoGNOGu0SiXXj3EFAymzSNzMarEebThpvwKBDUKFefxyUboxxpPwngEG0rvLjIDF1Q_tioUYC68vqxtFx7Zchw"
+    "YrqAvje_rK86NOvr-Xh_Z9t2NAjLYcVApQ3X6_fefSzu4p6-JBwMGs32hsusuS5wCsejxY7-6e5kIIWRgkG9NYK2KL-xrj-KtIZfUnAJVzGl4fnUfS"
+    "xfXap-rg1z-IXvPWuUpPPheRhkqs2_9tohhZN-n0rJjJXolCiJJp4zSXUVxnKfgpYb9_0ddQnNdHfptNHdUb3S92zwBgy2uQFTKsD650EgJhKlxYBh"
+    "xN2RBIaL7CnUjJENEvMy8g"
+)
+
+EXPIRED_REFRESH_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOnRydWUsI"
+    "mV4cCI6OTQ2Njg0Nzk5fQ.Uy2rbVeoGNOGu0SiXXj3EFAymzSNzMarEebThpvwKBDUKFefxyUboxxpPwngEG0rvLjIDF1Q_tioUYC68vqxtFx7Zchw"
+    "YrqAvje_rK86NOvr-Xh_Z9t2NAjLYcVApQ3X6_fefSzu4p6-JBwMGs32hsusuS5wCsejxY7-6e5kIIWRgkG9NYK2KL-xrj-KtIZfUnAJVzGl4fnUfS"
+    "xfXap-rg1z-IXvPWuUpPPheRhkqs2_9tohhZN-n0rJjJXolCiJJp4zSXUVxnKfgpYb9_0ddQnNdHfptNHdUb3S92zwBgy2uQFTKsD650EgJhKlxYBh"
+    "xN2RBIaL7CnUjJENEvMy8g"
+)
+
+EXPECTED_ACCESS_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOnRydWUsI"
+    "mV4cCI6MTcwNTQ4NTkwMH0.RYwoZe60ONHwkzM73U25wO6XrRPCj-2szv-ceUIkRVISl--2wdVdAWoJCprSt958OxZN7ZjEDt3TssyANcebCBCHQ5Q"
+    "BSmwh9XanNv_Uhi2I5vauKQdQqeo2N0h3TA5rwkgUOGD771wUggctF-ucPHMciwyT8AfICOTFSdT46g6tLE7svI5NDaL_S7DEugRhRbrFtxsTAUOBG"
+    "qF6gZs9J4Svqx8QLtx3KB5gHl9NtsBlrhNrTgytsnMGXGm8MOG0AKxqWwCPTxZfRiI8IUDDDvJK8IUWUKFr8-M-Hl-dDFc4L2hhAcWdDYzHjCUEtMH"
+    "p5Js1SZgrT35oQ-SgH2mXnQ"
+)
+
+EXPECTED_REFRESH_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOnRydWUsI"
+    "mV4cCI6MTcwNjA5MDQwMH0.szn7TJsxeNcIWabT9mzEHx3XeYsGeGpIPS8mZeDC0e_KehhF0p-MgZB0grz4I7F7cqe2rOFo9GFk_kfmHfH2PBdl_fx"
+    "haxvnGb3PhWl9zEUXqh03HMXXgZlv9IGw6s4kaNPDmArU6ILsrEj_sXiXuiuD_okky_eboozXUIYFQG6xRdlvH6ujNA_cJpkeCk6dMiQoafm648LkE"
+    "x2kkEqq4zQCyhZwhC8K17itXCs3JjJ63YQZoxjbdDyike3J8eMDhtEwZarUl62D5OlTDnRVulB6sVGzsLRWEssXfsZHEGPEQhQd9lbaiFafbfPbQg8"
+    "DUBTnCKvKWqX2pOmGxA_rYg"
+)

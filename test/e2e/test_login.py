@@ -103,13 +103,13 @@ class TestOIDCLogin(OIDCLoginDSL):
         self.post_oidc_id_token(f"Bearer {invalid_id_token}")
         self.check_post_oidc_id_token_failed_with_detail(401, "Invalid OIDC ID token provided")
 
-    def test_login_with_empty_auhtorisation_header(self):
-        """Test logging in with an missing OIDC ID token."""
+    def test_login_with_empty_authorisation_header(self):
+        """Test logging in with a missing OIDC ID token."""
         self.post_oidc_id_token("")
         self.check_post_oidc_id_token_failed_with_detail(403, "Not authenticated")
 
     def test_login_with_missing_bearer_token(self):
-        """Test logging in with an missing OIDC ID token."""
+        """Test logging in with a missing OIDC ID token."""
         self.post_oidc_id_token("Bearer ")
         self.check_post_oidc_id_token_failed_with_detail(403, "Not authenticated")
 
