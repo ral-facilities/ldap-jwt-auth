@@ -110,17 +110,12 @@ class OIDCAuthentication:
 
         :param provider_id: The ID of the OIDC provider to get the corresponding configuration for.
         :param id_token: The provided OIDC token to verify using the JWKs of the specified OIDC provider.
-        :raises OIDCProviderNotFoundError: If no configuration can be found for the specified OIDC provider.
         :raises InvalidJWTError: If the username claim specified in the configuration is missing in the OIDC ID token.
         :raises UserNotActiveError: If the username is not part of the active user emails.
         :raises InvalidJWTError: If the OIDC ID token is invalid.
         :return: The username.
         """
-
-        try:
-            provider_config: OIDCProviderConfig = config.oidc_providers[provider_id]
-        except KeyError as exc:
-            raise OIDCProviderNotFoundError(f"No configuration found for OIDC provider: {provider_id}") from exc
+        provider_config = _get_oidc_provider_config(provider_id)
 
         try:
             unverified_header = jwt.get_unverified_header(id_token)
@@ -148,12 +143,26 @@ class OIDCAuthentication:
 
             return username
 
-        except (jwt.exceptions.ExpiredSignatureError, jwt.exceptions.InvalidTokenError) as exc:
+        except (jwt.exceptions.ExpiredSignatureError, jwt.exceptions.InvalidTokenError, KeyError) as exc:
             raise InvalidJWTError("Invalid OIDC ID token") from exc
 
 
+def _get_oidc_provider_config(provider_id: str) -> OIDCProviderConfig:
+    """
+    Get the configuration for the OIDC provider using the specified `provider_id` from the config.
+
+    :param provider_id: The ID of the OIDC provider to get the configuration for.
+    :raises OIDCProviderNotFoundError: If no configuration can be found for the specified OIDC provider.
+    :return:
+    """
+    try:
+        return config.oidc_providers[provider_id]
+    except KeyError as exc:
+        raise OIDCProviderNotFoundError(f"No configuration found for OIDC provider: {provider_id}") from exc
+
+
 @ttl_cache(ttl=2 * 60 * 60)
-def _get_jwks(provider_id: str) -> dict:
+def _get_jwks(provider_id: str) -> jwt.PyJWKSet:
     """
     Fetch the JWKs for the specified OIDC provider.
 
@@ -161,8 +170,7 @@ def _get_jwks(provider_id: str) -> dict:
     :raises OIDCProviderError: If it fails to fetch the JWKs.
     :return: The JWKs for the specified OIDC provider.
     """
-
-    provider_config: OIDCProviderConfig = config.oidc_providers[provider_id]
+    provider_config = _get_oidc_provider_config(provider_id)
     well_known_config = _get_well_known_config(provider_id)
     jwks_uri = well_known_config["jwks_uri"]
 
@@ -173,16 +181,7 @@ def _get_jwks(provider_id: str) -> dict:
     except Exception as exc:
         raise OIDCProviderError(f"Failed to fetch JWKs for OIDC provider: {provider_id}") from exc
 
-    keys = {}
-    for key in jwks_config["keys"]:
-        kid = key["kid"]
-        try:
-            keys[kid] = jwt.PyJWK(key)
-        except jwt.exceptions.PyJWKError:
-            # Possibly unsupported algorithm (e.g. RSA-OAEP)
-            logger.warning("Could not load JWK for OIDC provider: %s", provider_id)
-
-    return keys
+    return jwt.PyJWKSet(jwks_config["keys"])
 
 
 @ttl_cache(ttl=24 * 60 * 60)
@@ -194,8 +193,8 @@ def _get_well_known_config(provider_id: str) -> dict:
     :raises OIDCProviderError: If it fails to fetch the well known configuration.
     :return: The well known configuration for the specified OIDC provider.
     """
+    provider_config = _get_oidc_provider_config(provider_id)
 
-    provider_config: OIDCProviderConfig = config.oidc_providers[provider_id]
     try:
         r = requests.get(
             provider_config.configuration_url,
