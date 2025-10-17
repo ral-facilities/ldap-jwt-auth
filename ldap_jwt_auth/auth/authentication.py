@@ -122,6 +122,10 @@ class OIDCAuthentication:
             kid = unverified_header["kid"]
             key = _get_jwks(provider_id)[kid]
 
+            # Ensure that this key can be used for signing
+            if key.public_key_use not in [None, "sig"]:
+                raise InvalidJWTError("Invalid OIDC ID token")
+
             payload = jwt.decode(
                 jwt=id_token,
                 key=key,
