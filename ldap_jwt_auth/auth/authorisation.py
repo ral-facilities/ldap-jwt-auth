@@ -52,12 +52,14 @@ class Authorisation:
         user = self._find_user(identifier)
         return user.get("role", "default") if user else "default"
 
-    def is_user_admin(self, role: str) -> bool:
+    def is_user_scigateway_admin(self, role: str) -> bool:
         """
-        Check if the given user's role is a role with the highest privilege level defined in the configuration.
+        Check if the given user's role is a role which has been configured to also be an admin in scigateway.
+        A scigateway admin, whilst also inheriting the privileges of an admin, has other privileges specifc to
+        scigateway. The `userIsAdmin` field refers explicitly to a scigateway admin, it has no bearing in IMS.
 
         :param role: The role for the given user.
-        :return: `True` if the user has a role which matches the role(s) with the highest privilege, `False` otherwise.
+        :return: `True` if the role's configuration has `userIsAdmin` set to `True`, otherwise `False`.
         """
 
         # protects against role with no dictionary defined

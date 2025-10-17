@@ -91,20 +91,20 @@ class TestAuthorisation:
 
         assert user_role == "admin"
 
-    def test_is_user_admin(self):
+    def test_is_user_scigateway_admin(self):
         """
-        Test `is_user_admin` for role which is a highest privilege role
-        """
-        authorisation = Authorisation()
-        is_user_admin = authorisation.is_user_admin("admin")
-
-        assert is_user_admin is True
-
-    def test_is_user_admin_non_existent_role(self):
-        """
-        Test `is_user_admin` for role which does not exist in the config
+        Test `is_user_scigateway_admin` for role which has `userIsAdmin` set to true
         """
         authorisation = Authorisation()
-        is_user_admin = authorisation.is_user_admin("invalid")
+        is_user_scigateway_admin = authorisation.is_user_scigateway_admin("scigateway-admin")
 
-        assert is_user_admin is False
+        assert is_user_scigateway_admin is True
+
+    def test_is_user_scigateway_admin_non_existent_role(self):
+        """
+        Test `is_user_scigateway_admin` for role which does not exist in the config
+        """
+        authorisation = Authorisation()
+        is_user_scigateway_admin = authorisation.is_user_scigateway_admin("invalid")
+
+        assert is_user_scigateway_admin is False

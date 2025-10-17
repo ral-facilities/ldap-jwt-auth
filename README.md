@@ -225,7 +225,8 @@ The `users_config.yaml` file at the root of the project directory contains the s
 through SSO OIDC and/or LDAP authentication. This means that you can add or remove a user from the system by adding or
 removing their username/email in the `users_config.yaml` file. You can also define a user's role in their schema, roles
 can be defined at the top of the `users_config.yaml` file. See `users_config.example.yaml` for an example yaml
-structure.
+structure. The `userIsAdmin` flag in the example file, relates to **scigateway** admin functionality, it has no relation
+to any admin functionality within IMS, that functionality is derived from the user's role only.
 
 **PLEASE NOTE** Changes made to the `users_config.yaml` file using vim do not get synced in the Docker container
 because it changes the inode index number of the file. A workaround is to create a new file using the

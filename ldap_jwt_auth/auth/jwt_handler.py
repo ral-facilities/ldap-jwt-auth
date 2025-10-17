@@ -38,7 +38,7 @@ class JWTHandler:
         payload = {
             "username": username,
             "role": user_role,
-            "userIsAdmin": self._authorisation.is_user_admin(user_role),
+            "userIsAdmin": self._authorisation.is_user_scigateway_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(minutes=config.authentication.access_token_validity_minutes),
         }
 
@@ -57,7 +57,7 @@ class JWTHandler:
         payload = {
             "username": username,
             "role": user_role,
-            "userIsAdmin": self._authorisation.is_user_admin(user_role),
+            "userIsAdmin": self._authorisation.is_user_scigateway_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days),
         }
         return self._pack_jwt(payload)
