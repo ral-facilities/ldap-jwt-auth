@@ -75,11 +75,11 @@ class TestJWTHandler:
         """
         is_active_user_mock.return_value = True
         access_token = (
-            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxMjMiLCJleHAiOi02MjEzNTU5NjgwMH0.hMFgx83bidY-r"
-            "2SVlp2fnKwzD-SaCbzfD054A_lRsEOyYYtSB52kBvnkp_oagYelXhEczfGGsfWzV_JkgalM-449KI99qImlab45ANyhriHoaDhMvs9ve_0"
-            "TwPfD34zU3Y2PkcrgZ7lbYDqMArVOBDsAiO12ejYA7CAMjUBKgoXPIzMqup1Ah8Mzg0F5Gu2iUpoDfCyIt86KjAEiYk-CDm6w73b28BOaW"
-            "axk87tXUYXE64KIWNkh99iXgYEDYvfSmvWdu6TCHtVmNzJ_Tb1egVHb-hO-3G62mnyHJ2x6p_k7Wq44JuGyC0SrRHWp-jZsubLvi_ikBDm"
-            "6qgZ8mKcJxA"
+            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxMjMiLCJyb2xlIjoiZGVmYXVsdCIsInVzZXJJc0FkbWluI"
+            "jpmYWxzZSwiZXhwIjotNjIxMzU1OTY4MDB9.U3X2jOHNZESMa6BmaAFmXEukPI8KFmV777GsEXvNboC47ww-MnslmHWW6uRyMiYbuUZtaC"
+            "2wMP-654j3GcLQdlPYfMmXFAymtGXchaGYQe6dDsd_9cqA-Iozypp3lUhMfr1JiVVPib7tecYGI-BebaeVxt-bfDhRCVE8rfSghWEI1VJ4"
+            "glLbpkwRwOuIsjfZ4fZ7wepxOAQl89n8KmTsXKGc25gEEXO6wQVbxGMnFwH5XkvbjRY0XEMwZGPrSAf3sz6jvd60fTv715n3heP7eyH82V"
+            "RGr4TcgwZILwNMwUXeXL9B_Lbq2--_VCKumYfb54jaiYI5iIYqrwy8XDK3Dg"
         )
 
         jwt_handler = JWTHandler()
