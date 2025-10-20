@@ -153,7 +153,7 @@ class TestJWTHandler:
         jwt_handler = JWTHandler()
         payload = jwt_handler.verify_token(VALID_REFRESH_TOKEN)
 
-        assert payload == {"username": "username", "role": "admin", "userIsAdmin": False, "exp": 253402300799}
+        assert payload == {"username": "username", "exp": 253402300799}
 
     def test_verify_token_with_expired_access_token(self):
         """
