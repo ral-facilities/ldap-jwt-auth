@@ -294,3 +294,37 @@ class TestOIDCAuthentication:
         with pytest.raises(OIDCProviderNotFoundError) as exc:
             self.oidc_authentication.authenticate("unknown", self.create_oidc_id_token())
         assert str(exc.value) == "No configuration found for OIDC provider: unknown"
+
+    @patch("ldap_jwt_auth.auth.authentication.requests.get")
+    def test_authenticate_with_not_active_username(self, mock_get):
+        """Test authenticating a user when username is not active."""
+        mock_get.side_effect = [
+            self.create_mock_response(200, json_data=self.WELL_KNOWN_CONFIG),
+            self.create_mock_response(200, json_data=self.JWKS),
+        ]
+        self.oidc_authentication._authorisation.is_active_user.return_value = False  # pylint: disable=protected-access
+
+        with pytest.raises(UserNotActiveError) as exc:
+            self.oidc_authentication.authenticate("keycloak", self.create_oidc_id_token())
+        assert str(exc.value) == "The provided email 'test@example.com' is not part of the active user emails"
+
+    @patch("ldap_jwt_auth.auth.authentication.requests.get")
+    def test_authenticate_oidc_provider_error_get_well_known_config(self, mock_get):
+        """Test authenticating a user when an LDAP server error occurs while fetching the well known configuration."""
+        mock_get.side_effect = [self.create_mock_response(500, raise_for_status=True)]
+
+        with pytest.raises(OIDCProviderError) as exc:
+            self.oidc_authentication.authenticate("keycloak", self.create_oidc_id_token())
+        assert str(exc.value) == "Failed to fetch well known configuration for OIDC provider: keycloak"
+
+    @patch("ldap_jwt_auth.auth.authentication.requests.get")
+    def test_authenticate_oidc_provider_error_get_jwks(self, mock_get):
+        """Test authenticating a user when an LDAP server error occurs while fetching the JWKs."""
+        mock_get.side_effect = [
+            self.create_mock_response(200, self.WELL_KNOWN_CONFIG),
+            self.create_mock_response(500, raise_for_status=True),
+        ]
+
+        with pytest.raises(OIDCProviderError) as exc:
+            self.oidc_authentication.authenticate("keycloak", self.create_oidc_id_token())
+        assert str(exc.value) == "Failed to fetch JWKs for OIDC provider: keycloak"

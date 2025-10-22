@@ -158,7 +158,7 @@ def _get_oidc_provider_config(provider_id: str) -> OIDCProviderConfig:
 
     :param provider_id: The ID of the OIDC provider to get the configuration for.
     :raises OIDCProviderNotFoundError: If no configuration can be found for the specified OIDC provider.
-    :return:
+    :return: The configuration for the specified OIDC provider.
     """
     try:
         return config.oidc_providers[provider_id]

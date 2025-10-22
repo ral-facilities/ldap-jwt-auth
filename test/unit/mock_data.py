@@ -2,6 +2,8 @@
 Mock data for use in tests.
 """
 
+# payload = {"username": "username", "role": "admin", "userIsAdmin": false, "exp": 253402300799}
+# exp -> 31/12/9999 23:59:59 GMT+0000
 VALID_ACCESS_TOKEN = (
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
     "CJleHAiOjI1MzQwMjMwMDc5OX0.FrsDUqnKskhIvmIjtYVgC9im-cSu1dFlwVQ4cFJf2BgCaSh82XuEngOLkbtQuuXWC1wiipsGP4Y-usq7Q_R68vw"
@@ -10,6 +12,8 @@ VALID_ACCESS_TOKEN = (
     "H0X25MC00IAPRHh-1KqabV7IA9w"
 )
 
+# payload = {"username": "username", "exp": 253402300799}
+# exp -> 31/12/9999 23:59:59 GMT+0000
 VALID_REFRESH_TOKEN = (
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoyNTM0MDIzMDA3OTl9.bagU2Wix8wKzydVU_L3Z"
     "ZuuMAxGxV4OTuZq_kS2Fuwm839_8UZOkICnPTkkpvsm1je0AWJaIXLGgwEa5zUjpG6lTrMMmzR9Zi63F0NXpJqQqoOZpTBMYBaggsXqFkdsv-yAKUZ"
@@ -17,6 +21,8 @@ VALID_REFRESH_TOKEN = (
     "1fldh-QYuZqZeuaFidKbLRH610o2-1IfPMUr-yPtj5PZ-AaX-XTLkuMqdVMCk0_jeW9Os2BPtyUDkpcu1fvW3_S6_dK3nQ"
 )
 
+# payload = {"username": "username", "role": "admin", "userIsAdmin": false, "exp": 946684799}
+# exp -> 31/12/1999 23:59:59 GMT+0000
 EXPIRED_ACCESS_TOKEN = (
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
     "CJleHAiOjk0NjY4NDc5OX0.EQnEYrwwwjuudk_mBdAe_V4dts-nTSU2WEoxyahVfsmCWOAAsyNbRvctGPLBaXIzMU73dgtKMpIiE9etlWKhP68GWRG"
@@ -25,6 +31,8 @@ EXPIRED_ACCESS_TOKEN = (
     "Yex1UzoTFh5LzOf-UMtLSKA"
 )
 
+# payload = {"username": "username", "exp": -62135596800}
+# exp -> 31/12/0000 23:58:45 GMT-0001
 EXPIRED_REFRESH_TOKEN = (
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjotNjIxMzU1OTY4MDB9.G_cfC8PNYE5yERyyQNRk"
     "9mTmDusU_rEPgm7feo2lWQF6QMNnf8PUN-61FfMNRVE0QDSvAmIMMNEOa8ma0JHZARafgnYJfn1_FSJSoRxC740GpG8EFSWrpM-dQXnoD263V9FlK-"
@@ -32,6 +40,8 @@ EXPIRED_REFRESH_TOKEN = (
     "4E4wTOqPc4t_CSi1oBSbY7h9O63i8IU99YsOCdvZ7AD3ePxyM1xJR7CFHycg9Z_IDouYnJmXpTpbFMMl7SjME3cVMfMrAQ"
 )
 
+# payload = {"username": "username", "role": "admin", "userIsAdmin": false, "exp": 1705485900}
+# exp -> 17/01/2024 10:05:00 GMT+0000
 EXPECTED_ACCESS_TOKEN = (
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
     "CJleHAiOjE3MDU0ODU5MDB9.l9-3DudRuhtyHr_dcKp6XvjMRorV9XI4l7CaSBI5CKiH2UCynHcepW0frKKgBfVyo8neEHSCQRE9TQK0c69NQuZJgo"
@@ -40,6 +50,8 @@ EXPECTED_ACCESS_TOKEN = (
     "ZYRHcMNSRUcewieSi2KUwScw"
 )
 
+# payload = {"username": "username", "exp": 1705485900}
+# exp -> 17/01/2024 10:05:00 GMT+0000
 EXPECTED_REFRESH_TOKEN = (
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNzA2MDkwNDAwfQ.OPl4pB7_fIGYB80782b0iG"
     "nFToF5HoYAUjVSfU521KHyeDvXTSrbwVod8_-8Js9aiQlXyA-sTwtfbic6jc6tLiB0vOJ3l12152QqMok8_h7tY2nJ1UjLoPWI-QQ9m2JkOHu8TWRM"
@@ -47,6 +59,7 @@ EXPECTED_REFRESH_TOKEN = (
     "okx3dwI2GFhpGPJfW87PZqCsJC1fgSPHQoEs1o_prRmEIOzFT2x343mCjHJwwxYXyMh5xq0A-_6_b74bLbO2HEa68EEw"
 )
 
+# For use to sign an OIDC ID token
 JWK_PRIVATE_KEY = """-----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAm3DT0wGFXPgW6tYh8IR2NaoUAP733QVOV/PPx6hPVY04QGT8
 n+QBdUBBXAZL/qxN5ib3ChI6cMnlGM4CQDdYje9ARJr48kzfPgdCFvmp70leNs7p
