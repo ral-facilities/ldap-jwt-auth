@@ -120,7 +120,8 @@ class OIDCAuthentication:
         try:
             unverified_header = jwt.get_unverified_header(id_token)
             kid = unverified_header["kid"]
-            key = _get_jwks(provider_id)[kid]
+            well_known_config = _get_well_known_config(provider_id)
+            key = _get_jwks(provider_id, well_known_config["jwks_uri"])[kid]
 
             # Ensure that this key can be used for signing
             if key.public_key_use not in [None, "sig"]:
@@ -131,7 +132,7 @@ class OIDCAuthentication:
                 key=key,
                 algorithms=[key.algorithm_name],
                 audience=provider_config.client_id,
-                issuer=_get_well_known_config(provider_id)["issuer"],
+                issuer=well_known_config["issuer"],
                 verify=True,
                 options={"require": ["exp", "aud", "iss"], "verify_exp": True, "verify_aud": True, "verify_iss": True},
                 # Amount of leeway (in seconds) when validating exp & iat
@@ -166,17 +167,16 @@ def _get_oidc_provider_config(provider_id: str) -> OIDCProviderConfig:
 
 
 @ttl_cache(ttl=2 * 60 * 60)
-def _get_jwks(provider_id: str) -> jwt.PyJWKSet:
+def _get_jwks(provider_id: str, jwks_uri: str) -> jwt.PyJWKSet:
     """
     Fetch the JWKs for the specified OIDC provider.
 
     :param provider_id: The ID of the OIDC provider to fetch the JWKs for.
+    :param jwks_uri: The URI to the JWKs.
     :raises OIDCProviderError: If it fails to fetch the JWKs.
     :return: The JWKs for the specified OIDC provider.
     """
     provider_config = _get_oidc_provider_config(provider_id)
-    well_known_config = _get_well_known_config(provider_id)
-    jwks_uri = well_known_config["jwks_uri"]
 
     try:
         r = requests.get(jwks_uri, verify=provider_config.verify_cert, timeout=provider_config.request_timeout_seconds)
