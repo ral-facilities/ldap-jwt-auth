@@ -36,6 +36,7 @@ router = APIRouter(tags=["authentication"])
 def get_oidc_providers() -> JSONResponse:
     # pylint: disable=missing-function-docstring
     logger.info("Getting a list of OIDC providers")
+
     providers = {}
     for provider_id, provider_config in config.oidc_providers.items():
         providers[provider_id] = {

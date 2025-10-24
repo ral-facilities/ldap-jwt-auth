@@ -72,6 +72,35 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
+  e2e-tests:
+    needs: [unit-tests]
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Create logging configuration file
+        run: cp logging.example.ini logging.ini
+
+      - name: Setup keycloak
+        run: |
+          docker compose up --detach keycloak
+
+      - name: Run e2e tests
+        run: |
+          docker build --file Dockerfile --target test --tag ldap-jwt-auth:test .
+          docker run \
+            --name ldap-jwt-auth \
+            --volume ./logging.ini:/app/logging.ini \
+            --add-host localhost:host-gateway \
+            ldap-jwt-auth:test \
+            pytest --config-file test/pytest.ini test/e2e -v
+
+      - name: Output docker logs (keycloak)
+        if: failure()
+        run: docker logs keycloak
+
   docker:
     # This job triggers only if all the other jobs succeed. It builds the Docker image
     # and if run manually from Github Actions, it pushes to Harbor.
