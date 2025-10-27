@@ -1,4 +1,4 @@
-annotated-doc==0.0.2
+annotated-doc==0.0.3
 annotated-types==0.7.0
 anyio==4.11.0
 cachetools==6.2.1
@@ -22,7 +22,7 @@ Jinja2==3.1.6
 markdown-it-py==4.0.0
 MarkupSafe==3.0.3
 mdurl==0.1.2
-orjson==3.11.3
+orjson==3.11.4
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pycparser==2.23
@@ -32,7 +32,7 @@ pydantic-settings==2.11.0
 pydantic_core==2.41.4
 Pygments==2.19.2
 PyJWT==2.10.1
-python-dotenv==1.1.1
+python-dotenv==1.2.1
 python-ldap==3.4.5
 python-multipart==0.0.20
 PyYAML==6.0.3
