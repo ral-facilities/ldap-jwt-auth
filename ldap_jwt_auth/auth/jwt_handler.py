@@ -53,11 +53,8 @@ class JWTHandler:
         """
         logger.info("Getting a refresh token")
 
-        user_role = self._authorisation.get_user_role(username)
         payload = {
             "username": username,
-            "role": user_role,
-            "userIsAdmin": self._authorisation.is_user_scigateway_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days),
         }
         return self._pack_jwt(payload)

@@ -41,6 +41,8 @@ packages = ["ldap_jwt_auth"]
 
 [tool.coverage.run]
 omit = [
+    # Exclude test code from coverage measurement
+    "test/*",
     # Exclude routers from coverage measurement as they are not unit tested
     "ldap_jwt_auth/routers/*"
 ]

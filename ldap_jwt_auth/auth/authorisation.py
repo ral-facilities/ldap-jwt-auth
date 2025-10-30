@@ -9,14 +9,10 @@ from ldap_jwt_auth.core.exceptions import InvalidUserConfigFileError, UserConfig
 
 
 class Authorisation:
-    """
-    Class for managing authorisation against user_config.yaml
-    """
+    """Class for managing authorisation against user_config.yaml."""
 
     def __init__(self) -> None:
-        """
-        Initialize the `Authorisation` class and load the user_config file
-        """
+        """Initialize the `Authorisation` class and load the user_config file."""
 
         try:
             with open(config.authentication.users_config_path, "r", encoding="utf-8") as file:
@@ -41,7 +37,7 @@ class Authorisation:
         Check if the provided username or email is a part of the active users username or email.
 
         :param identifier: The username or email to check.
-        :return: `True` if the user is active, `False` otherwise
+        :return: `True` if the user is active, `False` otherwise.
         """
         return self._find_user(identifier) is not None
 
@@ -49,8 +45,8 @@ class Authorisation:
         """
         Get the provided user's role.
 
-        :param identifier: The username or email to fetch for
-        :return: `str` which is the defined role of the user, 'default' if no role
+        :param identifier: The username or email to fetch for.
+        :return: `str` which is the defined role of the user, 'default' if no role.
         """
 
         user = self._find_user(identifier)
@@ -62,8 +58,8 @@ class Authorisation:
         A scigateway admin, whilst also inheriting the privileges of an admin, has other privileges specifc to
         scigateway. The `userIsAdmin` field refers explicitly to a scigateway admin, it has no bearing in IMS.
 
-        :param role: The role for the given user
-        :return: `True` if the role's configuration has `userIsAdmin` set to `True`, otherwise `False`
+        :param role: The role for the given user.
+        :return: `True` if the role's configuration has `userIsAdmin` set to `True`, otherwise `False`.
         """
 
         # protects against role with no dictionary defined
