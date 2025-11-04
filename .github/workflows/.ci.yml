@@ -104,7 +104,7 @@ jobs:
   docker:
     # This job triggers only if all the other jobs succeed. It builds the Docker image
     # and if run manually from Github Actions, it pushes to Harbor.
-    needs: [linting, unit-tests]
+    needs: [linting, unit-tests, e2e-tests]
     name: Docker
     runs-on: ubuntu-latest
     env:
