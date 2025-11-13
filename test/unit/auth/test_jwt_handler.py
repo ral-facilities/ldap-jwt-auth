@@ -117,7 +117,7 @@ class TestJWTHandler:
         access_token = jwt_handler.refresh_access_token(VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN)
 
         assert access_token == EXPECTED_ACCESS_TOKEN
-        
+
     @patch("ldap_jwt_auth.auth.jwt_handler.Authorisation.get_user_role")
     @patch("ldap_jwt_auth.auth.jwt_handler.Authorisation.is_active_user")
     @patch("ldap_jwt_auth.auth.jwt_handler.datetime")
@@ -127,15 +127,13 @@ class TestJWTHandler:
         """
         datetime_mock.now.return_value = self.mock_datetime_now()
         is_active_user_mock.return_value = True
-        get_user_role_mock.return_value = 'default'
+        get_user_role_mock.return_value = "default"
 
         jwt_handler = JWTHandler()
-        
+
         access_token = jwt_handler.refresh_access_token(VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN)
-        
+
         assert access_token == EXPECTED_ACCESS_TOKEN_DEFAULT_ROLE
-        
-        
 
     def test_refresh_access_token_with_invalid_access_token(self):
         """
