@@ -52,7 +52,7 @@ async def custom_validation_exception_handler(_: Request, exc: RequestValidation
     detail = {"detail": jsonable_encoder(exc.errors(), exclude={"input"})}
     # The traceback here contains the exception message which includes the input hence why it is being excluded
     logger.exception(detail, exc_info=False)
-    return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, content=detail)
+    return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=detail)
 
 
 app.add_middleware(

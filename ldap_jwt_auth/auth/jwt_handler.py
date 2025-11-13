@@ -61,10 +61,10 @@ class JWTHandler:
 
     def refresh_access_token(self, access_token: str, refresh_token: str) -> str:
         """
-        Refreshes the JWT access token by updating its expiry time, provided that the JWT refresh token is valid.
+        Refreshes the JWT access token by creating a new token, provided that the JWT refresh token is valid.
 
         Before attempting to refresh the token, it checks that the usernames in the access and refresh tokens match, and
-        that the username is still part of the active usernames.
+        that the username is still part of the active users.
 
         :param access_token: The JWT access token to refresh.
         :param refresh_token: The JWT refresh token.
@@ -78,18 +78,17 @@ class JWTHandler:
 
         try:
             access_token_payload = self._get_jwt_payload(access_token, {"verify_exp": False})
+            logging.error(access_token_payload)
             username = access_token_payload["username"]
 
             if username != refresh_token_payload["username"]:
                 raise UsernameMismatchError("The usernames in the access and refresh tokens do not match")
 
             if not self._authorisation.is_active_user(username):
-                raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
+                raise UserNotActiveError(f"The provided username '{username}' is not part of the active users")
 
-            access_token_payload["exp"] = datetime.now(timezone.utc) + timedelta(
-                minutes=config.authentication.access_token_validity_minutes
-            )
-            return self._pack_jwt(access_token_payload)
+            return self.get_access_token(username)
+
         except Exception as exc:
             message = "Unable to refresh access token"
             logger.exception(message)
@@ -133,6 +132,7 @@ class JWTHandler:
         :return: The encoded and signed JWT token.
         """
         logger.debug("Packing payload into a JWT token")
+        logger.error(payload)
         bytes_key = bytes(PRIVATE_KEY, encoding="utf8")
         loaded_private_key = serialization.load_ssh_private_key(bytes_key, password=None)
         return jwt.encode(payload, loaded_private_key, algorithm=config.authentication.jwt_algorithm)
