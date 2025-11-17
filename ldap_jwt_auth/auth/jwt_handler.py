@@ -132,7 +132,7 @@ class JWTHandler:
         :return: The encoded and signed JWT token.
         """
         logger.debug("Packing payload into a JWT token")
-        
+
         bytes_key = bytes(PRIVATE_KEY, encoding="utf8")
         loaded_private_key = serialization.load_ssh_private_key(bytes_key, password=None)
         return jwt.encode(payload, loaded_private_key, algorithm=config.authentication.jwt_algorithm)
