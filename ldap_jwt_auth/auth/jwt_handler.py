@@ -78,7 +78,7 @@ class JWTHandler:
 
         try:
             access_token_payload = self._get_jwt_payload(access_token, {"verify_exp": False})
-            logging.error(access_token_payload)
+
             username = access_token_payload["username"]
 
             if username != refresh_token_payload["username"]:
