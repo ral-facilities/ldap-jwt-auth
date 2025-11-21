@@ -50,6 +50,16 @@ EXPECTED_ACCESS_TOKEN = (
     "ZYRHcMNSRUcewieSi2KUwScw"
 )
 
+# payload = {"username": "username", "role": "default", "userIsAdmin": false, "exp": 1705485900}
+# exp -> 17/01/2024 10:05:00 GMT+0000
+EXPECTED_ACCESS_TOKEN_DEFAULT_ROLE = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImRlZmF1bHQiLCJ1c2VySXNBZG1pbiI6ZmFsc"
+    "2UsImV4cCI6MTcwNTQ4NTkwMH0.Vqf0m2LxYG0E84X3CSVw4Pgd8PQCAF13oMvVHPesx12y0j9vDwOoL-gLoimEsDnrTGFiZHA4eytMCM_nBY1QP9K"
+    "_aEv6TPzon1PFiogGTdFyQJ5Fj4XZ6fBErmaojvSOjuHWtn6s5p_fG9rga-E4qpuk3QqLFJ5m0bWgMswZMpJaKjeC4-5CjEJgI-dxmP0_ggD-8zvTL"
+    "Bvcrd8wqHeIOPgJWfI2D6jiSu3NuK4XPaHHTnkrDDTK1oe_4tcIreHTN7EnkYDWEk6sk3rT6GPCH4OffTimOuUMB_eSlpFXIPOO9yYBYPd0H1EqLK6"
+    "fdYMAS7lycvwItq1PAMiqeTWYEw"
+)
+
 # payload = {"username": "username", "exp": 1705485900}
 # exp -> 17/01/2024 10:05:00 GMT+0000
 EXPECTED_REFRESH_TOKEN = (

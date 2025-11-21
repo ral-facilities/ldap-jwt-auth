@@ -4,6 +4,7 @@ Unit tests for the `JWTHandler` class.
 
 from datetime import datetime, timezone
 from test.unit.mock_data import (
+    EXPECTED_ACCESS_TOKEN_DEFAULT_ROLE,
     EXPIRED_ACCESS_TOKEN,
     EXPIRED_REFRESH_TOKEN,
     EXPECTED_ACCESS_TOKEN,
@@ -101,7 +102,7 @@ class TestJWTHandler:
             jwt_handler.refresh_access_token(EXPIRED_ACCESS_TOKEN, VALID_REFRESH_TOKEN)
         assert str(exc.value) == "Unable to refresh access token"
         assert isinstance(exc.value.__cause__, UserNotActiveError)
-        assert str(exc.value.__cause__) == "The provided username 'username' is not part of the active usernames"
+        assert str(exc.value.__cause__) == "The provided username 'username' is not part of the active users"
 
     @patch("ldap_jwt_auth.auth.jwt_handler.Authorisation.is_active_user")
     @patch("ldap_jwt_auth.auth.jwt_handler.datetime")
@@ -116,6 +117,23 @@ class TestJWTHandler:
         access_token = jwt_handler.refresh_access_token(VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN)
 
         assert access_token == EXPECTED_ACCESS_TOKEN
+
+    @patch("ldap_jwt_auth.auth.jwt_handler.Authorisation.get_user_role")
+    @patch("ldap_jwt_auth.auth.jwt_handler.Authorisation.is_active_user")
+    @patch("ldap_jwt_auth.auth.jwt_handler.datetime")
+    def test_refresh_access_token_user_role_changed(self, datetime_mock, is_active_user_mock, get_user_role_mock):
+        """
+        Test refreshing a valid access token where the user role has changed since the last refresh.
+        """
+        datetime_mock.now.return_value = self.mock_datetime_now()
+        is_active_user_mock.return_value = True
+        get_user_role_mock.return_value = "default"
+
+        jwt_handler = JWTHandler()
+
+        access_token = jwt_handler.refresh_access_token(VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN)
+
+        assert access_token == EXPECTED_ACCESS_TOKEN_DEFAULT_ROLE
 
     def test_refresh_access_token_with_invalid_access_token(self):
         """
