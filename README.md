@@ -46,10 +46,8 @@ This microservice requires an LDAP server to run against.
 4. (If LDAP certificate validation is enabled) Copy the `cacert.pem` file that contains all the trusted CA certificates
    to the `ldap_server_certs` directory in the root of the project.
 
-5. Create a `users_config.yaml` file alongside the `users_config.example.yaml` file and add all the usernames
-   (FederalIDs) and emails that can use this system (via LDAP authentication or SSO OIDC), and their role. The
-   usernames are the Federal IDs and each one should be stored under `users` using correct yaml notation. You can also
-   define the various roles in the system and if they are of the highest privilege.
+5. Create a `users_config.yaml` file alongside the `users_config.example.yaml` file. Use the example file as a reference and
+   modify it accordingly. You may also refer to [User configuration file format below](#users-configuration-file)
 
    ```bash
    cp users_config.example.yaml users_config.yaml
@@ -219,14 +217,19 @@ Listed below are the environment variables supported by the application.
 | `OIDC_PROVIDERS__{provider_name}__SCOPE`                   | The claims (listed in the `GET` response of the `/oidc_providers` endpoint) the API client should request from the OIDC provider (i.e. email etc) when obtaining an OIDC ID token for the `/oidc_login/{provider_id}` endpoint. | No                                | `openid email`                                            |
 | `OIDC_PROVIDERS__{provider_name}__USERNAME_CLAIM`          | The username claim to get from the OIDC ID token payload to check against the list of active user emails.                                                                                                                       | No                                | `email`                                                   |
 
-### How to add or remove a user from the system
+### Users configuration file
 
 The `users_config.yaml` file at the root of the project directory contains the schema of users with access to the system
-through SSO OIDC and/or LDAP authentication. This means that you can add or remove a user from the system by adding or
-removing their username/email in the `users_config.yaml` file. You can also define a user's role in their schema, roles
-can be defined at the top of the `users_config.yaml` file. See `users_config.example.yaml` for an example yaml
-structure. The `userIsAdmin` flag in the example file, relates to **scigateway** admin functionality, it has no relation
-to any admin functionality within IMS, that functionality is derived from the user's role only.
+through SSO OIDC and/or LDAP authentication. The format of the file follows that of `users_config.example.yaml`.
+Roles are defined at the top of the file, with optional `userIsAdmin` boolean flags which indicate **scigateway** admin functionality.
+Below, users are defined with username, email, and role values. Each user must have at least a username or email for
+authentication. If no role is configured, their role will default to `default`.
+
+**Please note** Admin functionality within IMS is derived strictly from the user's role only.
+
+### How to add or remove a user from the system
+
+You can add or remove a user from the system by adding or removing the nested block with their username/email in the `users_config.yaml` file.
 
 **PLEASE NOTE** Changes made to the `users_config.yaml` file using vim do not get synced in the Docker container
 because it changes the inode index number of the file. A workaround is to create a new file using the
