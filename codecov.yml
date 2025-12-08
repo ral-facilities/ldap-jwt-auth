@@ -9,3 +9,4 @@ coverage:
         target: 75
 ignore:
   - "test/"
+  - "ldap_jwt_auth/routers/*" # ignore routers as they are not unit tested

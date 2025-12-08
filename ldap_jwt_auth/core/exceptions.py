@@ -3,9 +3,15 @@ Module for custom exception classes.
 """
 
 
-class ActiveUsernamesFileNotFoundError(Exception):
+class UserConfigFileNotFoundError(Exception):
     """
-    Exception raised when the file containing the active usernames cannot be found.
+    Exception raised when the file containing the user configuration cannot be found.
+    """
+
+
+class InvalidUserConfigFileError(Exception):
+    """
+    Exception raised when the user config file cannot be loaded/parsed correctly.
     """
 
 
@@ -29,7 +35,19 @@ class JWTRefreshError(Exception):
 
 class LDAPServerError(Exception):
     """
-    Exception raised when there is problem with the LDAP server.
+    Exception raised when there is a problem with the LDAP server.
+    """
+
+
+class OIDCProviderNotFoundError(Exception):
+    """
+    Exception raised when an unknown OIDC provider is used.
+    """
+
+
+class OIDCProviderError(Exception):
+    """
+    Exception raised when there is a problem with the OIDC provider.
     """
 
 

@@ -4,24 +4,34 @@ Module for providing a class for managing authentication.
 """
 import logging
 
-import ldap
+from cachetools.func import ttl_cache
 
-from ldap_jwt_auth.core.config import config
+import jwt
+import ldap
+import requests
+
+from ldap_jwt_auth.auth.authorisation import Authorisation
+from ldap_jwt_auth.core.config import OIDCProviderConfig, config
 from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
     LDAPServerError,
-    ActiveUsernamesFileNotFoundError,
     UserNotActiveError,
+    OIDCProviderNotFoundError,
+    OIDCProviderError,
+    InvalidJWTError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 
 logger = logging.getLogger()
 
 
-class Authentication:
+class LDAPAuthentication:
     """
     Class for managing authentication against an LDAP server.
     """
+
+    def __init__(self) -> None:
+        self._authorisation = Authorisation()
 
     def authenticate(self, user_credentials: UserCredentialsPostRequestSchema) -> None:
         """
@@ -29,6 +39,7 @@ class Authentication:
 
         Before attempting to authenticate against LDAP, it checks that the credentials are not empty and that the
         username is part of the active usernames.
+
         :param user_credentials: The credentials of the user.
         :raises InvalidCredentialsError: If the user credentials are empty or invalid.
         :raises LDAPServerError: If there is a problem with the LDAP server.
@@ -42,7 +53,7 @@ class Authentication:
         if not username or not password:
             raise InvalidCredentialsError("Empty username or password")
 
-        if not self.is_user_active(username):
+        if not self._authorisation.is_active_user(username):
             raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
 
         try:
@@ -81,27 +92,120 @@ class Authentication:
             logger.exception(message)
             raise LDAPServerError(message) from exc
 
-    def is_user_active(self, username: str) -> bool:
-        """
-        Check if the provided username is part of the active usernames.
-        :param username: The username to check.
-        :return: `True` if the user is active, `False` otherwise.
-        """
-        logger.info("Checking if user is active")
-        active_usernames = self._get_active_usernames()
-        return username in active_usernames
 
-    def _get_active_usernames(self) -> list:
+class OIDCAuthentication:
+    """
+    Class for managing authentication against an OIDC provider.
+    """
+
+    def __init__(self) -> None:
+        self._authorisation = Authorisation()
+
+    def authenticate(self, provider_id: str, id_token: str) -> str:
         """
-        Load the active usernames as a list from a `txt` file. It removes any leading and trailing whitespaces and does
-        not load empty lines/strings.
-        :return: The list of active usernames.
-        :raises ActiveUsernamesFileNotFoundError: If the file containing the active usernames cannot be found.
+        Authenticate a user by verifying the provided OIDC ID token using the JWKs of the specified OIDC provider.
+
+        After the verification succeeds, it checks that the username claim specified in the configuration is not missing
+        and that the username is part of the active user emails.
+
+        :param provider_id: The ID of the OIDC provider to get the corresponding configuration for.
+        :param id_token: The provided OIDC token to verify using the JWKs of the specified OIDC provider.
+        :raises InvalidJWTError: If the username claim specified in the configuration is missing in the OIDC ID token.
+        :raises UserNotActiveError: If the username is not part of the active user emails.
+        :raises InvalidJWTError: If the OIDC ID token is invalid.
+        :return: The username.
         """
+        provider_config = _get_oidc_provider_config(provider_id)
+
         try:
-            with open(config.authentication.active_usernames_path, "r", encoding="utf-8") as file:
-                return [line.strip() for line in file.readlines() if line.strip()]
-        except FileNotFoundError as exc:
-            raise ActiveUsernamesFileNotFoundError(
-                f"Cannot find file containing active usernames with path: {config.authentication.active_usernames_path}"
-            ) from exc
+            unverified_header = jwt.get_unverified_header(id_token)
+            kid = unverified_header["kid"]
+            well_known_config = _get_well_known_config(provider_id)
+            key = _get_jwks(provider_id, well_known_config["jwks_uri"])[kid]
+
+            # Ensure that this key can be used for signing
+            if key.public_key_use not in [None, "sig"]:
+                raise InvalidJWTError("Invalid OIDC ID token")
+
+            payload = jwt.decode(
+                jwt=id_token,
+                key=key,
+                algorithms=[key.algorithm_name],
+                audience=provider_config.client_id,
+                issuer=well_known_config["issuer"],
+                verify=True,
+                options={"require": ["exp", "aud", "iss"], "verify_exp": True, "verify_aud": True, "verify_iss": True},
+                # Amount of leeway (in seconds) when validating exp & iat
+                leeway=5,
+            )
+
+            username = payload.get(provider_config.username_claim)
+            if not username:
+                raise InvalidJWTError("Username claim missing in OIDC ID token")
+
+            if not self._authorisation.is_active_user(username):
+                raise UserNotActiveError(f"The provided email '{username}' is not part of the active user emails")
+
+            return username
+
+        except (jwt.exceptions.ExpiredSignatureError, jwt.exceptions.InvalidTokenError, KeyError) as exc:
+            raise InvalidJWTError("Invalid OIDC ID token") from exc
+
+
+def _get_oidc_provider_config(provider_id: str) -> OIDCProviderConfig:
+    """
+    Get the configuration for the OIDC provider using the specified `provider_id` from the config.
+
+    :param provider_id: The ID of the OIDC provider to get the configuration for.
+    :raises OIDCProviderNotFoundError: If no configuration can be found for the specified OIDC provider.
+    :return: The configuration for the specified OIDC provider.
+    """
+    try:
+        return config.oidc_providers[provider_id]
+    except KeyError as exc:
+        raise OIDCProviderNotFoundError(f"No configuration found for OIDC provider: {provider_id}") from exc
+
+
+@ttl_cache(ttl=2 * 60 * 60)
+def _get_jwks(provider_id: str, jwks_uri: str) -> jwt.PyJWKSet:
+    """
+    Fetch the JWKs for the specified OIDC provider.
+
+    :param provider_id: The ID of the OIDC provider to fetch the JWKs for.
+    :param jwks_uri: The URI to the JWKs.
+    :raises OIDCProviderError: If it fails to fetch the JWKs.
+    :return: The JWKs for the specified OIDC provider.
+    """
+    provider_config = _get_oidc_provider_config(provider_id)
+
+    try:
+        r = requests.get(jwks_uri, verify=provider_config.verify_cert, timeout=provider_config.request_timeout_seconds)
+        r.raise_for_status()
+        jwks_config = r.json()
+    except Exception as exc:
+        raise OIDCProviderError(f"Failed to fetch JWKs for OIDC provider: {provider_id}") from exc
+
+    return jwt.PyJWKSet(jwks_config["keys"])
+
+
+@ttl_cache(ttl=24 * 60 * 60)
+def _get_well_known_config(provider_id: str) -> dict:
+    """
+    Fetch the well known configuration for the specified OIDC provider.
+
+    :param provider_id: The ID of the OIDC provider to fetch the well known configuration for.
+    :raises OIDCProviderError: If it fails to fetch the well known configuration.
+    :return: The well known configuration for the specified OIDC provider.
+    """
+    provider_config = _get_oidc_provider_config(provider_id)
+
+    try:
+        r = requests.get(
+            provider_config.configuration_url,
+            verify=provider_config.verify_cert,
+            timeout=provider_config.request_timeout_seconds,
+        )
+        r.raise_for_status()
+        return r.json()
+    except Exception as exc:
+        raise OIDCProviderError(f"Failed to fetch well known configuration for OIDC provider: {provider_id}") from exc

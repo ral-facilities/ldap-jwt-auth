@@ -1,0 +1,9 @@
+roles:
+  scigateway-admin:
+    userIsAdmin: true
+  admin: null
+
+users:
+  - username: username
+    role: admin
+  - email: test@example.com

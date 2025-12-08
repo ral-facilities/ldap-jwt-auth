@@ -1,0 +1,111 @@
+"""
+Mock data for use in tests.
+"""
+
+# payload = {"username": "username", "role": "admin", "userIsAdmin": false, "exp": 253402300799}
+# exp -> 31/12/9999 23:59:59 GMT+0000
+VALID_ACCESS_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
+    "CJleHAiOjI1MzQwMjMwMDc5OX0.FrsDUqnKskhIvmIjtYVgC9im-cSu1dFlwVQ4cFJf2BgCaSh82XuEngOLkbtQuuXWC1wiipsGP4Y-usq7Q_R68vw"
+    "XqGYusHo4fXw6AcBcwplgXZ3n60wsTegpBxKZY5foOre0Ng1GpK-7rrx9H-YQUCHSBOtzWOw_eLzu-eNTwMnMnnpGM9L91_hj0dAKiP90Z3Hp0Ueln"
+    "Yydc0sf6msOs7RKI2Sij-13vFSL8LToIbfUTZYwKZHbBPD5glce_gsW6_W5W-iGemt7yyhfyf7IxKWq3Q02HCiSkI0uCcBal44sabPrsQ4EaPRwyUn"
+    "H0X25MC00IAPRHh-1KqabV7IA9w"
+)
+
+# payload = {"username": "username", "exp": 253402300799}
+# exp -> 31/12/9999 23:59:59 GMT+0000
+VALID_REFRESH_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoyNTM0MDIzMDA3OTl9.bagU2Wix8wKzydVU_L3Z"
+    "ZuuMAxGxV4OTuZq_kS2Fuwm839_8UZOkICnPTkkpvsm1je0AWJaIXLGgwEa5zUjpG6lTrMMmzR9Zi63F0NXpJqQqoOZpTBMYBaggsXqFkdsv-yAKUZ"
+    "8MfjCEyk3UZ4PXZmEcUZcLhKcXZr4kYJPjio2e5WOGpdjK6q7s-iHGs9DQFT_IoCnw9CkyOKwYdgpB35hIGHkNjiwVSHpyKbFQvzJmIv5XCTSRYqq0"
+    "1fldh-QYuZqZeuaFidKbLRH610o2-1IfPMUr-yPtj5PZ-AaX-XTLkuMqdVMCk0_jeW9Os2BPtyUDkpcu1fvW3_S6_dK3nQ"
+)
+
+# payload = {"username": "username", "role": "admin", "userIsAdmin": false, "exp": 946684799}
+# exp -> 31/12/1999 23:59:59 GMT+0000
+EXPIRED_ACCESS_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
+    "CJleHAiOjk0NjY4NDc5OX0.EQnEYrwwwjuudk_mBdAe_V4dts-nTSU2WEoxyahVfsmCWOAAsyNbRvctGPLBaXIzMU73dgtKMpIiE9etlWKhP68GWRG"
+    "21x155-Qm8i_sJu4r6AOcjwPQRV1fPxf5s37L9V-nj1cWgc_HpBJWSG_DnJtZ_T4AQULYDmZRgoGmRl6UsvavKFYFMHwjSRAcSWlT2yn2YjGZ2vDhS"
+    "FSEsdj77XM7JC3OiNb6nLJz4pCYlHsNDxp0XRrKrgx7sYlyDgMIJpfK9OrCsf8r02qdVct2SOYaGP7VXYs17xo5JRSGACq9UUPdbz1Vv-q-7ra2GJX"
+    "Yex1UzoTFh5LzOf-UMtLSKA"
+)
+
+# payload = {"username": "username", "exp": -62135596800}
+# exp -> 31/12/0000 23:58:45 GMT-0001
+EXPIRED_REFRESH_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjotNjIxMzU1OTY4MDB9.G_cfC8PNYE5yERyyQNRk"
+    "9mTmDusU_rEPgm7feo2lWQF6QMNnf8PUN-61FfMNRVE0QDSvAmIMMNEOa8ma0JHZARafgnYJfn1_FSJSoRxC740GpG8EFSWrpM-dQXnoD263V9FlK-"
+    "On6IbhF-4Rh9MdoxNyZk2Lj7NvCzJ7gbgbgYM5-sJXLxB-I5LfMfuYM3fx2cRixZFA153l46tFzcMVBrAiBxl_LdyxTIOPfHF0UGlaW2UtFi02gyBU"
+    "4E4wTOqPc4t_CSi1oBSbY7h9O63i8IU99YsOCdvZ7AD3ePxyM1xJR7CFHycg9Z_IDouYnJmXpTpbFMMl7SjME3cVMfMrAQ"
+)
+
+# payload = {"username": "username", "role": "admin", "userIsAdmin": false, "exp": 1705485900}
+# exp -> 17/01/2024 10:05:00 GMT+0000
+EXPECTED_ACCESS_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImFkbWluIiwidXNlcklzQWRtaW4iOmZhbHNlL"
+    "CJleHAiOjE3MDU0ODU5MDB9.l9-3DudRuhtyHr_dcKp6XvjMRorV9XI4l7CaSBI5CKiH2UCynHcepW0frKKgBfVyo8neEHSCQRE9TQK0c69NQuZJgo"
+    "IEow3M3AOWy5MgbrYLpjCUpCC9XZgAKbj4QGuro_z5FJ-fUsZr2swGP_MLLlMAilYdTlU-7AHoL6OrmHWHsXOuCjh1V-KbSTRjQPCfkxB8tOQOglgf"
+    "c5ci737AQ7HWu_K3hCcV_ozwy3uGsET3g5V-LDncosicPgZl-7a5WX2aIdPILpx3SQzzJ8_kwHrotvpd1UeSwzqIT1CBGccYkbp-aQMmWIaTN3cyjN"
+    "ZYRHcMNSRUcewieSi2KUwScw"
+)
+
+# payload = {"username": "username", "role": "default", "userIsAdmin": false, "exp": 1705485900}
+# exp -> 17/01/2024 10:05:00 GMT+0000
+EXPECTED_ACCESS_TOKEN_DEFAULT_ROLE = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwicm9sZSI6ImRlZmF1bHQiLCJ1c2VySXNBZG1pbiI6ZmFsc"
+    "2UsImV4cCI6MTcwNTQ4NTkwMH0.Vqf0m2LxYG0E84X3CSVw4Pgd8PQCAF13oMvVHPesx12y0j9vDwOoL-gLoimEsDnrTGFiZHA4eytMCM_nBY1QP9K"
+    "_aEv6TPzon1PFiogGTdFyQJ5Fj4XZ6fBErmaojvSOjuHWtn6s5p_fG9rga-E4qpuk3QqLFJ5m0bWgMswZMpJaKjeC4-5CjEJgI-dxmP0_ggD-8zvTL"
+    "Bvcrd8wqHeIOPgJWfI2D6jiSu3NuK4XPaHHTnkrDDTK1oe_4tcIreHTN7EnkYDWEk6sk3rT6GPCH4OffTimOuUMB_eSlpFXIPOO9yYBYPd0H1EqLK6"
+    "fdYMAS7lycvwItq1PAMiqeTWYEw"
+)
+
+# payload = {"username": "username", "exp": 1705485900}
+# exp -> 17/01/2024 10:05:00 GMT+0000
+EXPECTED_REFRESH_TOKEN = (
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNzA2MDkwNDAwfQ.OPl4pB7_fIGYB80782b0iG"
+    "nFToF5HoYAUjVSfU521KHyeDvXTSrbwVod8_-8Js9aiQlXyA-sTwtfbic6jc6tLiB0vOJ3l12152QqMok8_h7tY2nJ1UjLoPWI-QQ9m2JkOHu8TWRM"
+    "DmbtcJ4X2_7h7AcJyW08ORMWQNJq9PjIEb8HXJlkyd3SMiak2HxYjFik1wbjq3Q3RGN8IQdCTiPu_bB6Rot5vH5_q4JQ9CKCgEt7Mc6ZntED14I1rc"
+    "okx3dwI2GFhpGPJfW87PZqCsJC1fgSPHQoEs1o_prRmEIOzFT2x343mCjHJwwxYXyMh5xq0A-_6_b74bLbO2HEa68EEw"
+)
+
+# For use to sign an OIDC ID token
+JWK_PRIVATE_KEY = """-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAm3DT0wGFXPgW6tYh8IR2NaoUAP733QVOV/PPx6hPVY04QGT8
+n+QBdUBBXAZL/qxN5ib3ChI6cMnlGM4CQDdYje9ARJr48kzfPgdCFvmp70leNs7p
+Mr0LLM2TIm3c+v1k9IwG0ahIR6s3gWUlYrmj9D9BegHESh5sTg8PbhRhQjfDQ9uz
+Oci7XgkDaYoHbZY/NgwOgQMMHSgKVwlJUZh/FSkSfZJ5iML5fl57Sf2V+T3VuZ42
+Nowew37pzw0z83woVVVjr8anQ51NLMQyBRAZnGgqSvog5jnXnUBzKqQJQfln456f
+U9v+cePD5YnSBNaT4bv2qcVwSpXMaIV0qQv0jwIDAQABAoIBADs6hrxEPBjsv27E
+ITKQhqp0ICMxBClHuE5zLJ0bWP90TBbdZBVYv+V5km4KSDLGXPhxqHhB8drAU3dc
+KCdn72pF2+tIUcuh1v6/rUMr5sCy6B9iQCGBPxzXSFU6H5XTsAAuyvpgcQo+B2xa
+qiAwNHUBFWXz/mNvrD0iJ/L9+QFNvZ6srpB+8RRKU+g5NTipaj9DuHg07jQH5snV
+B5s1GpWJbZNLbuCJh+jvWYjKyZY7QFD5dfSEpFH1Evorifntkt+wSxAJFmvpaRFU
+CRQYOPecrwZv8PvOogmFBoeMqGKLHiuF/9sx6LB6pnPVgJ62VsV5Yppr4R0dMaEm
+augjSqECgYEA2PhaCh+cCgEFdAgDJJ/+wup0yNdT2TkLk2MIYUZQp2WxKN7ys3aZ
+nXOohLQmYTlwmvTpiOuzq0W2iNkSXjWLbmSnnDSSpqRkyGbqQ8SEgLZNsHYZTlq7
+Yk4Eg7YSPvsLoXyIbI05aZcpzp9LnAGqRdjh6ySzvMR/rzZkW70JIi0CgYEAt2b/
+dDvItEhaXhtQNdIoSeRb23VOMfAlNgXiTR8JyD14yGW9Ehii5YJqKLFvMM1dtVUx
+Q48NgRQjHYOMKI8TPr7S/AGo95ck8uL+xTQwbiGgicq4JocRu40UprR3DhFr0eX1
+Emj1nqFdqirE/ij9v3V5jqijB/HeB+PEN+VtcysCgYEAy+V4GBNkfDJBga0V5xFE
+RMA4R5WzgmuNaVCjy2Zc3TM/rXz275gA/Gp4b10sxClKnRSTcsyt58J3q1rzW/1N
+rsyAhtcRCfFrlLjCZjUDoEGx+KbDWVMCzXsr2ur7cpxRbcyuF/UPgx8/dqFUWKNn
+9IPAq02uazLuGyYuYdfgAXECgYBLNV6OULHWVFFShArZd0v0OUP989XUHrFzvOf3
+TkIZrjOooiftktLCIT/dXh3FuoGyCbSBCtmz1AkuYjKIs1tmAKTOmPOsTHvnanSl
+c+hkUT/fIZVwnzUDXzBXyGuGBljbo1xjZ01J9sxNKurLew3LhKYLfVYVvPaa76kY
+bun6LwKBgAa1i/JJkut5vNYw+qRvyperjlwjJSa+NUuF+ZEQcOuwPVrrHObCDDyU
+HfaCyKgpd3GLdSVocBMyGG6oV9AhpR7i/linvonah4AN3WDB4Gds2XklrdEa/SQo
+Z3UPoimOaG7/z7vi8JOl2aXjCro17ZJPFxF4B9HW4EcEeTMucKKq
+-----END RSA PRIVATE KEY-----"""
+
+JWK_PUBLIC = {
+    "kid": "mock-kid",
+    "kty": "RSA",
+    "n": (
+        "m3DT0wGFXPgW6tYh8IR2NaoUAP733QVOV/PPx6hPVY04QGT8n+QBdUBBXAZL/qxN5ib3ChI6cMnlGM4CQDdYje9ARJr48kzfPgdCFvmp70leNs"
+        "7pMr0LLM2TIm3c+v1k9IwG0ahIR6s3gWUlYrmj9D9BegHESh5sTg8PbhRhQjfDQ9uzOci7XgkDaYoHbZY/NgwOgQMMHSgKVwlJUZh/FSkSfZJ5"
+        "iML5fl57Sf2V+T3VuZ42Nowew37pzw0z83woVVVjr8anQ51NLMQyBRAZnGgqSvog5jnXnUBzKqQJQfln456fU9v+cePD5YnSBNaT4bv2qcVwSp"
+        "XMaIV0qQv0jw=="
+    ),
+    "e": "AQAB",
+}

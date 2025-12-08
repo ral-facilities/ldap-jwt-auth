@@ -9,7 +9,7 @@ from typing import Any, Dict
 import jwt
 from cryptography.hazmat.primitives import serialization
 
-from ldap_jwt_auth.auth.authentication import Authentication
+from ldap_jwt_auth.auth.authorisation import Authorisation
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.constants import PRIVATE_KEY, PUBLIC_KEY
 from ldap_jwt_auth.core.exceptions import InvalidJWTError, JWTRefreshError, UserNotActiveError, UsernameMismatchError
@@ -22,38 +22,50 @@ class JWTHandler:
     Class for handling JWTs.
     """
 
+    def __init__(self) -> None:
+        self._authorisation = Authorisation()
+
     def get_access_token(self, username: str) -> str:
         """
         Generates a payload and returns a signed JWT access token.
+
         :param username: The username of the user.
         :return: The signed JWT access token
         """
         logger.info("Getting an access token")
+
+        user_role = self._authorisation.get_user_role(username)
         payload = {
             "username": username,
+            "role": user_role,
+            "userIsAdmin": self._authorisation.is_user_scigateway_admin(user_role),
             "exp": datetime.now(timezone.utc) + timedelta(minutes=config.authentication.access_token_validity_minutes),
         }
+
         return self._pack_jwt(payload)
 
     def get_refresh_token(self, username: str) -> str:
         """
         Generates a payload and returns a signed JWT refresh token.
+
         :param username: The username of the user.
         :return: The signed JWT refresh token.
         """
         logger.info("Getting a refresh token")
+
         payload = {
             "username": username,
             "exp": datetime.now(timezone.utc) + timedelta(days=config.authentication.refresh_token_validity_days),
         }
         return self._pack_jwt(payload)
 
-    def refresh_access_token(self, access_token: str, refresh_token: str):
+    def refresh_access_token(self, access_token: str, refresh_token: str) -> str:
         """
-        Refreshes the JWT access token by updating its expiry time, provided that the JWT refresh token is valid.
+        Refreshes the JWT access token by creating a new token, provided that the JWT refresh token is valid.
 
         Before attempting to refresh the token, it checks that the usernames in the access and refresh tokens match, and
-        that the username is still part of the active usernames.
+        that the username is still part of the active users.
+
         :param access_token: The JWT access token to refresh.
         :param refresh_token: The JWT refresh token.
         :raises JWTRefreshError: If the JWT access token cannot be refreshed.
@@ -67,19 +79,16 @@ class JWTHandler:
         try:
             access_token_payload = self._get_jwt_payload(access_token, {"verify_exp": False})
 
-            authentication = Authentication()
             username = access_token_payload["username"]
 
             if username != refresh_token_payload["username"]:
                 raise UsernameMismatchError("The usernames in the access and refresh tokens do not match")
 
-            if not authentication.is_user_active(username):
-                raise UserNotActiveError(f"The provided username '{username}' is not part of the active usernames")
+            if not self._authorisation.is_active_user(username):
+                raise UserNotActiveError(f"The provided username '{username}' is not part of the active users")
 
-            access_token_payload["exp"] = datetime.now(timezone.utc) + timedelta(
-                minutes=config.authentication.access_token_validity_minutes
-            )
-            return self._pack_jwt(access_token_payload)
+            return self.get_access_token(username)
+
         except Exception as exc:
             message = "Unable to refresh access token"
             logger.exception(message)
@@ -89,6 +98,7 @@ class JWTHandler:
         """
         Verifies that the provided JWT token is valid. It does this by checking that it was signed by the corresponding
         private key and has not expired.
+
         :param token: The JWT token to be verified.
         :raises InvalidJWTError: If the JWT token is invalid.
         :return: The payload of the verified JWT token.
@@ -104,6 +114,7 @@ class JWTHandler:
     def _get_jwt_payload(self, token: str, jwt_decode_options: dict | None = None) -> Dict[str, Any]:
         """
         Decodes the provided JWT token and gets its payload.
+
         :param token: The JWT token to decode and get payload from.
         :param jwt_decode_options: Any options to be passed to the `decode` method.
         :return: Payload from the provided JWT token.
@@ -116,10 +127,12 @@ class JWTHandler:
     def _pack_jwt(self, payload: dict) -> str:
         """
         Packs the provided payload into a JWT token and signs it.
+
         :param payload: The payload to be packed.
         :return: The encoded and signed JWT token.
         """
         logger.debug("Packing payload into a JWT token")
+
         bytes_key = bytes(PRIVATE_KEY, encoding="utf8")
         loaded_private_key = serialization.load_ssh_private_key(bytes_key, password=None)
         return jwt.encode(payload, loaded_private_key, algorithm=config.authentication.jwt_algorithm)

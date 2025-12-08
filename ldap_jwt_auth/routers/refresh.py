@@ -10,7 +10,7 @@ from fastapi import APIRouter, Body, Cookie, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 
 from ldap_jwt_auth.auth.jwt_handler import JWTHandler
-from ldap_jwt_auth.core.exceptions import JWTRefreshError, InvalidJWTError, ActiveUsernamesFileNotFoundError
+from ldap_jwt_auth.core.exceptions import JWTRefreshError, InvalidJWTError, UserConfigFileNotFoundError
 
 logger = logging.getLogger()
 
@@ -38,7 +38,7 @@ def refresh_access_token(
         message = "Unable to refresh access token"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=message) from exc
-    except ActiveUsernamesFileNotFoundError as exc:
+    except UserConfigFileNotFoundError as exc:
         message = "Something went wrong"
         logger.exception(message)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from exc
