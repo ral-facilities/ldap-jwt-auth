@@ -46,7 +46,8 @@ This microservice requires an LDAP server to run against.
 4. (If LDAP certificate validation is enabled) Copy the `cacert.pem` file that contains all the trusted CA certificates
    to the `ldap_server_certs` directory in the root of the project.
 
-5. Create a `users_config.yaml` file alongside the `users_config.example.yaml` file. Use the example file as a reference and
+5. Create a `users_config.yaml` file alongside the `users_config.example.yaml` file. Use the example file as a reference
+   and modify it accordingly. You may also refer to [User configuration file format below](#users-configuration-file).
    modify it accordingly. You may also refer to [User configuration file format below](#users-configuration-file)
 
    ```bash
@@ -220,16 +221,17 @@ Listed below are the environment variables supported by the application.
 ### Users configuration file
 
 The `users_config.yaml` file at the root of the project directory contains the schema of users with access to the system
-through SSO OIDC and/or LDAP authentication. The format of the file follows that of `users_config.example.yaml`.
-Roles are defined at the top of the file, with optional `userIsAdmin` boolean flags which indicate **scigateway** admin functionality.
-Below, users are defined with username, email, and role values. Each user must have at least a username or email for
-authentication. If no role is configured, their role will default to `default`.
+through SSO OIDC and/or LDAP authentication. The format of the file follows that of `users_config.example.yaml`. Roles
+are defined at the top of the file, with optional `userIsAdmin` boolean flags which indicate **scigateway** admin
+functionality. Below, users are defined with username, email, and role values. Each user must have at least a username
+or email for authentication. If no role is configured, their role will default to `default`.
 
 **Please note** Admin functionality within IMS is derived strictly from the user's role only.
 
 ### How to add or remove a user from the system
 
-You can add or remove a user from the system by adding or removing the nested block with their username/email in the `users_config.yaml` file.
+You can add or remove a user from the system by adding or removing the nested block with their username/email in the
+`users_config.yaml` file.
 
 **PLEASE NOTE** Changes made to the `users_config.yaml` file using vim do not get synced in the Docker container
 because it changes the inode index number of the file. A workaround is to create a new file using the
