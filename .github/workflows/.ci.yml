@@ -44,7 +44,7 @@ jobs:
         run: black --check --line-length 120 ldap_jwt_auth test
 
       - name: Run pylint
-        run: pylint ldap_jwt_auth
+        run: pylint ldap_jwt_auth test
 
   unit-tests:
     name: Unit Tests
