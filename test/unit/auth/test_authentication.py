@@ -2,8 +2,9 @@
 """
 Unit tests for the `authentication` module.
 """
+
 import time
-from test.unit.mock_data import JWK_PUBLIC, JWK_PRIVATE_KEY
+from test.unit.mock_data import JWK_PRIVATE_KEY, JWK_PUBLIC
 from typing import Optional
 from unittest.mock import MagicMock, Mock, patch
 
@@ -14,16 +15,21 @@ import requests
 from cryptography.hazmat.primitives import serialization
 from ldap.ldapobject import LDAPObject
 
-from ldap_jwt_auth.auth.authentication import LDAPAuthentication, OIDCAuthentication, _get_jwks, _get_well_known_config
+from ldap_jwt_auth.auth.authentication import (
+    LDAPAuthentication,
+    OIDCAuthentication,
+    _get_jwks,
+    _get_well_known_config,
+)
 from ldap_jwt_auth.auth.authorisation import Authorisation
 from ldap_jwt_auth.core.config import config
 from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
-    LDAPServerError,
-    UserNotActiveError,
     InvalidJWTError,
+    LDAPServerError,
     OIDCProviderError,
     OIDCProviderNotFoundError,
+    UserNotActiveError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 

@@ -2,23 +2,23 @@
 """
 Module for providing a class for managing authentication.
 """
-import logging
 
-from cachetools.func import ttl_cache
+import logging
 
 import jwt
 import ldap
 import requests
+from cachetools.func import ttl_cache
 
 from ldap_jwt_auth.auth.authorisation import Authorisation
 from ldap_jwt_auth.core.config import OIDCProviderConfig, config
 from ldap_jwt_auth.core.exceptions import (
     InvalidCredentialsError,
-    LDAPServerError,
-    UserNotActiveError,
-    OIDCProviderNotFoundError,
-    OIDCProviderError,
     InvalidJWTError,
+    LDAPServerError,
+    OIDCProviderError,
+    OIDCProviderNotFoundError,
+    UserNotActiveError,
 )
 from ldap_jwt_auth.core.schemas import UserCredentialsPostRequestSchema
 

@@ -106,12 +106,12 @@ class TestOIDCLogin(OIDCLoginDSL):
     def test_login_with_empty_authorisation_header(self):
         """Test logging in with a missing OIDC ID token."""
         self.post_oidc_id_token("")
-        self.check_post_oidc_id_token_failed_with_detail(403, "Not authenticated")
+        self.check_post_oidc_id_token_failed_with_detail(401, "Not authenticated")
 
     def test_login_with_missing_bearer_token(self):
         """Test logging in with a missing OIDC ID token."""
         self.post_oidc_id_token("Bearer ")
-        self.check_post_oidc_id_token_failed_with_detail(403, "Not authenticated")
+        self.check_post_oidc_id_token_failed_with_detail(401, "Not authenticated")
 
     def test_login_with_unknown_oidc_provider(self):
         """Test logging in when an unknown OIDC provider is used."""
