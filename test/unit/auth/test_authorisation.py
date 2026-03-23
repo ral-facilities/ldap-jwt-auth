@@ -19,7 +19,7 @@ class TestAuthorisation:
         Test `is_active_user` returns `True` when active username is passed to it.
         """
         authorisation = Authorisation()
-        is_active_user = authorisation.is_active_user("username")
+        is_active_user = authorisation.is_active_user("userNAME")  # ensures case sensitivity is handled
 
         assert is_active_user is True
 
