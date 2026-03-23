@@ -73,10 +73,10 @@ class Authorisation:
         :param identifier: The username or email to check.
         :return: The user as a dict if found, otherwise None.
         """
-        test_identifier = identifier.upper()
+        test_identifier = identifier.casefold()
 
         for user in self.users:
-            # .get() returns empty string so .upper() does not raise `AttributeError`
-            if user.get("username", "").upper() == test_identifier or user.get("email", "").upper() == test_identifier:
+            # .get() returns empty string so .casefold() does not raise `AttributeError`
+            if user.get("username", "").casefold() == test_identifier or user.get("email", "").casefold() == test_identifier:
                 return user
         return None
