@@ -77,6 +77,9 @@ class Authorisation:
 
         for user in self.users:
             # .get() returns empty string so .casefold() does not raise `AttributeError`
-            if user.get("username", "").casefold() == test_identifier or user.get("email", "").casefold() == test_identifier:
+            if (
+                user.get("username", "").casefold() == test_identifier
+                or user.get("email", "").casefold() == test_identifier
+            ):
                 return user
         return None
