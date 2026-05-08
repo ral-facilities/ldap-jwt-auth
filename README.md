@@ -63,7 +63,7 @@ Ensure that Docker is installed and running on your machine before proceeding.
 The easiest way to run the application with Docker for local development is using the `docker-compose.yml` file. It is
 configured to start:
 
-- A keycloak instance for SSO authentication that can be accessed at `localhost:9004` using `admin` as the username and
+- A Keycloak instance for SSO authentication that can be accessed at `localhost:9004` using `admin` as the username and
   password to access the Admin Console. To get an ID token from the keycloak instance to then use for the
   `http://localhost:8004/oidc_login/keycloak` endpoint, run:
 
@@ -121,6 +121,38 @@ changes made to the code and automatically reload the application on the fly.
    The microservice should now be running inside Docker at http://localhost:8004 and its Swagger UI could be accessed
    at http://localhost:8004/docs.
 
+#### Using `Dockerfile` for running all the tests
+
+Use the `Dockerfile`'s `test` stage to run all the tests in a container. Mounting the `inventory_management_system_api`
+and `test` directories to the container via volumes means that any changes made to the application or test code will
+automatically be synced to the container next time you run the tests. The e2e tests require a Keycloak instance to run,
+and one can be started using the `docker-compose.yml` file.
+
+1. Start a Keycloak instance:
+
+   ```bash
+   docker compose up --detach keycloak
+   ```
+
+2. Build an image using the `Dockerfile`'s `test` stage from the root of the project directory:
+
+   ```bash
+   docker build --file Dockerfile --target test --tag ldap-jwt-auth:test .
+   ```
+
+3. Run the tests using:
+
+   ```bash
+   docker run \
+    --rm \
+    --name ldap-jwt-auth-test \
+    --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
+    --volume ./test:/app/test \
+    --volume ./logging.ini:/app/logging.ini \
+    --add-host localhost:host-gateway \
+    ldap-jwt-auth:test
+   ```
+
 #### Using `Dockerfile` for running the unit tests
 
 Use the `Dockerfile`'s `test` stage to run the unit tests in a container. Mounting the `ldap_jwt_auth` and `test`
@@ -144,6 +176,39 @@ be synced to the container next time you run the tests.
     --volume ./logging.ini:/app/logging.ini \
     ldap-jwt-auth:test \
     pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report term-missing test/unit -v
+   ```
+
+#### Using `Dockerfile` for running the e2e tests
+
+Use the `Dockerfile`'s `test` stage to run the e2e tests in a container. Mounting the `inventory_management_system_api`
+and `test` directories to the container via volumes means that any changes made to the application or test code will
+automatically be synced to the container next time you run the tests. The e2e tests require a Keycloak instance to run,
+and one can be started using the `docker-compose.yml` file.
+
+1. Start a Keycloak instance:
+
+   ```bash
+   docker compose up --detach keycloak
+   ```
+
+2. Build an image using the `Dockerfile`'s `test` stage from the root of the project directory:
+
+   ```bash
+   docker build --file Dockerfile --target test --tag ldap-jwt-auth:test .
+   ```
+
+3. Run the tests using:
+
+   ```bash
+   docker run \
+    --rm \
+    --name ldap-jwt-auth-test \
+    --volume ./ldap_jwt_auth:/app/ldap_jwt_auth \
+    --volume ./test:/app/test \
+    --volume ./logging.ini:/app/logging.ini \
+    --add-host localhost:host-gateway \
+    ldap-jwt-auth:test \
+    pytest --config-file test/pytest.ini test/e2e -v
    ```
 
 ### Outside of Docker
