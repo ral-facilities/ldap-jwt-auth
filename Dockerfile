@@ -1,4 +1,4 @@
-FROM python:3.13.13-alpine3.23@sha256:420cd0bf0f3998275875e02ecd5808168cf0843cbb4d3c536432f729247b2acc AS base
+FROM python:3.13.14-alpine3.23@sha256:2d1b4027968d24a18840889779a83430988c5bed9b823b60ff72c59199044cf3 AS base
 
 # Install python-ldap system dependencies
 RUN apk add --no-cache build-base openldap-dev
