@@ -20,13 +20,13 @@ dependencies = [
 
 [project.optional-dependencies]
 code-analysis = [
-    "black==26.3.1",
-    "pylint==4.0.5",
+    "black==26.5.1",
+    "pylint==4.0.6",
     "ldap-jwt-auth[test]"
 ]
 
 test = [
-    "pytest==9.0.3",
+    "pytest==9.1.0",
     "pytest-cov==7.1.0",
     "pytest-env==1.6.0"
 ]
