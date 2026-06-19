@@ -10,7 +10,7 @@ This microservice requires an LDAP server to run against.
 ### Prerequisites
 
 - Docker and Docker Compose installed (if you want to run the microservice inside Docker)
-- Python 3.13 installed on your machine (if you are not using Docker)
+- Python 3.13 and and an install of [uv](https://docs.astral.sh/uv/) (if you are not using Docker)
 - OIDC provider(s) to connect to for users authenticating using an SSO OIDC ID token
 - LDAP server to connect to for users authenticating using LDAP credentials
 - CA certificate PEM file containing all the trusted CA certificates (if LDAP certificate validation is enabled which is
@@ -175,7 +175,7 @@ be synced to the container next time you run the tests.
     --volume ./test:/app/test \
     --volume ./logging.ini:/app/logging.ini \
     ldap-jwt-auth:test \
-    pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report term-missing test/unit -v
+    /app/.venv/bin/pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report term-missing test/unit -v
    ```
 
 #### Using `Dockerfile` for running the e2e tests
@@ -208,40 +208,55 @@ and one can be started using the `docker-compose.yml` file.
     --volume ./logging.ini:/app/logging.ini \
     --add-host localhost:host-gateway \
     ldap-jwt-auth:test \
-    pytest --config-file test/pytest.ini test/e2e -v
+    /app/.venv/bin/pytest --config-file test/pytest.ini test/e2e -v
    ```
 
 ### Outside of Docker
 
-### Local Setup
+#### Prerequisites
 
-Ensure that Python is installed on your machine before proceeding.
+##### Keycloak
+You must have access to a Keycloak instance that is set up exactly the same as the one in the `docker-compose.yml` file.
 
-1. Create a Python virtual environment and activate it in the root of the project directory:
+#### Running the API
+
+Ensure that Python & uv is installed on your machine before proceeding.
+
+1. Install the required dependencies and create a virtual environment with
 
    ```bash
-   python -m venv venv
-   source venv/bin/activate
+   uv sync --dev
    ```
 
 2. Install the software packages required to build `python-ldap` on your local system, more
    info [here](https://www.python-ldap.org/en/python-ldap-3.3.0/installing.html).
 
-3. Install the required dependencies using pip:
+3. Start the application:
 
    ```bash
-   pip install .[dev]
-   pip install -r requirements.txt
-   ```
-
-4. Start the application:
-
-   ```bash
-   fastapi dev ldap_jwt_auth/main.py --host 0.0.0.0 --port 8004
+   uv run fastapi dev ldap_jwt_auth/main.py --host 0.0.0.0 --port 8004
    ```
 
    The microservice should now be running locally at http://localhost:8004. The Swagger UI could be accessed
    at http://localhost:8004/docs.
+
+4. To run the unit tests, run:
+
+   ```bash
+   uv run pytest -c test/pytest.ini test/unit/
+   ```
+
+5. To run the e2e tests, run:
+
+   ```bash
+   uv run pytest -c test/pytest.ini test/e2e/
+   ```
+
+6. To run all the tests, run:
+
+   ```bash
+   uv run pytest -c test/pytest.ini test/
+   ```
 
 ## Notes
 
