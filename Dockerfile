@@ -90,6 +90,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # The same image that matches the build stage must be used as the path to the Python executable must be the same.
 FROM python:3.13.14-alpine3.24@sha256:db66119d6609a3a941a9433b225f4e13d33c459cede097cf3ec2fc4d1bd314b2 AS prod
 
+# Install python-ldap system dependencies
+RUN apk add --no-cache build-base openldap-dev
+
 WORKDIR /app
 
 RUN set -eux; \
