@@ -77,9 +77,11 @@ jobs:
       - name: Create logging configuration file
         run: cp logging.example.ini logging.ini
 
+      # Sleep 10 seconds to give time for containers to start
       - name: Setup keycloak
         run: |
           docker compose up --detach keycloak
+          sleep 10
 
       - name: Run e2e tests
         run: |
