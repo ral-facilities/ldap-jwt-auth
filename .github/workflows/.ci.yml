@@ -28,23 +28,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libsasl2-dev python3-dev libldap2-dev libssl-dev
 
-      - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-        with:
-          python-version: "3.13"
-          cache: "pip"
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install .[code-analysis]
-          python -m pip install -r requirements.txt
+        run: uv sync
 
       - name: Run black
-        run: black --check --line-length 120 ldap_jwt_auth test
+        run: uv run black --check --line-length 120 ldap_jwt_auth test
 
       - name: Run pylint
-        run: pylint ldap_jwt_auth test
+        run: uv run pylint ldap_jwt_auth test
 
   unit-tests:
     name: Unit Tests
@@ -63,7 +57,7 @@ jobs:
            --name ldap-jwt-auth \
            --volume ./logging.ini:/app/logging.ini \
            ldap-jwt-auth:test \
-           pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report xml test/unit -v
+           /app/.venv/bin/pytest --config-file test/pytest.ini --cov ldap_jwt_auth --cov-report xml test/unit -v
           docker cp ldap-jwt-auth:/app/coverage.xml coverage.xml
 
       - name: Upload coverage reports to Codecov
@@ -95,7 +89,7 @@ jobs:
             --volume ./logging.ini:/app/logging.ini \
             --add-host localhost:host-gateway \
             ldap-jwt-auth:test \
-            pytest --config-file test/pytest.ini test/e2e -v
+            /app/.venv/bin/pytest --config-file test/pytest.ini test/e2e -v
 
       - name: Output docker logs (keycloak)
         if: failure()
