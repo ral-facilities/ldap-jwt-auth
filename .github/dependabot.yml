@@ -7,6 +7,8 @@ updates:
       interval: daily
       time: "08:00"
       timezone: "Europe/London"
+    cooldown:
+      default-days: 7
     target-branch: "develop"
     ignore:
       - dependency-name: "python"
@@ -19,6 +21,8 @@ updates:
       interval: daily
       time: "08:00"
       timezone: "Europe/London"
+    cooldown:
+      default-days: 7
     target-branch: "main"
     ignore:
       - dependency-name: "python"
@@ -30,6 +34,8 @@ updates:
     schedule:
       # Check for updates every week
       interval: "weekly"
+    cooldown:
+      default-days: 7
     target-branch: "develop"
     # Update multiple dependencies at the same time
     groups:
@@ -43,6 +49,8 @@ updates:
     schedule:
       # Check for updates every week
       interval: "weekly"
+    cooldown:
+      default-days: 7
     target-branch: "main"
     # Update multiple dependencies at the same time
     groups:
@@ -55,6 +63,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     target-branch: "develop"
     groups:
       uv:
