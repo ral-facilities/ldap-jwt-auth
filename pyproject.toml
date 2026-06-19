@@ -18,6 +18,9 @@ dependencies = [
 [project.urls]
 Repository = "https://github.com/ral-facilities/ldap-jwt-auth"
 
+[tool.uv]
+exclude-newer = "7 days"
+
 [tool.uv.sources]
 ldap-jwt-auth = { workspace = true }
 
