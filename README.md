@@ -58,7 +58,7 @@ This microservice requires an LDAP server to run against.
 
 Ensure that Docker is installed and running on your machine before proceeding.
 
-#### Using `docker-compose.yml`
+#### Using `docker-compose.yml` for local development
 
 The easiest way to run the application with Docker for local development is using the `docker-compose.yml` file. It is
 configured to start:
