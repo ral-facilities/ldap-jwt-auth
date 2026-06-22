@@ -225,7 +225,7 @@ Ensure that Python & uv is installed on your machine before proceeding.
 1. Install the required dependencies and create a virtual environment with
 
    ```bash
-   uv sync --dev
+   uv sync
    ```
 
 2. Install the software packages required to build `python-ldap` on your local system, more

@@ -2,7 +2,7 @@
 # Base stage, includes uv
 ########################################################################################################################
 FROM python:3.13.14-alpine3.24@sha256:db66119d6609a3a941a9433b225f4e13d33c459cede097cf3ec2fc4d1bd314b2 AS base
-COPY --from=ghcr.io/astral-sh/uv:0.10.8@sha256:88234bc9e09c2b2f6d176a3daf411419eb0370d450a08129257410de9cfafd2a /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.11.21@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9aae87057e69a1cc0aa369946 /uv /uvx /bin/
 
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
