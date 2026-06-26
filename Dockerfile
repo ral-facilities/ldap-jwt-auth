@@ -18,7 +18,7 @@ RUN apk add --no-cache build-base openldap-dev
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml uv.lock .python-version README.md ./
 
 
 ########################################################################################################################
