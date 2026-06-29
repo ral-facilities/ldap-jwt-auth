@@ -8,7 +8,7 @@ version = "3.1.2"
 dependencies = [
     "cachetools>=7.1.1",
     "cryptography>=49.0.0",
-    "fastapi[all]>=0.137.1",
+    "fastapi[all]>=0.138.0",
     "PyJWT>=2.12.1",
     "python-ldap>=3.4.5",
     "requests>=2.33.1",
@@ -34,7 +34,7 @@ module-root = "."
 code-analysis = [{ include-group = "test" }, "black>=26.3.1", "pylint>=4.0.6"]
 
 test = [
-    "pytest>=9.1.0",
+    "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
     "pytest-env>=1.6.0",
 ]
