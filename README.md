@@ -10,7 +10,7 @@ This microservice requires an LDAP server to run against.
 ### Prerequisites
 
 - Docker and Docker Compose installed (if you want to run the microservice inside Docker)
-- Python 3.13 and and an install of [uv](https://docs.astral.sh/uv/) (if you are not using Docker)
+- Python 3.14 and an install of [uv](https://docs.astral.sh/uv/) (if you are not using Docker)
 - OIDC provider(s) to connect to for users authenticating using an SSO OIDC ID token
 - LDAP server to connect to for users authenticating using LDAP credentials
 - CA certificate PEM file containing all the trusted CA certificates (if LDAP certificate validation is enabled which is
