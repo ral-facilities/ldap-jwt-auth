@@ -10,7 +10,7 @@ This microservice requires an LDAP server to run against.
 ### Prerequisites
 
 - Docker and Docker Compose installed (if you want to run the microservice inside Docker)
-- Python 3.13 and and an install of [uv](https://docs.astral.sh/uv/) (if you are not using Docker)
+- Python 3.14 and an install of [uv](https://docs.astral.sh/uv/) (if you are not using Docker)
 - OIDC provider(s) to connect to for users authenticating using an SSO OIDC ID token
 - LDAP server to connect to for users authenticating using LDAP credentials
 - CA certificate PEM file containing all the trusted CA certificates (if LDAP certificate validation is enabled which is
@@ -257,6 +257,25 @@ Ensure that Python & uv is installed on your machine before proceeding.
    ```bash
    uv run pytest -c test/pytest.ini test/
    ```
+
+## Developer environment setup
+
+To setup a local virtual environment with all the dependencies run the following in a clone of this repo
+
+```bash
+uv sync
+```
+
+This will create a virtual environment for the required python version and install all of the dev dependencies into it.
+
+### Common operations
+
+Where `uv run` is used below you can also activate the venv e.g. using `source .venv/bin/activate` and then omit it in
+all further commands, it is just a shortcut for when the virtual environment is not active in the current shell.
+
+- Use `uv sync` whenever dependencies change as a result of a pull/merge to update your local environment to use.
+- Use `uv run pylint ldap_jwt_auth test` to manually run the linter and find any issues.
+- Use `uv run black --line-length 120 ldap_jwt_auth test` to manually run the formatter and autoformat any changes.
 
 ## Notes
 
