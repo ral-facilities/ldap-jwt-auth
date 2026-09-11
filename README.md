@@ -258,6 +258,25 @@ Ensure that Python & uv is installed on your machine before proceeding.
    uv run pytest -c test/pytest.ini test/
    ```
 
+## Developer environment setup
+
+To setup a local virtual environment with all the dependencies run the following in a clone of this repo
+
+```bash
+uv sync
+```
+
+This will create a virtual environment for the required python version and install all of the dev dependencies into it.
+
+### Common operations
+
+Where `uv run` is used below you can also activate the venv e.g. using `source .venv/bin/activate` and then omit it in
+all further commands, it is just a shortcut for when the virtual environment is not active in the current shell.
+
+- Use `uv sync` whenever dependencies change as a result of a pull/merge to update your local environment to use.
+- Use `uv run pylint ldap_jwt_auth test` to manually run the linter and find any issues.
+- Use `uv run black --line-length 120 ldap_jwt_auth test` to manually run the formatter and autoformat any changes.
+
 ## Notes
 
 ### Application Configuration
