@@ -1,7 +1,7 @@
 ########################################################################################################################
 # Base stage, includes uv
 ########################################################################################################################
-FROM python:3.14.7-alpine3.24@sha256:c6ead215bfd31f1e433d968853b7a769989117115b728874824e6c0a27cb96fc AS base
+FROM python:3.14.7-alpine3.24@sha256:016508ba505da24f7139765bc4bb669df4e88eb2f12eeadd571bf2f88d7533df AS base
 COPY --from=ghcr.io/astral-sh/uv:0.11.21@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9aae87057e69a1cc0aa369946 /uv /uvx /bin/
 
 # Enable bytecode compilation
@@ -88,7 +88,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Minimal production-ready image
 ########################################################################################################################
 # The same image that matches the build stage must be used as the path to the Python executable must be the same.
-FROM python:3.14.7-alpine3.24@sha256:c6ead215bfd31f1e433d968853b7a769989117115b728874824e6c0a27cb96fc AS prod
+FROM python:3.14.7-alpine3.24@sha256:016508ba505da24f7139765bc4bb669df4e88eb2f12eeadd571bf2f88d7533df AS prod
 
 # Install python-ldap system dependencies
 RUN apk add --no-cache build-base openldap-dev
