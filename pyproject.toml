@@ -3,7 +3,7 @@ name = "ldap-jwt-auth"
 description = "Python microservice providing user authentication against LDAP server and returning a JSON Web Token."
 readme = "README.md"
 requires-python = ">=3.14"
-version = "3.2.1"
+version = "3.2.2"
 
 dependencies = [
     "cachetools>=7.1.8",
@@ -13,6 +13,9 @@ dependencies = [
     "python-ldap>=3.4.5",
     "requests>=2.33.1",
 ]
+
+[tool.uv.exclude-newer-package]
+certifi = false
 
 [project.urls]
 Repository = "https://github.com/ral-facilities/ldap-jwt-auth"
@@ -33,16 +36,9 @@ module-root = "."
 [dependency-groups]
 code-analysis = [{ include-group = "test" }, "black>=26.3.1", "pylint>=4.0.8"]
 
-test = [
-    "pytest>=9.1.1",
-    "pytest-cov>=7.1.0",
-    "pytest-env>=1.7.0",
-]
+test = ["pytest>=9.1.1", "pytest-cov>=7.1.0", "pytest-env>=1.7.0"]
 
-dev = [
-    { include-group = "code-analysis" },
-    { include-group = "test" },
-]
+dev = [{ include-group = "code-analysis" }, { include-group = "test" }]
 
 [tool.coverage.run]
 omit = [
